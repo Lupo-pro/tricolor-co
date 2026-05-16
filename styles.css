@@ -948,7 +948,7 @@ section { padding: 4.5rem 1.25rem; position: relative; }
 }
 .benefit-icon svg { width: 17px; height: 17px; }
 
-.benefit h4 {
+.benefit h3 {
   font-family: var(--display);
   font-size: 1.02rem;
   font-weight: 500;
@@ -1272,7 +1272,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.55); padding: 0 0 1.5
 .footer-social a:hover { background: var(--yellow); color: var(--ink); border-color: var(--yellow); transform: translateY(-2px); }
 .footer-social svg { width: 15px; height: 15px; }
 
-.footer-col h4 {
+.footer-col h3 {
   color: var(--bg);
   font-size: 0.7rem;
   letter-spacing: 0.15em;

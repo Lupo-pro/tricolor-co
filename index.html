@@ -260,6 +260,8 @@ nav{position:sticky;top:0;z-index:100;padding:1rem 1.25rem;display:flex;justify-
   <a href="#" data-wa data-wa-msg="¡Hola! Quiero pedir mi body Tricolor 🇨🇴" class="mobile-cta">Pedir por WhatsApp <svg aria-hidden="true"><use href="#ic-wa"/></svg></a>
 </div></div>
 
+<main id="main">
+
 <!-- HERO -->
 <header class="hero" id="top">
   <div class="hero-grid">
@@ -455,22 +457,22 @@ nav{position:sticky;top:0;z-index:100;padding:1rem 1.25rem;display:flex;justify-
   <div class="benefits-grid">
     <div class="benefit reveal">
       <div class="benefit-icon"><svg><use href="#ic-truck"/></svg></div>
-      <h4>Envío Nacional</h4>
+      <h3>Envío Nacional</h3>
       <p>A toda Colombia en 24-72h vía Interrapidísimo.</p>
     </div>
     <div class="benefit reveal">
       <div class="benefit-icon"><svg><use href="#ic-cash"/></svg></div>
-      <h4>Paga Contraentrega</h4>
+      <h3>Paga Contraentrega</h3>
       <p>Recibe primero, paga después. Cero riesgo.</p>
     </div>
     <div class="benefit reveal">
       <div class="benefit-icon"><svg><use href="#ic-shield"/></svg></div>
-      <h4>Garantía 7 Días</h4>
+      <h3>Garantía 7 Días</h3>
       <p>Si no te gusta, te devolvemos cada peso.</p>
     </div>
     <div class="benefit reveal">
       <div class="benefit-icon"><svg><use href="#ic-heart"/></svg></div>
-      <h4>Hecho con Pasión</h4>
+      <h3>Hecho con Pasión</h3>
       <p>Cada body empacado a mano en el Eje Cafetero.</p>
     </div>
   </div>
@@ -614,6 +616,8 @@ nav{position:sticky;top:0;z-index:100;padding:1rem 1.25rem;display:flex;justify-
   </div>
 </section>
 
+</main>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-manifesto">
@@ -629,9 +633,9 @@ nav{position:sticky;top:0;z-index:100;padding:1rem 1.25rem;display:flex;justify-
         <a href="#" data-wa data-wa-msg="¡Hola! Vengo del sitio Tricolor 🇨🇴" aria-label="WhatsApp"><svg aria-hidden="true"><use href="#ic-wa"/></svg></a>
       </div>
     </div>
-    <div class="footer-col"><h4>Tienda</h4><ul><li><a href="#collection">La Colección</a></li><li><a href="#collection">El Once Inicial</a></li><li><a href="#how">Cómo Comprar</a></li><li><a href="#faq">Guía de Tallas</a></li></ul></div>
-    <div class="footer-col"><h4>Ayuda</h4><ul><li><a href="#faq">FAQ</a></li><li><a href="#cta">Contacto</a></li><li><a href="#faq">Envíos</a></li><li><a href="#faq">Devoluciones</a></li></ul></div>
-    <div class="footer-col"><h4>La Tribuna</h4><ul><li><a href="#">Instagram</a></li><li><a href="#">TikTok</a></li><li><a href="#">WhatsApp</a></li></ul></div>
+    <div class="footer-col"><h3>Tienda</h3><ul><li><a href="#collection">La Colección</a></li><li><a href="#collection">El Once Inicial</a></li><li><a href="#how">Cómo Comprar</a></li><li><a href="#faq">Guía de Tallas</a></li></ul></div>
+    <div class="footer-col"><h3>Ayuda</h3><ul><li><a href="#faq">FAQ</a></li><li><a href="#cta">Contacto</a></li><li><a href="#faq">Envíos</a></li><li><a href="#faq">Devoluciones</a></li></ul></div>
+    <div class="footer-col"><h3>La Tribuna</h3><ul><li><a href="#">Instagram</a></li><li><a href="#">TikTok</a></li><li><a href="#">WhatsApp</a></li></ul></div>
   </div>
   <div class="footer-bottom">
     <div>© 2026 TRICOLOR.CO · Con orgullo cafetero 🇨🇴</div>
@@ -647,8 +651,8 @@ nav{position:sticky;top:0;z-index:100;padding:1rem 1.25rem;display:flex;justify-
 </a>
 
 <!-- MODAL -->
-<div class="modal-overlay" id="modal">
-  <div class="modal" role="dialog" aria-modal="true">
+<div class="modal-overlay" id="modal" inert>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <button class="modal-close" id="modalClose" aria-label="Cerrar"><svg><use href="#ic-close"/></svg></button>
     <div class="modal-visual" id="modalVisual"><svg class="body-svg" viewBox="0 0 200 280" aria-hidden="true"><use href="#body-shape"/></svg></div>
     <div class="modal-info">

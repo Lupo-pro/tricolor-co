@@ -218,7 +218,7 @@ function openModal(color, returnTo) {
   modalPriceOld.textContent = data.old;
   updateModalCta(data.name, data.price);
   modal.classList.add('active');
-  modal.removeAttribute('aria-hidden');
+  modal.inert = false;
   document.body.style.overflow = 'hidden';
   document.addEventListener('keydown', trapFocus);
   // Focus the close button first — least disruptive landing.
@@ -235,7 +235,7 @@ function updateModalCta(productName, price) {
 
 function closeModal() {
   modal.classList.remove('active');
-  modal.setAttribute('aria-hidden', 'true');
+  modal.inert = true;
   document.body.style.overflow = '';
   document.removeEventListener('keydown', trapFocus);
   if (modalReturnFocus && typeof modalReturnFocus.focus === 'function') {
@@ -244,7 +244,8 @@ function closeModal() {
   modalReturnFocus = null;
 }
 
-modal.setAttribute('aria-hidden', 'true');
+// `inert` already set in HTML; ensure it's true at boot in case JS was deferred past CSS.
+modal.inert = true;
 
 document.querySelectorAll('.product').forEach((card) => {
   card.addEventListener('click', (e) => {
