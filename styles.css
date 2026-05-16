@@ -3776,12 +3776,14 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
    MOBILE-SPECIFIC tweaks (≤ 640px)
    ============================================================ */
 @media (max-width: 640px) {
-  .banderola { font-size: 0.78rem; padding: 0.45rem 1rem; }
-  .banderola-1 { top: calc(var(--offset) + 0.5rem); }
-  .banderola-2 { top: calc(var(--offset) + 4.5rem); }
-  /* banderola-3 collides with hero-info on narrow viewports — hide it,
-     it reappears at ≥640px where there is room. */
-  .banderola-3 { display: none; }
+  /* Decorative hero overlays cause attention drift on mobile where every
+     pixel needs to move the buyer toward the product. Strip them. */
+  .banderola { display: none; }
+  .confetti  { display: none; }
+
+  /* Smaller hero title — was clamp(4rem, 18vw, 13rem). On 375px width
+     the 18vw size pushed the title close to the chrome edges. */
+  .huge { font-size: clamp(3.5rem, 14vw, 6rem); }
 
   .hero { padding-bottom: 2.5rem; }
   .hero-info {
@@ -3802,9 +3804,23 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
   }
   .section-meta { text-align: left; }
 
-  .tribune-stat-cd .cd-secs { display: none; }
+  /* Tribune countdown: keep only days on mobile (visible urgency without
+     eating sub-nav real estate). H:M:S vanish. */
+  .tribune-stat-cd strong:not(:first-of-type) { display: none; }
   .tribune-bar { font-size: 0.74rem; letter-spacing: 0.1em; gap: 0.5rem; }
   .tribune-bar .live { font-size: 0.62rem; }
+
+  /* Compress section paddings — was 5-6rem top/bottom. ~30% less
+     vertical scroll between blocks. */
+  .collection { padding: 3rem var(--gutter) 3.5rem; }
+  .regalo     { padding: 3rem var(--gutter) 3.5rem; }
+  .manifesto  { padding: 3.5rem var(--gutter); }
+  .benefits   { padding: 3rem var(--gutter) 3.5rem; }
+  .how        { padding: 3.5rem var(--gutter); }
+  .size-guide { padding: 3.5rem var(--gutter); }
+  .tribuna    { padding: 3.5rem var(--gutter); }
+  .faq        { padding: 3.5rem var(--gutter); }
+  .cta-final  { padding: 4rem var(--gutter) 3.5rem; }
 
   .bundle-visual { padding: 0.5rem 1rem 1.5rem; }
   .bundle-content { padding: 2.2rem 1.3rem 2rem; }
