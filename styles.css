@@ -135,13 +135,43 @@ nav.scrolled { padding: 0.7rem 1.25rem; }
   display: inline-flex;
   height: 16px;
   border-radius: 2px;
-  overflow: hidden;
+  /* overflow:hidden removed so the stripes can drift apart on hover; the
+     border-radius is applied per-stripe below to keep the rounded look. */
   box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
-.logo-mark span { width: 5px; height: 100%; display: block; }
-.logo-mark span:nth-child(1) { background: var(--yellow); }
+.logo-mark span {
+  width: 5px;
+  height: 100%;
+  display: block;
+  border-radius: 1px;
+  transition: transform 0.45s var(--ease-spring), border-radius 0.3s var(--ease-out);
+  will-change: transform;
+}
+.logo-mark span:nth-child(1) { background: var(--yellow); border-top-left-radius: 2px; border-bottom-left-radius: 2px; }
 .logo-mark span:nth-child(2) { background: var(--blue); }
-.logo-mark span:nth-child(3) { background: var(--red); }
+.logo-mark span:nth-child(3) { background: var(--red); border-top-right-radius: 2px; border-bottom-right-radius: 2px; }
+
+/* Hover: stripes drift apart in opposite directions; middle stays put. */
+.logo:hover .logo-mark span:nth-child(1),
+.footer-brand:hover .logo-mark span:nth-child(1) {
+  transform: translateX(-3px) rotate(-3deg);
+  border-radius: 2px;
+}
+.logo:hover .logo-mark span:nth-child(3),
+.footer-brand:hover .logo-mark span:nth-child(3) {
+  transform: translateX(3px) rotate(3deg);
+  border-radius: 2px;
+}
+.logo:hover .logo-mark span:nth-child(2),
+.footer-brand:hover .logo-mark span:nth-child(2) {
+  transform: translateY(-1px) scale(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-mark span { transition: none; }
+  .logo:hover .logo-mark span,
+  .footer-brand:hover .logo-mark span { transform: none; }
+}
 
 .nav-links { display: none; gap: 2rem; }
 .nav-links a {
