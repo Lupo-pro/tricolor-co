@@ -66,9 +66,12 @@ waFloat.style.transition = 'opacity 0.4s ease, transform 0.4s ease, background 0
 
 let scrollTicking = false;
 let inlineWaInView = false;
+let stickyBarVisible = false;
+let scrollHooks = [];
+function registerScrollHook(fn) { scrollHooks.push(fn); }
 function applyWaFloatVisibility() {
   const y = window.scrollY;
-  const visible = y > 300 && !inlineWaInView;
+  const visible = y > 300 && !inlineWaInView && !stickyBarVisible;
   waFloat.style.opacity = visible ? '1' : '0';
   waFloat.style.transform = visible ? 'translateY(0)' : 'translateY(20px)';
   waFloat.style.pointerEvents = visible ? 'auto' : 'none';
@@ -78,6 +81,7 @@ function onScroll() {
   if (y > 30) nav.classList.add('scrolled');
   else nav.classList.remove('scrolled');
   applyWaFloatVisibility();
+  scrollHooks.forEach((fn) => fn(y));
   scrollTicking = false;
 }
 window.addEventListener('scroll', () => {
@@ -382,6 +386,97 @@ faqItems.forEach((item) => {
     n.setAttribute('data-review-clone', '');
     track.appendChild(n);
   });
+})();
+
+// ============================================
+// STICKY BUY BAR (mobile only)
+// Shows from the top of .collection through the bottom of .cta-final,
+// then collapses before .footer. The bar reflects whichever product is
+// most prominent in the viewport, falling back to the El Once Inicial pack.
+// While the bar is visible the sticky #waFloat hides — same reason as the
+// inline-CTA observer: one prominent WhatsApp CTA at a time.
+// ============================================
+const STICKY_BAR_PRODUCTS = {
+  capitana: { name: 'La Capitana', price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa La Capitana 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  portera:  { name: 'La Portera',  price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa La Portera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  oronegro: { name: 'Oro Negro',   price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa Oro Negro 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  cafetera: { name: 'La Cafetera', price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa La Cafetera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+};
+const STICKY_BAR_DEFAULT = {
+  name: 'El Once Inicial',
+  price: '$329.000',
+  old: '$596.000',
+  msg: '¡Hola! Quiero pedir el Once Inicial (Pack 4 ediciones) 🇨🇴 ¿Está disponible?',
+};
+
+const stickyBuy = document.getElementById('stickyBuy');
+
+(function initStickyBuyBar() {
+  if (!stickyBuy) return;
+  const sbName = document.getElementById('sbName');
+  const sbPrice = document.getElementById('sbPrice');
+  const sbOld = document.getElementById('sbOld');
+  const sbCta = document.getElementById('sbCta');
+
+  const collection = document.getElementById('collection');
+  const footer = document.querySelector('footer');
+  if (!collection || !footer) return;
+
+  // Boundaries: show when bottom of viewport is past the collection top,
+  // hide when bottom of viewport reaches the footer top.
+  function shouldShow() {
+    const cTop = collection.getBoundingClientRect().top + window.scrollY;
+    const fTop = footer.getBoundingClientRect().top + window.scrollY;
+    const viewBottom = window.scrollY + window.innerHeight;
+    return viewBottom > cTop + 200 && window.scrollY < fTop - window.innerHeight * 0.6;
+  }
+
+  function setProduct(p) {
+    sbName.textContent = p.name;
+    sbPrice.textContent = p.price;
+    sbOld.textContent = p.old;
+    sbCta.dataset.waMsg = p.msg;
+    sbCta.href = buildWaUrl(p.msg);
+  }
+  setProduct(STICKY_BAR_DEFAULT);
+
+  // Track which product is most prominent in the viewport.
+  const productEls = document.querySelectorAll('.product[data-color]');
+  const productVisibility = new Map();
+  if (productEls.length) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        productVisibility.set(e.target, e.isIntersecting ? e.intersectionRatio : 0);
+      });
+      // Pick the product with the highest visibility above a threshold.
+      let best = null;
+      let bestRatio = 0.55;
+      productVisibility.forEach((ratio, el) => {
+        if (ratio > bestRatio) {
+          bestRatio = ratio;
+          best = el;
+        }
+      });
+      const data = best ? STICKY_BAR_PRODUCTS[best.dataset.color] : STICKY_BAR_DEFAULT;
+      setProduct(data || STICKY_BAR_DEFAULT);
+    }, { threshold: [0, 0.25, 0.5, 0.6, 0.75, 1] });
+    productEls.forEach((el) => obs.observe(el));
+  }
+
+  function update() {
+    const show = shouldShow();
+    if (show === stickyBarVisible) return;
+    stickyBarVisible = show;
+    stickyBuy.hidden = false;
+    document.body.classList.toggle('sticky-buy-on', show);
+    // Defer class toggle to next frame so the transition fires.
+    requestAnimationFrame(() => stickyBuy.classList.toggle('visible', show));
+    applyWaFloatVisibility();
+  }
+
+  registerScrollHook(update);
+  window.addEventListener('resize', update, { passive: true });
+  update();
 })();
 
 // ============================================

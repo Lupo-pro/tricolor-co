@@ -1520,6 +1520,90 @@ footer { background: var(--ink); color: rgba(255,255,255,0.55); padding: 0 0 1.5
 .footer-legal { display: flex; gap: 1.25rem; }
 .footer-legal a:hover { color: var(--bg); }
 
+/* ====== STICKY BUY BAR (mobile only) ====== */
+.sticky-buy {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 96;
+  display: none;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.7rem 0.9rem calc(0.7rem + env(safe-area-inset-bottom, 0px));
+  background: rgba(10,10,10,0.96);
+  color: var(--bg);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  backdrop-filter: saturate(180%) blur(14px);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.25);
+  transform: translateY(100%);
+  transition: transform 0.4s var(--ease-out);
+}
+.sticky-buy.visible { transform: translateY(0); }
+.sticky-buy::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--yellow) 0 33%, var(--blue) 33% 66%, var(--red) 66% 100%);
+}
+
+.sb-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  flex: 1;
+  min-width: 0;
+}
+.sb-name {
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sb-prices { display: inline-flex; align-items: baseline; gap: 0.45rem; }
+.sb-price {
+  font-family: var(--display);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--yellow);
+  letter-spacing: -0.01em;
+}
+.sb-old {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+  text-decoration: line-through;
+}
+
+.sb-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--wa);
+  color: white;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  min-height: 44px;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(37,211,102,0.3);
+  transition: background 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+}
+.sb-cta:hover { background: var(--wa-dark); transform: translateY(-1px); }
+.sb-cta svg { width: 18px; height: 18px; }
+
+@media (max-width: 639px) {
+  .sticky-buy { display: flex; }
+  body.sticky-buy-on { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+}
+
 /* ====== WHATSAPP FLOAT ====== */
 .wa-float {
   position: fixed;
