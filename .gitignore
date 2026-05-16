@@ -16,6 +16,11 @@ build/
 # Vercel
 .vercel
 
+# External Claude skills installed via `npx skills add` — tracked in skills-lock.json
+.agents/
+.claude/skills/browser-use
+.claude/skills/frontend-design
+
 # Logs
 *.log
 npm-debug.log*
