@@ -1056,6 +1056,72 @@
         </div>
       </div>
 
+      <div class="modal-upsell" id="modalUpsell" data-state="off">
+        <button class="upsell-toggle" id="upsellToggle" type="button" aria-pressed="false" aria-controls="upsellCaps">
+          <span class="ut-check" aria-hidden="true"></span>
+          <span class="ut-text">
+            <strong>¿Querés tu GORRA TRICOLOR GRATIS? 🎁</strong>
+            <em>Agregá otra edición y elegí tu color</em>
+          </span>
+        </button>
+
+        <p class="upsell-tooltip">Necesitás 2+ ediciones para el regalo</p>
+
+        <div class="upsell-caps" id="upsellCaps">
+          <p class="uc-label">Elegí tu color de gorra:</p>
+          <div class="cap-picker cap-picker-sm" role="radiogroup" aria-label="Color de la gorra en el modal">
+            <button class="cap-option cap-negra" type="button" role="radio" aria-checked="false" data-color="negra" aria-label="Gorra negra">
+              <span class="cap-svg-wrap">
+                <svg viewBox="0 0 100 80" aria-hidden="true">
+                  <path d="M15 50 Q15 15 50 15 Q85 15 85 50 L85 55 L15 55 Z" fill="currentColor"/>
+                  <path d="M10 55 Q50 70 90 55 L85 62 L15 62 Z" fill="currentColor" opacity="0.65"/>
+                  <circle cx="50" cy="36" r="11" fill="var(--cap-badge, #FFD300)" stroke="#0A0A0A" stroke-width="1.5"/>
+                  <path d="M50 30 L52 35 L57.5 35 L53 38.5 L55 44 L50 40.5 L45 44 L47 38.5 L42.5 35 L48 35 Z" fill="var(--cap-star, #0A0A0A)"/>
+                </svg>
+                <span class="cap-check" aria-hidden="true">✓</span>
+              </span>
+              <span class="cap-label">Negra</span>
+            </button>
+            <button class="cap-option cap-roja" type="button" role="radio" aria-checked="false" data-color="roja" aria-label="Gorra roja">
+              <span class="cap-svg-wrap">
+                <svg viewBox="0 0 100 80" aria-hidden="true">
+                  <path d="M15 50 Q15 15 50 15 Q85 15 85 50 L85 55 L15 55 Z" fill="currentColor"/>
+                  <path d="M10 55 Q50 70 90 55 L85 62 L15 62 Z" fill="currentColor" opacity="0.65"/>
+                  <circle cx="50" cy="36" r="11" fill="var(--cap-badge, #FFD300)" stroke="#0A0A0A" stroke-width="1.5"/>
+                  <path d="M50 30 L52 35 L57.5 35 L53 38.5 L55 44 L50 40.5 L45 44 L47 38.5 L42.5 35 L48 35 Z" fill="var(--cap-star, #0A0A0A)"/>
+                </svg>
+                <span class="cap-check" aria-hidden="true">✓</span>
+              </span>
+              <span class="cap-label">Roja</span>
+            </button>
+            <button class="cap-option cap-amarilla" type="button" role="radio" aria-checked="false" data-color="amarilla" aria-label="Gorra amarilla">
+              <span class="cap-svg-wrap">
+                <svg viewBox="0 0 100 80" aria-hidden="true">
+                  <path d="M15 50 Q15 15 50 15 Q85 15 85 50 L85 55 L15 55 Z" fill="currentColor" stroke="#0A0A0A" stroke-width="1.5"/>
+                  <path d="M10 55 Q50 70 90 55 L85 62 L15 62 Z" fill="currentColor" opacity="0.65" stroke="#0A0A0A" stroke-width="1.5"/>
+                  <circle cx="50" cy="36" r="11" fill="var(--cap-badge, #E63946)" stroke="#0A0A0A" stroke-width="1.5"/>
+                  <path d="M50 30 L52 35 L57.5 35 L53 38.5 L55 44 L50 40.5 L45 44 L47 38.5 L42.5 35 L48 35 Z" fill="var(--cap-star, #F0EBE0)"/>
+                </svg>
+                <span class="cap-check" aria-hidden="true">✓</span>
+              </span>
+              <span class="cap-label">Amarilla</span>
+            </button>
+            <button class="cap-option cap-blanca" type="button" role="radio" aria-checked="false" data-color="blanca" aria-label="Gorra blanca">
+              <span class="cap-svg-wrap">
+                <svg viewBox="0 0 100 80" aria-hidden="true">
+                  <path d="M15 50 Q15 15 50 15 Q85 15 85 50 L85 55 L15 55 Z" fill="currentColor" stroke="#0A0A0A" stroke-width="1.5"/>
+                  <path d="M10 55 Q50 70 90 55 L85 62 L15 62 Z" fill="currentColor" opacity="0.7" stroke="#0A0A0A" stroke-width="1.5"/>
+                  <circle cx="50" cy="36" r="11" fill="var(--cap-badge, #E63946)" stroke="#0A0A0A" stroke-width="1.5"/>
+                  <path d="M50 30 L52 35 L57.5 35 L53 38.5 L55 44 L50 40.5 L45 44 L47 38.5 L42.5 35 L48 35 Z" fill="var(--cap-star, #F0EBE0)"/>
+                </svg>
+                <span class="cap-check" aria-hidden="true">✓</span>
+              </span>
+              <span class="cap-label">Blanca</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
       <ul class="modal-features">
         <li><svg class="ic"><use href="#ic-check"/></svg> Tela técnica AEROREADY, alta elasticidad</li>
         <li><svg class="ic"><use href="#ic-check"/></svg> Costuras planas reforzadas</li>

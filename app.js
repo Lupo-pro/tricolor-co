@@ -314,11 +314,41 @@ function openModal(color, returnTo) {
 
 function updateModalCta(productName, price) {
   const size = document.querySelector('.size-btn.active')?.dataset.size || 'M';
-  const msg = `¡Hola! Quiero pedir el body ${productName} 🇨🇴\n\nTalla: ${size}\nPrecio: ${price}\n\n¿Está disponible?`;
+  const upsell = document.getElementById('modalUpsell');
+  const upsellOn = upsell?.dataset.state === 'on';
+
+  let msg = `¡Hola! Quiero pedir el body ${productName} 🇨🇴\n\nTalla: ${size}\nPrecio: ${price}\n\n`;
+
+  if (upsellOn) {
+    const colorLabel = selectedCapColor ? CAP_LABELS[selectedCapColor] : 'a definir';
+    msg += `+ Quiero agregar una 2da edición para activar la GORRA TRICOLOR GRATIS 🎁\nColor de la gorra: ${colorLabel}\n\n¿Cuál edición me recomendás como 2da?`;
+  } else {
+    msg += '¿Está disponible?';
+  }
+
   modalCta.href = buildWaUrl(msg);
   modalCta.target = '_blank';
   modalCta.rel = 'noopener';
 }
+
+// Expose for setCapColor → reflect color picks live into the modal CTA
+window.__refreshModalCta = () => {
+  if (!modal.classList.contains('active')) return;
+  updateModalCta(modalTitle.textContent, modalPriceNow.textContent);
+};
+
+// Modal upsell toggle — show cap picker + rebuild WA message.
+(function initModalUpsell() {
+  const upsell = document.getElementById('modalUpsell');
+  const toggle = document.getElementById('upsellToggle');
+  if (!upsell || !toggle) return;
+  toggle.addEventListener('click', () => {
+    const next = upsell.dataset.state === 'on' ? 'off' : 'on';
+    upsell.dataset.state = next;
+    toggle.setAttribute('aria-pressed', next === 'on' ? 'true' : 'false');
+    updateModalCta(modalTitle.textContent, modalPriceNow.textContent);
+  });
+})();
 
 function closeModal() {
   modal.classList.remove('active');
