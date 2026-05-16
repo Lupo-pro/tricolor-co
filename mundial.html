@@ -31,6 +31,72 @@
 <script defer src="/app.js"></script>
 <script defer src="/mundial.js"></script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://latricolor.co/mundial#page",
+      "url": "https://latricolor.co/mundial",
+      "name": "Calendario Mundial 2026 Colombia · LATRICOLOR.CO",
+      "inLanguage": "es-CO",
+      "isPartOf": { "@id": "https://latricolor.co/#site" },
+      "about": {
+        "@type": "SportsEvent",
+        "name": "Copa Mundial de la FIFA 2026",
+        "startDate": "2026-06-11",
+        "endDate": "2026-07-19",
+        "location": { "@type": "Place", "name": "USA · Canadá · México" }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://latricolor.co/" },
+        { "@type": "ListItem", "position": 2, "name": "Mundial", "item": "https://latricolor.co/mundial" }
+      ]
+    },
+    {
+      "@type": "ItemList",
+      "name": "Partidos Colombia · Mundial 2026",
+      "itemListElement": [
+        {
+          "@type": "SportsEvent",
+          "position": 1,
+          "name": "Colombia vs Costa Rica",
+          "startDate": "2026-06-14T16:00:00-05:00",
+          "location": { "@type": "Place", "name": "Lumen Field", "address": "Seattle, USA" },
+          "homeTeam": "Colombia",
+          "awayTeam": "Costa Rica",
+          "eventStatus": "https://schema.org/EventScheduled"
+        },
+        {
+          "@type": "SportsEvent",
+          "position": 2,
+          "name": "Egipto vs Colombia",
+          "startDate": "2026-06-19T13:00:00-05:00",
+          "location": { "@type": "Place", "name": "Lincoln Financial Field", "address": "Philadelphia, USA" },
+          "homeTeam": "Egipto",
+          "awayTeam": "Colombia",
+          "eventStatus": "https://schema.org/EventScheduled"
+        },
+        {
+          "@type": "SportsEvent",
+          "position": 3,
+          "name": "Colombia vs Irán",
+          "startDate": "2026-06-25T17:00:00-05:00",
+          "location": { "@type": "Place", "name": "Estadio Azteca", "address": "Ciudad de México, México" },
+          "homeTeam": "Colombia",
+          "awayTeam": "Irán",
+          "eventStatus": "https://schema.org/EventScheduled"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <script>
   try {
     if (sessionStorage.getItem('tricolor_entered') === '1') {
