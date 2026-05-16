@@ -390,20 +390,66 @@ html:not(.has-entered) body {
   100% { opacity: 1; transform: translateY(0); }
 }
 
-/* Curtain placeholder — populated in the next commit. Holds the
-   flag-band reveal animation. */
+/* Curtain — three horizontal flag bands stacked top→bottom. Hidden
+   until .splash.exiting kicks them in. Each band animates independently
+   so the reveal feels like a stadium banner snapping open. */
 .splash-curtain {
   position: absolute;
   inset: 0;
   z-index: 3;
   pointer-events: none;
-}
-
-/* EXIT — fade out, swap on .splash.exiting. Curtain bands take over in
-   the next commit; until then we just fade. */
-.splash.exiting {
+  display: flex;
+  flex-direction: column;
   opacity: 0;
+  transition: opacity 0.05s ease-in;
+}
+.sc-band {
+  flex: 1;
+  width: 100%;
+  transform: translateY(0);
+  transition:
+    transform 0.7s cubic-bezier(.65,0,.35,1),
+    opacity   0.7s cubic-bezier(.65,0,.35,1);
+  will-change: transform, opacity;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.05) inset;
+}
+.sc-band-yellow { background: var(--yellow); }
+.sc-band-blue   { background: var(--blue); }
+.sc-band-red    { background: var(--red); }
+
+/* EXIT — bands cover the splash instantly, content fades fast, then
+   yellow slides up, blue compresses + fades, red slides down. The
+   splash background drops to transparent so the bands ARE the splash
+   for the duration of the animation; once they're gone, the site
+   underneath is what the eye sees. */
+.splash.exiting {
+  background: transparent;
   pointer-events: none;
+  transition: background 0.1s ease-in;
+}
+.splash.exiting::before,
+.splash.exiting .splash-bg {
+  opacity: 0;
+  transition: opacity 0.1s ease-in;
+}
+.splash.exiting .splash-stage,
+.splash.exiting .splash-skip {
+  opacity: 0;
+  transition: opacity 0.18s ease-in;
+}
+.splash.exiting .splash-curtain {
+  opacity: 1;
+  transition-delay: 0s;
+}
+.splash.exiting .sc-band-yellow {
+  transform: translateY(-100%);
+}
+.splash.exiting .sc-band-blue {
+  opacity: 0;
+  transform: scaleY(0.8);
+}
+.splash.exiting .sc-band-red {
+  transform: translateY(100%);
 }
 
 /* Reduced motion — collapse the slide / vibrate / pulse to plain fades */

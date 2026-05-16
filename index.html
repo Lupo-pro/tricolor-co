@@ -82,9 +82,13 @@
 
   <button class="splash-skip" id="splashSkip" type="button" aria-label="Saltar intro">Saltar intro</button>
 
-  <!-- Curtain bands — empty in this commit, animation lives behind a
-       subsequent commit that brings the flag-band reveal in. -->
-  <div class="splash-curtain" aria-hidden="true"></div>
+  <!-- Curtain reveal — three horizontal flag bands cover the splash on
+       exit and then slide / fade apart to expose the site underneath. -->
+  <div class="splash-curtain" aria-hidden="true">
+    <div class="sc-band sc-band-yellow"></div>
+    <div class="sc-band sc-band-blue"></div>
+    <div class="sc-band sc-band-red"></div>
+  </div>
 </div>
 
 <!-- ============================================
