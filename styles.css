@@ -908,22 +908,35 @@ html:not(.has-entered) body {
   margin-left: 0.1em;
 }
 
-.hero-trust {
-  margin-top: 1.5rem;
+/* Hero mini-info — commerce summary under the CTA. Replaces the
+   trust-icon row; trust signals live in the Promesas marquee right
+   below. Emoji + Bebas Neue, generous spacing. */
+.hero-mini-info {
+  margin-top: 1.4rem;
   padding-top: 1rem;
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
   flex-wrap: wrap;
+  justify-content: center;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.92rem;
   letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: rgba(10,10,10,0.65);
+  color: var(--ink-soft);
   position: relative;
   z-index: 1;
 }
-.hero-trust span { display: inline-flex; align-items: center; gap: 0.35rem; }
-.hero-trust .ic { color: var(--green-grass); width: 16px; height: 16px; }
+.hero-mini-info > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.hero-mini-info .hmi-sep {
+  color: var(--red);
+  font-family: 'Anton', sans-serif;
+  font-size: 1.1em;
+  letter-spacing: 0;
+}
 
 /* ============================================================
    GLOBAL CTAs
@@ -3811,7 +3824,7 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
   }
   .hero-info .cta { width: 100%; }
   .hero-stats { justify-content: center; }
-  .hero-trust { justify-content: center; }
+  .hero-mini-info { justify-content: center; }
 
   .nav-links { display: none; }
   .nav-cta { display: none; }
