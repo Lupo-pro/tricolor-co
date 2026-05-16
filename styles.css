@@ -1136,6 +1136,49 @@ table { border-collapse: collapse; }
 }
 .card-garantia .ic { color: var(--wa); width: 14px; height: 14px; }
 
+/* URGENCY STOCK — pulsing red bar between card-info and card-cta */
+.stock-urgency {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.8rem;
+  background: var(--ink);
+  color: var(--red-warm);
+  border-top: 2px dashed rgba(230,57,70,0.55);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  animation: stockPulse 1.8s ease-in-out infinite;
+  line-height: 1.1;
+  text-align: center;
+}
+.stock-urgency strong {
+  color: var(--yellow);
+  font-family: 'Anton', sans-serif;
+  font-size: 1.05em;
+  font-weight: 400;
+  margin: 0 0.05em;
+  letter-spacing: 0;
+}
+.stock-urgency-bundle {
+  background: rgba(230,57,70,0.12);
+  border: 2px dashed rgba(230,57,70,0.55);
+  border-radius: 0;
+  margin-bottom: 1.2rem;
+  padding: 0.65rem 1rem;
+  font-size: 0.92rem;
+  letter-spacing: 0.12em;
+  color: var(--red-warm);
+}
+.stock-urgency-bundle strong { color: var(--yellow); }
+
+@keyframes stockPulse {
+  0%, 100% { background-color: var(--ink); }
+  50%      { background-color: #1a0606; }
+}
+
 /* Mini review — under the name, inline with the card-name-block stack */
 .card-mini-review {
   display: flex;

@@ -27,6 +27,20 @@ document.querySelectorAll('[data-wa]').forEach((el) => {
 });
 
 // ============================================
+// STOCK URGENCY — randomized scarcity number per card.
+// Each [data-stock] element gets a fresh 8-23 unit count at page load.
+// Stock is psychological, not inventory truth — keeps the soft urgency
+// feeling fresh on every visit without lying about specific numbers.
+// ============================================
+(function injectStockNumbers() {
+  document.querySelectorAll('[data-stock]').forEach((el) => {
+    const n = 8 + Math.floor(Math.random() * 16); // 8..23 inclusive
+    const strong = el.querySelector('strong');
+    if (strong) strong.textContent = String(n);
+  });
+})();
+
+// ============================================
 // COUNTDOWN — Mundial 2026 kickoff (11 jun 2026, 16:00 COL)
 // ============================================
 const MUNDIAL_DATE = new Date('2026-06-11T16:00:00-05:00').getTime();
