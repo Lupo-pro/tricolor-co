@@ -85,43 +85,27 @@
     <div class="sb-stripe sb-stripe-3"></div>
   </div>
 
-  <div class="splash-stage">
-    <div class="splash-live" aria-hidden="true">
-      <span class="splash-live-dot"></span>
-      <span>EN VIVO · MUNDIAL 2026</span>
-    </div>
+  <div class="splash-modal" role="document">
+    <div class="splash-bandera" aria-hidden="true">★ Oferta Exclusiva Mundial ★</div>
 
     <h1 class="splash-title" id="splashTitle">
-      <span class="splash-line splash-tri">TRI</span>
-      <span class="splash-line splash-color">COLOR</span>
+      <span class="splash-line splash-unlock">Desbloquea</span>
+      <span class="splash-line splash-discount">-10%</span>
     </h1>
 
-    <div class="splash-countdown" aria-live="off">
-      <span class="sc-days">EMPIEZA EN <strong id="splash-days">--</strong> DÍAS</span>
-      <span class="sc-sep" aria-hidden="true">·</span>
-      <span class="sc-time">
-        <strong id="splash-h">--</strong><span class="splash-colon">:</span><strong id="splash-m">--</strong><span class="splash-colon">:</span><strong id="splash-s">--</strong>
-      </span>
-    </div>
+    <p class="splash-sub">En tu primera edición Tricolor</p>
 
     <button class="splash-cta" id="splashEnter" type="button"
-            aria-label="Entrar al sitio con música de estadio">
-      ENTRAR AL ESTADIO <span aria-hidden="true">→</span>
+            aria-label="Activar descuento del 10% y entrar al sitio con música">
+      Activar mi -10% <span aria-hidden="true">🔓</span>
     </button>
 
-    <div class="splash-audio">
-      <p class="sa-main">🎵 con sonido stadium activado</p>
-      <p class="sa-sub">
-        (pulsá para silenciar después) · <button class="sa-opt-out" id="splashEnterMuted" type="button">¿Sin sonido? Entrar silenciado</button>
-      </p>
-    </div>
+    <p class="splash-audio-line" aria-hidden="true">🎵 Con sonido stadium incluido</p>
+
+    <button class="splash-skip" id="splashSkip" type="button" aria-label="Continuar sin bonus">
+      Continuar sin bonus <span aria-hidden="true">→</span>
+    </button>
   </div>
-
-  <p class="splash-auto-dismiss" aria-live="polite">
-    Entrando automáticamente en <strong id="splashAutoCount">5</strong>...
-  </p>
-
-  <button class="splash-skip" id="splashSkip" type="button" aria-label="Saltar intro">Saltar intro</button>
 
   <!-- Curtain reveal — three horizontal flag bands cover the splash on
        exit and then slide / fade apart to expose the site underneath. -->

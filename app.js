@@ -995,19 +995,15 @@ document.querySelectorAll('.cap-option').forEach((btn) => {
 })();
 
 // ============================================
-// SPLASH GATE — first-visit consent screen
-// Renders only when sessionStorage['tricolor_entered'] is absent. The
-// user MUST click one of: ENTRAR AL ESTADIO (audio on), Entrar
-// silenciado (audio muted), or Saltar intro / Esc (audio muted).
-// The click is also what unlocks audio.play() — browser autoplay
-// policy requires a user gesture, and the splash CTA is that gesture.
+// SPLASH GATE — first-visit -10% offer screen
+// Loss aversion: the user must actively "activate" the bonus or
+// consciously "continue without it". No auto-dismiss — forcing a
+// choice is the whole point. The activation click is also what
+// unlocks audio.play() (browser autoplay policy).
 // ============================================
 (function initSplash() {
   const splash = document.getElementById('splash');
   if (!splash) return;
-  // sessionStorage check is doubled in the inline head script, but
-  // we re-check here in case JS-only consumers (no inline script)
-  // somehow ended up rendering the splash.
   try {
     if (sessionStorage.getItem('tricolor_entered') === '1') {
       splash.remove();
@@ -1017,73 +1013,60 @@ document.querySelectorAll('.cap-option').forEach((btn) => {
   } catch (_) { /* keep going */ }
 
   const enterBtn = document.getElementById('splashEnter');
-  const enterMutedBtn = document.getElementById('splashEnterMuted');
   const skipBtn = document.getElementById('splashSkip');
 
   let exiting = false;
 
-  function exitSplash({ withAudio }) {
+  function exitSplash({ activatePromo }) {
     if (exiting) return;
     exiting = true;
     splash.classList.add('exiting');
 
-    // Audio handoff. With sound: play() also triggers the hero drama
-    // flash inside the audio player. Muted path: explicitly set the
-    // state so the floating player is in sync.
     const audioApi = window.__tricolorAudio;
-    if (withAudio && audioApi) {
-      audioApi.play();
-    } else if (audioApi) {
-      audioApi.setState('muted');
+
+    if (activatePromo) {
+      // Promo path: audio on + 24h promo code stamped into session.
+      // Audio play() also triggers the hero drama flash via the
+      // existing audio player IIFE.
+      audioApi?.play();
+      const expires = Date.now() + 24 * 60 * 60 * 1000;
+      try {
+        sessionStorage.setItem('tricolor_promo', 'ACTIVE');
+        sessionStorage.setItem('tricolor_promo_code', 'TRICOLOR10');
+        sessionStorage.setItem('tricolor_promo_expires', String(expires));
+      } catch (_) {}
+      document.documentElement.classList.add('promo-active');
+      if (typeof window.__activatePromoBar === 'function') {
+        window.__activatePromoBar();
+      }
+    } else {
+      audioApi?.setState('muted');
     }
 
-    // Mark session entered immediately — even if the user reloads
-    // mid-animation we won't re-show the splash.
+    // Mark session entered so a refresh doesn't re-show the splash.
     try { sessionStorage.setItem('tricolor_entered', '1'); } catch (_) {}
 
-    // Match the longest CSS exit transition (curtain bands in the next
-    // commit go up to 0.85s; plain fade in this commit is 0.5s, but
-    // we leave the 850ms timeout to avoid coupling to CSS values).
+    // Wait through the curtain animation, then drop the splash node.
     setTimeout(() => {
       splash.remove();
       document.documentElement.classList.add('has-entered');
     }, 850);
   }
 
-  enterBtn?.addEventListener('click', () => exitSplash({ withAudio: true }));
-  enterMutedBtn?.addEventListener('click', () => exitSplash({ withAudio: false }));
-  skipBtn?.addEventListener('click', () => exitSplash({ withAudio: false }));
+  enterBtn?.addEventListener('click', () => exitSplash({ activatePromo: true }));
+  skipBtn?.addEventListener('click',  () => exitSplash({ activatePromo: false }));
 
-  // Esc skips, same as Saltar intro.
+  // Esc = skip (same as Continuar sin bonus).
   document.addEventListener('keydown', (e) => {
     if (exiting) return;
     if (e.key === 'Escape') {
       e.preventDefault();
-      exitSplash({ withAudio: false });
+      exitSplash({ activatePromo: false });
     }
   });
 
-  // Focus the main CTA so keyboard users can hit Enter to enter.
+  // Focus the main CTA so keyboard users can hit Enter to activate.
   setTimeout(() => enterBtn?.focus({ preventScroll: true }), 80);
-
-  // 5s auto-dismiss for hesitant visitors. Counts down visibly in
-  // .splash-auto-dismiss; at 0, fires the silent exit path (no audio).
-  // Every direct interaction (Enter / Silenciado / Skip / Esc) goes
-  // through exitSplash which is guarded against double-fire, so the
-  // timer becomes a no-op as soon as the user clicks anything.
-  const autoCountEl = document.getElementById('splashAutoCount');
-  let autoLeft = 5;
-  function autoTick() {
-    if (exiting) return;
-    autoLeft -= 1;
-    if (autoCountEl) autoCountEl.textContent = String(autoLeft);
-    if (autoLeft <= 0) {
-      exitSplash({ withAudio: false });
-      return;
-    }
-    setTimeout(autoTick, 1000);
-  }
-  setTimeout(autoTick, 1000);
 })();
 
 // ============================================

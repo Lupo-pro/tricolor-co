@@ -128,35 +128,33 @@ html:not(.has-entered) body {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: #050505;
-  color: var(--bg);
+  /* Semi-transparent backdrop — site stays partially visible behind so
+     the offer feels like an overlay on something the buyer wants. */
+  background: rgba(10, 10, 10, 0.75);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: var(--ink);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1.5rem;
+  padding: 1.5rem;
   overflow: hidden;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.4s ease, backdrop-filter 0.4s ease;
+  animation: splashBackdropIn 0.4s ease-out both;
 }
-.splash::before {
-  /* Grain layer — matches the global body grain so the splash feels
-     like the same physical surface as the page underneath. */
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.09;
-  mix-blend-mode: screen;
-  pointer-events: none;
-  z-index: 1;
+@keyframes splashBackdropIn {
+  0%   { opacity: 0; -webkit-backdrop-filter: blur(0); backdrop-filter: blur(0); }
+  100% { opacity: 1; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 }
 
-/* Background diagonal flag stripes — slow vertical drift, subtle */
+/* Diagonal flag stripes — kept for atmosphere, dimmed since backdrop
+   already does most of the work. */
 .splash-bg {
   position: absolute;
   inset: -15%;
   z-index: 0;
   pointer-events: none;
+  opacity: 0.7;
 }
 .sb-stripe {
   position: absolute;
@@ -164,7 +162,7 @@ html:not(.has-entered) body {
   width: 150%;
   height: 28%;
   transform: rotate(-12deg);
-  opacity: 0.06;
+  opacity: 0.05;
   animation: splashDrift 14s ease-in-out infinite;
 }
 .sb-stripe-1 { background: var(--yellow); top: 8%; animation-delay: 0s; }
@@ -175,152 +173,113 @@ html:not(.has-entered) body {
   50%      { transform: rotate(-12deg) translateY(-30px); }
 }
 
-/* All splash content above the bg + grain */
-.splash-stage,
-.splash-skip {
+/* Centered modal — cream card on the blurred dark backdrop */
+.splash-modal {
   position: relative;
   z-index: 2;
-}
-
-.splash-stage {
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg);
+  color: var(--ink);
+  border: 4px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--yellow);
+  padding: 2.5rem 1.6rem 1.6rem;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.6rem;
-  max-width: 900px;
-  width: 100%;
-  text-align: center;
+  gap: 1rem;
+  animation: splashModalIn 0.5s cubic-bezier(.22,.61,.36,1) 0.1s both;
+}
+@keyframes splashModalIn {
+  0%   { opacity: 0; transform: translateY(20px) scale(0.94); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Live tag — top */
-.splash-live {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--yellow);
-  padding: 0.35rem 0.85rem;
-  border: 1.5px solid rgba(255,211,0,0.4);
-  background: rgba(255,211,0,0.05);
-  animation: splashFadeIn 0.6s ease-out both;
-}
-.splash-live-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
+/* Top banderola — red inclined badge */
+.splash-bandera {
   background: var(--red);
-  animation: pulseDot 1.4s ease-in-out infinite;
+  color: var(--bg);
+  font-family: 'Anton', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.95rem;
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: rotate(-3deg);
+  margin-top: -0.4rem;
 }
 
-/* Title TRI / COLOR — slide-in then continuous vibrate */
+/* Title: DESBLOQUEA / -10% */
 .splash-title {
   font-family: 'Anton', sans-serif;
-  font-size: clamp(5rem, 22vw, 16rem);
-  line-height: 0.82;
-  letter-spacing: -0.02em;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
   display: flex;
   flex-direction: column;
+  align-items: center;
   margin: 0;
 }
-.splash-line {
-  display: block;
-  text-shadow:
-    -2px 0 0 rgba(255,211,0,0.18),
-    2px 2px 0 rgba(0,0,0,0.35);
+.splash-line { display: block; }
+.splash-unlock {
+  color: var(--ink);
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  animation: splashLineIn 0.55s cubic-bezier(.22,.61,.36,1) 0.25s both;
 }
-.splash-tri {
-  color: var(--bg);
-  animation:
-    splashSlideDown 0.55s cubic-bezier(.22,.61,.36,1) 0.2s both,
-    splashVibrate 0.55s ease-in-out 0.95s infinite;
-}
-.splash-color {
-  color: var(--yellow);
-  text-shadow:
-    -3px 0 0 var(--red),
-    3px 3px 0 rgba(0,0,0,0.45);
-  animation:
-    splashSlideUp 0.65s cubic-bezier(.22,.61,.36,1) 0.45s both,
-    splashVibrate 0.55s ease-in-out 1.2s infinite;
-  animation-delay: 0.45s, 1.2s;
-}
-@keyframes splashSlideDown {
-  0%   { transform: translateY(-120px); opacity: 0; }
-  100% { transform: translateY(0);      opacity: 1; }
-}
-@keyframes splashSlideUp {
-  0%   { transform: translateY(120px); opacity: 0; }
-  100% { transform: translateY(0);     opacity: 1; }
-}
-@keyframes splashVibrate {
-  0%, 100% { transform: translate(0, 0); }
-  20%      { transform: translate(-1.5px, 1.5px); }
-  40%      { transform: translate(1.5px, -1.5px); }
-  60%      { transform: translate(-1.5px, -1.5px); }
-  80%      { transform: translate(1.5px, 1.5px); }
-}
-
-/* Countdown line */
-.splash-countdown {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(0.95rem, 2.5vw, 1.2rem);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(240,235,224,0.85);
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-  justify-content: center;
-  animation: splashFadeIn 0.7s ease-out 0.95s both;
-}
-.splash-countdown strong {
-  color: var(--yellow);
-  font-family: 'Anton', sans-serif;
-  font-weight: 400;
-  letter-spacing: 0;
-  font-variant-numeric: tabular-nums;
-  font-size: 1.15em;
-}
-.sc-time { color: var(--bg); }
-.sc-sep  { color: var(--red); }
-.splash-colon {
+.splash-discount {
+  /* "-10%" reads ~1.5× DESBLOQUEA per spec — clamp 3.75 → 6rem */
   color: var(--red);
-  font-family: 'Anton', sans-serif;
-  padding: 0 0.05rem;
-  animation: cfcBlink 1s steps(2, end) infinite;
+  font-size: clamp(3.75rem, 12vw, 6rem);
+  text-shadow:
+    -3px 0 0 var(--yellow),
+    3px 3px 0 rgba(0,0,0,0.18);
+  animation: splashLineIn 0.55s cubic-bezier(.22,.61,.36,1) 0.4s both;
+  letter-spacing: -0.04em;
+}
+@keyframes splashLineIn {
+  0%   { opacity: 0; transform: translateY(14px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Main CTA "ENTRAR AL ESTADIO" */
+.splash-sub {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  animation: splashFadeIn 0.5s ease-out 0.6s both;
+}
+
+/* Main CTA — Activar mi -10% */
 .splash-cta {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.55rem;
   background: var(--yellow);
   color: var(--ink);
   border: 3px solid var(--ink);
-  padding: 1.3rem 2.6rem;
+  padding: 1.3rem 2.5rem;
   font-family: 'Anton', sans-serif;
-  font-size: clamp(1rem, 3vw, 1.35rem);
-  letter-spacing: 0.12em;
+  font-size: clamp(1.05rem, 4vw, 1.35rem);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   box-shadow: 6px 6px 0 var(--red);
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s, background 0.15s, color 0.15s;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
   animation:
-    splashFadeIn 0.55s ease-out 1.15s both,
-    splashCtaPulse 2s ease-in-out 1.7s infinite;
+    splashFadeIn 0.5s ease-out 0.75s both,
+    splashCtaPulse 2s ease-in-out 1.3s infinite;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  position: relative;
-  margin-top: 0.2rem;
+  margin-top: 0.3rem;
+  width: 100%;
 }
 .splash-cta:hover,
 .splash-cta:focus-visible {
-  animation: splashFadeIn 0.55s ease-out 1.15s both;
+  animation: splashFadeIn 0.5s ease-out 0.75s both;
   transform: translate(-2px, -2px);
   box-shadow: 8px 8px 0 var(--red);
   background: var(--bg);
@@ -331,91 +290,50 @@ html:not(.has-entered) body {
 }
 @keyframes splashCtaPulse {
   0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.03); }
+  50%      { transform: scale(1.02); }
 }
 
-/* Audio teaser */
-.splash-audio {
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(240,235,224,0.55);
-  animation: splashFadeIn 0.7s ease-out 1.45s both;
-}
-.sa-main { font-size: 0.85rem; margin-bottom: 0.2rem; }
-.sa-sub  { font-size: 0.72rem; color: rgba(240,235,224,0.4); }
-.sa-opt-out {
-  background: none;
-  border: none;
-  color: var(--yellow);
-  font-family: inherit;
-  font-size: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-  cursor: pointer;
-  padding: 0;
-  text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 3px;
-  opacity: 0.7;
-  transition: opacity 0.15s, color 0.15s;
-}
-.sa-opt-out:hover, .sa-opt-out:focus-visible { opacity: 1; color: var(--bg); }
-
-/* Auto-dismiss countdown — bottom-center, fades after the visit's
-   first interaction. Gives hesitant users a graceful "you're in"
-   without making them choose anything. */
-.splash-auto-dismiss {
-  position: absolute;
-  bottom: calc(1.4rem + env(safe-area-inset-bottom, 0));
-  left: 50%;
-  transform: translateX(-50%);
+/* Audio teaser — small line under CTA */
+.splash-audio-line {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 0.78rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: rgba(240,235,224,0.35);
-  z-index: 2;
-  text-align: center;
-  white-space: nowrap;
-  animation: splashFadeIn 0.7s ease-out 2s both;
+  color: var(--muted);
+  margin: 0;
+  animation: splashFadeIn 0.5s ease-out 0.95s both;
 }
-.splash-auto-dismiss strong {
-  color: var(--yellow);
-  font-family: 'Anton', sans-serif;
-  font-weight: 400;
-  font-size: 1.1em;
-  margin: 0 0.1em;
-  letter-spacing: 0;
-}
-.splash.exiting .splash-auto-dismiss { display: none; }
 
-/* Skip button — bottom-right, discreet gray */
+/* Skip link — bottom of modal, gray and quiet */
 .splash-skip {
-  position: absolute;
-  bottom: calc(1.2rem + env(safe-area-inset-bottom, 0));
-  right: 1.2rem;
-  background: transparent;
-  color: rgba(240,235,224,0.45);
-  border: 1.5px solid rgba(240,235,224,0.2);
-  font-family: 'Bebas Neue', sans-serif;
+  background: none;
+  border: 0;
+  color: var(--ink-mid);
+  font-family: 'Inter', sans-serif;
   font-size: 0.78rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 0.5rem 0.85rem;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.5rem;
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
-  animation: splashFadeIn 0.7s ease-out 1.7s both;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  opacity: 0.6;
+  transition: opacity 0.15s, color 0.15s;
+  margin-top: 0.2rem;
+  animation: splashFadeIn 0.5s ease-out 1.1s both;
 }
 .splash-skip:hover, .splash-skip:focus-visible {
-  color: var(--bg);
-  border-color: rgba(240,235,224,0.55);
-  background: rgba(255,255,255,0.04);
+  opacity: 1;
+  color: var(--ink);
 }
 
 @keyframes splashFadeIn {
   0%   { opacity: 0; transform: translateY(8px); }
   100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (min-width: 640px) {
+  .splash-cta { width: auto; }
 }
 
 /* Curtain — three horizontal flag bands stacked top→bottom. Hidden
@@ -452,18 +370,19 @@ html:not(.has-entered) body {
    underneath is what the eye sees. */
 .splash.exiting {
   background: transparent;
+  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0);
   pointer-events: none;
-  transition: background 0.1s ease-in;
+  transition: background 0.15s ease-in, backdrop-filter 0.15s ease-in;
 }
-.splash.exiting::before,
 .splash.exiting .splash-bg {
   opacity: 0;
-  transition: opacity 0.1s ease-in;
+  transition: opacity 0.15s ease-in;
 }
-.splash.exiting .splash-stage,
-.splash.exiting .splash-skip {
+.splash.exiting .splash-modal {
   opacity: 0;
-  transition: opacity 0.18s ease-in;
+  transform: scale(0.94);
+  transition: opacity 0.18s ease-in, transform 0.25s cubic-bezier(.7,0,.84,0);
 }
 .splash.exiting .splash-curtain {
   opacity: 1;
@@ -482,10 +401,11 @@ html:not(.has-entered) body {
 
 /* Reduced motion — collapse the slide / vibrate / pulse to plain fades */
 @media (prefers-reduced-motion: reduce) {
-  .splash-tri, .splash-color {
+  .splash-unlock, .splash-discount {
     animation: splashFadeIn 0.3s ease-out both !important;
   }
   .splash-cta { animation: splashFadeIn 0.3s ease-out both !important; }
+  .splash-modal { animation: splashFadeIn 0.3s ease-out both !important; }
   .sb-stripe { animation: none !important; }
 }
 
