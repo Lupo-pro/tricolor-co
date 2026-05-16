@@ -1792,11 +1792,13 @@ table { border-collapse: collapse; }
   position: absolute;
   top: 2rem;
   left: 50%;
-  margin-left: -130px;
-  --rot: -3deg;
   background: var(--ink);
   color: var(--yellow);
   font-size: 1rem;
+  /* Override the generic banderola sway so the centering math works
+     independently of the keyframed rotate(). */
+  transform: translateX(-50%) rotate(-3deg);
+  animation: none;
 }
 .cta-final-inner { position: relative; z-index: 2; max-width: 780px; margin: 0 auto; padding-top: 3rem; }
 .cta-final-tag {
@@ -2356,7 +2358,9 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
   min-height: 0;
 }
 .lb-slides-wrap {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  width: 100%;
   overflow: hidden;
   height: 100%;
   display: flex;
@@ -2367,17 +2371,19 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
   width: 300%;
   height: 100%;
   transition: transform 0.4s cubic-bezier(.22,.61,.36,1);
+  flex-shrink: 0;
 }
 .lb-slide {
   width: calc(100% / 3);
+  flex-shrink: 0;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--ink);
   border: 3px solid var(--yellow);
-  margin: 0 0.25rem;
   overflow: hidden;
+  box-sizing: border-box;
 }
 .lb-slide::before {
   content: '';
@@ -2575,7 +2581,9 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
   .banderola { font-size: 0.78rem; padding: 0.45rem 1rem; }
   .banderola-1 { top: calc(var(--offset) + 0.5rem); }
   .banderola-2 { top: calc(var(--offset) + 4.5rem); }
-  .banderola-3 { bottom: 6.5rem; margin-left: -90px; font-size: 0.7rem; padding: 0.35rem 0.9rem; }
+  /* banderola-3 collides with hero-info on narrow viewports — hide it,
+     it reappears at ≥640px where there is room. */
+  .banderola-3 { display: none; }
 
   .hero { padding-bottom: 2.5rem; }
   .hero-info {
