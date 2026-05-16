@@ -1065,6 +1065,25 @@ document.querySelectorAll('.cap-option').forEach((btn) => {
 
   // Focus the main CTA so keyboard users can hit Enter to enter.
   setTimeout(() => enterBtn?.focus({ preventScroll: true }), 80);
+
+  // 5s auto-dismiss for hesitant visitors. Counts down visibly in
+  // .splash-auto-dismiss; at 0, fires the silent exit path (no audio).
+  // Every direct interaction (Enter / Silenciado / Skip / Esc) goes
+  // through exitSplash which is guarded against double-fire, so the
+  // timer becomes a no-op as soon as the user clicks anything.
+  const autoCountEl = document.getElementById('splashAutoCount');
+  let autoLeft = 5;
+  function autoTick() {
+    if (exiting) return;
+    autoLeft -= 1;
+    if (autoCountEl) autoCountEl.textContent = String(autoLeft);
+    if (autoLeft <= 0) {
+      exitSplash({ withAudio: false });
+      return;
+    }
+    setTimeout(autoTick, 1000);
+  }
+  setTimeout(autoTick, 1000);
 })();
 
 // ============================================

@@ -362,6 +362,34 @@ html:not(.has-entered) body {
 }
 .sa-opt-out:hover, .sa-opt-out:focus-visible { opacity: 1; color: var(--bg); }
 
+/* Auto-dismiss countdown — bottom-center, fades after the visit's
+   first interaction. Gives hesitant users a graceful "you're in"
+   without making them choose anything. */
+.splash-auto-dismiss {
+  position: absolute;
+  bottom: calc(1.4rem + env(safe-area-inset-bottom, 0));
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(240,235,224,0.35);
+  z-index: 2;
+  text-align: center;
+  white-space: nowrap;
+  animation: splashFadeIn 0.7s ease-out 2s both;
+}
+.splash-auto-dismiss strong {
+  color: var(--yellow);
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-size: 1.1em;
+  margin: 0 0.1em;
+  letter-spacing: 0;
+}
+.splash.exiting .splash-auto-dismiss { display: none; }
+
 /* Skip button — bottom-right, discreet gray */
 .splash-skip {
   position: absolute;
