@@ -685,6 +685,47 @@ table { border-collapse: collapse; }
 .chant-track .sep { color: var(--red); font-size: 1.1rem; }
 
 /* ============================================================
+   PROMESAS MARQUEE — blue, trust signals between hero and chant
+   ============================================================ */
+.promesas-marquee {
+  background: var(--blue);
+  color: var(--yellow);
+  padding: 0.7rem 0;
+  overflow: hidden;
+  border-top: 3px solid var(--ink);
+  border-bottom: 3px solid var(--ink);
+  position: relative;
+  z-index: 2;
+}
+.promesas-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 32s linear infinite;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  gap: 1rem;
+  align-items: center;
+  padding-left: 100%;
+}
+.promesas-track:hover { animation-play-state: paused; }
+.promesa {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.promesa-emoji {
+  font-size: 1.15em;
+  filter: drop-shadow(1.5px 1.5px 0 rgba(0,0,0,0.35));
+}
+.promesas-track .sep {
+  color: var(--bg);
+  font-size: 1rem;
+  opacity: 0.55;
+}
+
+/* ============================================================
    MANIFESTO — black bg, tricolor bars top + bottom
    ============================================================ */
 .manifesto {
