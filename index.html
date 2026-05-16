@@ -22,8 +22,70 @@
 
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
+
+<!-- Inline pre-CSS gate — adds .has-entered to <html> if the visitor
+     already passed the splash earlier in this session, so CSS can hide
+     the splash + restore body scroll on the very first paint with no
+     flash of intro. Synchronous on purpose. -->
+<script>
+  try {
+    if (sessionStorage.getItem('tricolor_entered') === '1') {
+      document.documentElement.classList.add('has-entered');
+    }
+  } catch (e) { /* sessionStorage disabled — splash will just show */ }
+</script>
 </head>
 <body>
+
+<!-- ============================================
+     SPLASH SCREEN — first-visit consent gate
+     Hidden via CSS when html.has-entered is set by the head script.
+     ============================================ -->
+<div class="splash" id="splash" role="dialog" aria-modal="true" aria-labelledby="splashTitle">
+  <div class="splash-bg" aria-hidden="true">
+    <div class="sb-stripe sb-stripe-1"></div>
+    <div class="sb-stripe sb-stripe-2"></div>
+    <div class="sb-stripe sb-stripe-3"></div>
+  </div>
+
+  <div class="splash-stage">
+    <div class="splash-live" aria-hidden="true">
+      <span class="splash-live-dot"></span>
+      <span>EN VIVO · MUNDIAL 2026</span>
+    </div>
+
+    <h1 class="splash-title" id="splashTitle">
+      <span class="splash-line splash-tri">TRI</span>
+      <span class="splash-line splash-color">COLOR</span>
+    </h1>
+
+    <div class="splash-countdown" aria-live="off">
+      <span class="sc-days">EMPIEZA EN <strong id="splash-days">--</strong> DÍAS</span>
+      <span class="sc-sep" aria-hidden="true">·</span>
+      <span class="sc-time">
+        <strong id="splash-h">--</strong><span class="splash-colon">:</span><strong id="splash-m">--</strong><span class="splash-colon">:</span><strong id="splash-s">--</strong>
+      </span>
+    </div>
+
+    <button class="splash-cta" id="splashEnter" type="button"
+            aria-label="Entrar al sitio con música de estadio">
+      ENTRAR AL ESTADIO <span aria-hidden="true">→</span>
+    </button>
+
+    <div class="splash-audio">
+      <p class="sa-main">🎵 con sonido stadium activado</p>
+      <p class="sa-sub">
+        (pulsá para silenciar después) · <button class="sa-opt-out" id="splashEnterMuted" type="button">¿Sin sonido? Entrar silenciado</button>
+      </p>
+    </div>
+  </div>
+
+  <button class="splash-skip" id="splashSkip" type="button" aria-label="Saltar intro">Saltar intro</button>
+
+  <!-- Curtain bands — empty in this commit, animation lives behind a
+       subsequent commit that brings the flag-band reveal in. -->
+  <div class="splash-curtain" aria-hidden="true"></div>
+</div>
 
 <!-- ============================================
      SVG SYMBOLS — reused body shape across cards

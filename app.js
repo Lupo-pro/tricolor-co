@@ -50,10 +50,18 @@ const cdEls = {
   m: document.getElementById('cd-mins'),
   s: document.getElementById('cd-secs'),
 };
+// Mirror set on the splash screen — same numbers, different layout.
+const splashCdEls = {
+  d: document.getElementById('splash-days'),
+  h: document.getElementById('splash-h'),
+  m: document.getElementById('splash-m'),
+  s: document.getElementById('splash-s'),
+};
 function updateCountdown() {
   const diff = MUNDIAL_DATE - Date.now();
   if (diff <= 0) {
     Object.values(cdEls).forEach((el) => { if (el) el.textContent = '00'; });
+    Object.values(splashCdEls).forEach((el) => { if (el) el.textContent = '00'; });
     return;
   }
   const d = Math.floor(diff / 86400000);
@@ -64,6 +72,11 @@ function updateCountdown() {
   if (cdEls.h) cdEls.h.textContent = String(h).padStart(2, '0');
   if (cdEls.m) cdEls.m.textContent = String(m).padStart(2, '0');
   if (cdEls.s) cdEls.s.textContent = String(s).padStart(2, '0');
+  // Splash uses unpadded days ("EMPIEZA EN 27 DÍAS"), padded HH:MM:SS.
+  if (splashCdEls.d) splashCdEls.d.textContent = String(d);
+  if (splashCdEls.h) splashCdEls.h.textContent = String(h).padStart(2, '0');
+  if (splashCdEls.m) splashCdEls.m.textContent = String(m).padStart(2, '0');
+  if (splashCdEls.s) splashCdEls.s.textContent = String(s).padStart(2, '0');
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
@@ -911,6 +924,83 @@ document.querySelectorAll('.cta, .product-cta, .size-btn, .nav-cta, .bundle-cta,
   }
   registerScrollHook(applyAudioFloatVisibility);
   applyAudioFloatVisibility();
+
+  // Expose a minimal API so the splash gate can hand off audio control
+  // before the user has ever touched the floating player directly.
+  window.__tricolorAudio = { play, pause, setState, triggerDramaFlash };
+})();
+
+// ============================================
+// SPLASH GATE — first-visit consent screen
+// Renders only when sessionStorage['tricolor_entered'] is absent. The
+// user MUST click one of: ENTRAR AL ESTADIO (audio on), Entrar
+// silenciado (audio muted), or Saltar intro / Esc (audio muted).
+// The click is also what unlocks audio.play() — browser autoplay
+// policy requires a user gesture, and the splash CTA is that gesture.
+// ============================================
+(function initSplash() {
+  const splash = document.getElementById('splash');
+  if (!splash) return;
+  // sessionStorage check is doubled in the inline head script, but
+  // we re-check here in case JS-only consumers (no inline script)
+  // somehow ended up rendering the splash.
+  try {
+    if (sessionStorage.getItem('tricolor_entered') === '1') {
+      splash.remove();
+      document.documentElement.classList.add('has-entered');
+      return;
+    }
+  } catch (_) { /* keep going */ }
+
+  const enterBtn = document.getElementById('splashEnter');
+  const enterMutedBtn = document.getElementById('splashEnterMuted');
+  const skipBtn = document.getElementById('splashSkip');
+
+  let exiting = false;
+
+  function exitSplash({ withAudio }) {
+    if (exiting) return;
+    exiting = true;
+    splash.classList.add('exiting');
+
+    // Audio handoff. With sound: play() also triggers the hero drama
+    // flash inside the audio player. Muted path: explicitly set the
+    // state so the floating player is in sync.
+    const audioApi = window.__tricolorAudio;
+    if (withAudio && audioApi) {
+      audioApi.play();
+    } else if (audioApi) {
+      audioApi.setState('muted');
+    }
+
+    // Mark session entered immediately — even if the user reloads
+    // mid-animation we won't re-show the splash.
+    try { sessionStorage.setItem('tricolor_entered', '1'); } catch (_) {}
+
+    // Match the longest CSS exit transition (curtain bands in the next
+    // commit go up to 0.85s; plain fade in this commit is 0.5s, but
+    // we leave the 850ms timeout to avoid coupling to CSS values).
+    setTimeout(() => {
+      splash.remove();
+      document.documentElement.classList.add('has-entered');
+    }, 850);
+  }
+
+  enterBtn?.addEventListener('click', () => exitSplash({ withAudio: true }));
+  enterMutedBtn?.addEventListener('click', () => exitSplash({ withAudio: false }));
+  skipBtn?.addEventListener('click', () => exitSplash({ withAudio: false }));
+
+  // Esc skips, same as Saltar intro.
+  document.addEventListener('keydown', (e) => {
+    if (exiting) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      exitSplash({ withAudio: false });
+    }
+  });
+
+  // Focus the main CTA so keyboard users can hit Enter to enter.
+  setTimeout(() => enterBtn?.focus({ preventScroll: true }), 80);
 })();
 
 // ============================================
