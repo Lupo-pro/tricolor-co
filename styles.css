@@ -4392,6 +4392,127 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
   .mundial-matches { grid-template-columns: repeat(3, 1fr); }
 }
 
+/* Mundial products section — outfit recommendations linked to /#collection */
+.mundial-products {
+  padding: 4rem var(--gutter) 4rem;
+  background: var(--bg);
+}
+.mp-grid {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+.mp-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  background: var(--ink);
+  color: var(--bg);
+  border: var(--border);
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.mp-card:hover, .mp-card:focus-visible {
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 var(--ink);
+}
+.mp-visual {
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 3px solid var(--yellow);
+}
+.mp-visual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(135deg,
+    rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px,
+    transparent 1px, transparent 14px);
+  z-index: 1;
+}
+.mp-visual svg {
+  width: 38%;
+  filter: drop-shadow(0 18px 26px rgba(0,0,0,0.45));
+  position: relative;
+  z-index: 2;
+  fill: currentColor;
+}
+.mp-amarilla .mp-visual { background: radial-gradient(circle at 30% 30%, var(--yellow-warm), var(--yellow) 55%, var(--yellow-deep)); }
+.mp-amarilla .mp-visual svg { color: rgba(0,0,0,0.62); }
+.mp-rojo .mp-visual { background: radial-gradient(circle at 30% 30%, var(--red-warm), var(--red) 55%, var(--red-deep)); }
+.mp-rojo .mp-visual svg { color: rgba(0,0,0,0.55); }
+.mp-negro .mp-visual { background: radial-gradient(circle at 30% 28%, #3a3a36, #1A1A1A 55%, #0A0A0A); }
+.mp-negro .mp-visual svg { color: rgba(201,169,97,0.55); }
+.mp-info {
+  padding: 1.2rem 1.2rem 1.4rem;
+}
+.mp-tag {
+  display: inline-block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  margin-bottom: 0.4rem;
+}
+.mp-name {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.5rem;
+}
+.mp-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: rgba(240,235,224,0.78);
+  margin-bottom: 0.9rem;
+}
+.mp-cta {
+  display: inline-block;
+  font-family: 'Anton', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--yellow);
+  border: 2px solid var(--ink);
+  padding: 0.5rem 0.9rem;
+  box-shadow: 3px 3px 0 var(--red);
+  transition: transform 0.12s, box-shadow 0.12s, background 0.15s;
+}
+.mp-card:hover .mp-cta, .mp-card:focus-visible .mp-cta {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--red);
+  background: var(--bg);
+}
+
+.mp-foot {
+  max-width: var(--maxw);
+  margin: 2.2rem auto 0;
+  text-align: center;
+}
+.mp-foot-note {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.8rem;
+}
+
+@media (min-width: 768px) {
+  .mp-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
 /* CTA Final */
 .mundial-cta-final {
   background: var(--bg);
