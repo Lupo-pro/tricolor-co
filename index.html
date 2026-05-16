@@ -404,6 +404,79 @@
   </div>
 </section>
 
+<!-- SIZE GUIDE -->
+<section class="sizes" id="tallas" aria-labelledby="tallas-title">
+  <div class="section-head reveal">
+    <div class="section-tag">Guía de Tallas · Asesoría Personalizada</div>
+    <h2 id="tallas-title" class="section-title">¿Cuál es <em>la tuya?</em></h2>
+    <p class="section-intro">Mide en cm sobre piel, sin apretar. Te recomendamos la talla que mejor abraza tu silueta para que el body caiga como bandera.</p>
+  </div>
+
+  <div class="sizes-grid reveal">
+    <form class="size-calc" id="sizeCalc" novalidate>
+      <div class="sc-fields">
+        <label class="sc-field">
+          <span class="sc-label">Busto</span>
+          <span class="sc-input-wrap">
+            <input type="number" inputmode="decimal" min="60" max="140" step="0.5" id="sc-busto" placeholder="88" autocomplete="off">
+            <span class="sc-unit">cm</span>
+          </span>
+          <span class="sc-hint">Parte más amplia</span>
+        </label>
+        <label class="sc-field">
+          <span class="sc-label">Cintura</span>
+          <span class="sc-input-wrap">
+            <input type="number" inputmode="decimal" min="50" max="120" step="0.5" id="sc-cintura" placeholder="70" autocomplete="off">
+            <span class="sc-unit">cm</span>
+          </span>
+          <span class="sc-hint">Lo más estrecho</span>
+        </label>
+        <label class="sc-field">
+          <span class="sc-label">Cadera</span>
+          <span class="sc-input-wrap">
+            <input type="number" inputmode="decimal" min="70" max="140" step="0.5" id="sc-cadera" placeholder="96" autocomplete="off">
+            <span class="sc-unit">cm</span>
+          </span>
+          <span class="sc-hint">Parte más amplia</span>
+        </label>
+      </div>
+
+      <div class="sc-result" id="scResult" data-state="empty" aria-live="polite">
+        <div class="sc-result-empty">
+          <span class="sc-result-emoji" aria-hidden="true">📐</span>
+          <span class="sc-result-text">Ingresa tus medidas y te diremos cuál te queda <em>fiera.</em></span>
+        </div>
+        <div class="sc-result-filled" hidden>
+          <div class="sc-result-head">
+            <span class="sc-result-tag">Tu talla recomendada</span>
+            <span class="sc-result-size" id="scSize">M</span>
+          </div>
+          <p class="sc-result-detail" id="scDetail">Te queda perfecto el body en talla M.</p>
+          <div class="sc-result-ranges" id="scRanges"></div>
+          <a href="#" class="btn btn-wa sc-result-cta" id="scCta" data-wa data-wa-msg="¡Hola! Necesito asesoría de talla 🇨🇴">
+            <svg aria-hidden="true"><use href="#ic-wa"/></svg>Confirmar talla por WhatsApp
+          </a>
+        </div>
+      </div>
+    </form>
+
+    <aside class="size-chart">
+      <h3 class="sc-chart-title">Tabla de medidas</h3>
+      <table class="sc-chart-table">
+        <thead>
+          <tr><th scope="col">Talla</th><th scope="col">Busto</th><th scope="col">Cintura</th><th scope="col">Cadera</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row"><span class="sc-pill">S</span></th><td>80–87</td><td>60–67</td><td>86–93</td></tr>
+          <tr><th scope="row"><span class="sc-pill">M</span></th><td>88–95</td><td>68–75</td><td>94–101</td></tr>
+          <tr><th scope="row"><span class="sc-pill">L</span></th><td>96–104</td><td>76–84</td><td>102–110</td></tr>
+        </tbody>
+      </table>
+      <p class="sc-chart-note">¿Estás justo entre dos tallas? Elige la mayor — el cuerpo respira mejor y el escudo se ve impecable.</p>
+    </aside>
+  </div>
+</section>
+
 <!-- BENEFITS -->
 <section class="benefits">
   <div class="benefits-grid">
@@ -585,7 +658,7 @@
         <a href="#" data-wa data-wa-msg="¡Hola! Vengo del sitio Tricolor 🇨🇴" aria-label="WhatsApp"><svg aria-hidden="true"><use href="#ic-wa"/></svg></a>
       </div>
     </div>
-    <div class="footer-col"><h3>Tienda</h3><ul><li><a href="#collection">La Colección</a></li><li><a href="#collection">El Once Inicial</a></li><li><a href="#how">Cómo Comprar</a></li><li><a href="#faq">Guía de Tallas</a></li></ul></div>
+    <div class="footer-col"><h3>Tienda</h3><ul><li><a href="#collection">La Colección</a></li><li><a href="#collection">El Once Inicial</a></li><li><a href="#how">Cómo Comprar</a></li><li><a href="#tallas">Guía de Tallas</a></li></ul></div>
     <div class="footer-col"><h3>Ayuda</h3><ul><li><a href="#faq">FAQ</a></li><li><a href="#cta">Contacto</a></li><li><a href="#faq">Envíos</a></li><li><a href="#faq">Devoluciones</a></li></ul></div>
     <div class="footer-col"><h3>La Tribuna</h3><ul><li><a href="#">Instagram</a></li><li><a href="#">TikTok</a></li><li><a href="#">WhatsApp</a></li></ul></div>
   </div>

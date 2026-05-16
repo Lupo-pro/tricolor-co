@@ -385,6 +385,135 @@ faqItems.forEach((item) => {
 })();
 
 // ============================================
+// SIZE GUIDE CALCULATOR
+// Maps busto/cintura/cadera (cm) → S/M/L. Each measurement is scored
+// independently and the recommended size is the largest match — bodywear
+// must accommodate the dominant constraint, so when measurements straddle
+// sizes the larger one wins. This matches the chart note in the UI.
+// ============================================
+const SIZE_RANGES = {
+  busto:   { S: [80, 87],  M: [88, 95],  L: [96, 104] },
+  cintura: { S: [60, 67],  M: [68, 75],  L: [76, 84] },
+  cadera:  { S: [86, 93],  M: [94, 101], L: [102, 110] },
+};
+const SIZE_ORDER = ['S', 'M', 'L'];
+
+function sizeForMeasurement(metric, value) {
+  if (!Number.isFinite(value)) return null;
+  const ranges = SIZE_RANGES[metric];
+  // Below smallest range → still S; above largest → still L; otherwise pick the
+  // bucket that contains the value (or the nearest if it falls between).
+  if (value < ranges.S[0]) return { size: 'S', flag: 'below' };
+  if (value > ranges.L[1]) return { size: 'L', flag: 'above' };
+  for (const s of SIZE_ORDER) {
+    if (value >= ranges[s][0] && value <= ranges[s][1]) return { size: s, flag: 'in' };
+  }
+  // Falls in a gap between two ranges → round up to the larger size.
+  for (let i = 0; i < SIZE_ORDER.length - 1; i++) {
+    const a = SIZE_ORDER[i], b = SIZE_ORDER[i + 1];
+    if (value > ranges[a][1] && value < ranges[b][0]) return { size: b, flag: 'between' };
+  }
+  return null;
+}
+
+function maxSize(sizes) {
+  return sizes.reduce((acc, s) => (SIZE_ORDER.indexOf(s) > SIZE_ORDER.indexOf(acc) ? s : acc), 'S');
+}
+
+(function initSizeCalc() {
+  const form = document.getElementById('sizeCalc');
+  if (!form) return;
+  const result = document.getElementById('scResult');
+  const empty = result.querySelector('.sc-result-empty');
+  const filled = result.querySelector('.sc-result-filled');
+  const sizeEl = document.getElementById('scSize');
+  const detailEl = document.getElementById('scDetail');
+  const rangesEl = document.getElementById('scRanges');
+  const cta = document.getElementById('scCta');
+  const inputs = {
+    busto: document.getElementById('sc-busto'),
+    cintura: document.getElementById('sc-cintura'),
+    cadera: document.getElementById('sc-cadera'),
+  };
+
+  function compute() {
+    const vals = {};
+    let provided = 0;
+    for (const [k, el] of Object.entries(inputs)) {
+      const v = parseFloat(el.value);
+      if (Number.isFinite(v) && v > 0) {
+        vals[k] = v;
+        provided += 1;
+      }
+    }
+    if (provided === 0) {
+      result.dataset.state = 'empty';
+      empty.hidden = false;
+      filled.hidden = true;
+      return;
+    }
+
+    const matches = {};
+    for (const [k, v] of Object.entries(vals)) {
+      const m = sizeForMeasurement(k, v);
+      if (m) matches[k] = m;
+    }
+    const sizes = Object.values(matches).map((m) => m.size);
+    if (!sizes.length) {
+      result.dataset.state = 'empty';
+      empty.hidden = false;
+      filled.hidden = true;
+      return;
+    }
+    const recommended = maxSize(sizes);
+
+    sizeEl.textContent = recommended;
+    const all = ['busto', 'cintura', 'cadera'].filter((k) => k in matches);
+    const diverging = all.filter((k) => matches[k].size !== recommended);
+    if (provided < 3) {
+      detailEl.innerHTML = `Con esas medidas te queda <em>fiera</em> en talla <strong>${recommended}</strong>. Completa las 3 para una recomendación más precisa.`;
+    } else if (diverging.length === 0) {
+      detailEl.innerHTML = `Tu cuerpo está alineado: te queda <em>perfecto</em> en talla <strong>${recommended}</strong>.`;
+    } else {
+      detailEl.innerHTML = `Recomendamos talla <strong>${recommended}</strong> porque privilegia la zona más amplia — el body abraza sin apretar.`;
+    }
+
+    rangesEl.innerHTML = '';
+    all.forEach((k) => {
+      const m = matches[k];
+      const mismatch = m.size !== recommended;
+      const label = k.charAt(0).toUpperCase() + k.slice(1);
+      rangesEl.insertAdjacentHTML(
+        'beforeend',
+        `<span class="sc-range-pill${mismatch ? ' mismatch' : ''}">${label} ${vals[k]}cm · ${m.size}</span>`
+      );
+    });
+
+    const ctaMsg = [
+      '¡Hola! Quiero asesoría de talla 🇨🇴',
+      '',
+      `Mis medidas:`,
+      vals.busto != null ? `- Busto: ${vals.busto} cm` : null,
+      vals.cintura != null ? `- Cintura: ${vals.cintura} cm` : null,
+      vals.cadera != null ? `- Cadera: ${vals.cadera} cm` : null,
+      '',
+      `La calculadora me sugiere talla ${recommended}. ¿Me confirmas?`,
+    ].filter((l) => l !== null).join('\n');
+    cta.href = buildWaUrl(ctaMsg);
+    cta.dataset.waMsg = ctaMsg;
+
+    result.dataset.state = 'filled';
+    empty.hidden = true;
+    filled.hidden = false;
+  }
+
+  Object.values(inputs).forEach((el) => {
+    el.addEventListener('input', compute);
+    el.addEventListener('blur', compute);
+  });
+})();
+
+// ============================================
 // HAPTIC (mobile)
 // ============================================
 function vibrate(d = 8) { if ('vibrate' in navigator) navigator.vibrate(d); }
