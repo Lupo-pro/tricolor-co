@@ -65,18 +65,19 @@ waFloat.style.transform = 'translateY(20px)';
 waFloat.style.transition = 'opacity 0.4s ease, transform 0.4s ease, background 0.3s';
 
 let scrollTicking = false;
+let inlineWaInView = false;
+function applyWaFloatVisibility() {
+  const y = window.scrollY;
+  const visible = y > 300 && !inlineWaInView;
+  waFloat.style.opacity = visible ? '1' : '0';
+  waFloat.style.transform = visible ? 'translateY(0)' : 'translateY(20px)';
+  waFloat.style.pointerEvents = visible ? 'auto' : 'none';
+}
 function onScroll() {
   const y = window.scrollY;
   if (y > 30) nav.classList.add('scrolled');
   else nav.classList.remove('scrolled');
-
-  if (y > 300) {
-    waFloat.style.opacity = '1';
-    waFloat.style.transform = 'translateY(0)';
-  } else {
-    waFloat.style.opacity = '0';
-    waFloat.style.transform = 'translateY(20px)';
-  }
+  applyWaFloatVisibility();
   scrollTicking = false;
 }
 window.addEventListener('scroll', () => {
@@ -85,6 +86,27 @@ window.addEventListener('scroll', () => {
     scrollTicking = true;
   }
 }, { passive: true });
+
+// Hide the sticky WA float whenever an inline WhatsApp CTA enters the viewport.
+// Two same-color CTAs side by side dilute the funnel and the sticky button
+// physically overlaps the inline ones near the bottom of the .how, .cta-final
+// and .faq sections.
+const inlineWaCtas = document.querySelectorAll('.btn-wa, .mobile-cta');
+if (inlineWaCtas.length) {
+  const visibleSet = new Set();
+  // Trigger on any pixel entering view — the goal is to never have two green
+  // WhatsApp CTAs visible simultaneously, even if the inline one is only peeking
+  // at the bottom edge where the sticky float lives.
+  const waInlineObs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) visibleSet.add(e.target);
+      else visibleSet.delete(e.target);
+    });
+    inlineWaInView = visibleSet.size > 0;
+    applyWaFloatVisibility();
+  }, { threshold: 0 });
+  inlineWaCtas.forEach((el) => waInlineObs.observe(el));
+}
 
 // ============================================
 // MOBILE MENU
