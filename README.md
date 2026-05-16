@@ -1,4 +1,4 @@
-# TRICOLOR.CO
+# LATRICOLOR.CO
 
 Bodysuits Selección Colombia · Edición Mundial 2026.
 
@@ -15,7 +15,7 @@ L'ancienne version est conservée dans `/archive-v1/` pour référence.
 ## Stack
 - HTML / CSS / JS vanilla — zero dependency, zero framework
 - Hébergement : Vercel (`vercel.json` pour les en-têtes de cache + Permissions-Policy)
-- Domaine cible : `tricolor.co`
+- Domaine cible : `latricolor.co` (live)
 
 ## Brand (V5)
 - **Tagline** : Sé Tricolor.

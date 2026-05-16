@@ -1,6 +1,6 @@
-# Deploy · TRICOLOR.CO
+# Deploy · LATRICOLOR.CO
 
-Step-by-step pour déployer le site sur Vercel et brancher le domaine `tricolor.co`.
+Step-by-step pour déployer le site sur Vercel et brancher le domaine `latricolor.co`.
 
 ---
 
@@ -8,7 +8,7 @@ Step-by-step pour déployer le site sur Vercel et brancher le domaine `tricolor.
 
 - Compte GitHub (le repo est sur `Lupo-pro/tricolor-co`)
 - Compte Vercel (gratuit, plan Hobby suffit pour un site statique)
-- Le domaine `tricolor.co` acheté chez ton registrar (Namecheap, GoDaddy, Cloudflare Registrar…)
+- Le domaine `latricolor.co` acheté chez ton registrar (Namecheap, GoDaddy, Cloudflare Registrar…)
 - `vercel` CLI optionnel mais pratique : `npm i -g vercel@latest`
 
 ---
@@ -74,12 +74,12 @@ Attendu : Performance 90+, A11y 100, Best Practices 100, SEO 100.
 
 ---
 
-## 3. Brancher le domaine `tricolor.co`
+## 3. Brancher le domaine `latricolor.co`
 
 ### a) Dans le dashboard Vercel
 
 1. Va sur le projet → **Settings → Domains**
-2. Ajoute `tricolor.co` puis `www.tricolor.co`
+2. Ajoute `latricolor.co` puis `www.latricolor.co`
 3. Vercel te montre les enregistrements DNS à créer
 
 ### b) Côté registrar (DNS records)
@@ -106,8 +106,8 @@ Si ton registrar est **Cloudflare** :
 DNS prend de 5 min à 48h pour se propager. Vérifie :
 
 ```bash
-dig tricolor.co +short        # doit retourner 76.76.21.21
-dig www.tricolor.co +short    # doit retourner cname.vercel-dns.com puis l'IP
+dig latricolor.co +short        # doit retourner 76.76.21.21
+dig www.latricolor.co +short    # doit retourner cname.vercel-dns.com puis l'IP
 ```
 
 Quand c'est OK, Vercel délivre automatiquement le certificat Let's Encrypt — généralement < 1 minute après la résolution DNS.
@@ -115,8 +115,8 @@ Quand c'est OK, Vercel délivre automatiquement le certificat Let's Encrypt — 
 ### d) Redirect www → apex (ou l'inverse)
 
 Dans Settings → Domains, sur Vercel :
-- Choisis ton **primary domain** : `tricolor.co` (apex sans www, recommandé pour la marque)
-- L'autre (`www.tricolor.co`) sera configuré comme redirect 308 vers le primary
+- Choisis ton **primary domain** : `latricolor.co` (apex sans www, recommandé pour la marque)
+- L'autre (`www.latricolor.co`) sera configuré comme redirect 308 vers le primary
 
 ---
 
@@ -162,24 +162,24 @@ Tu ne dois voir que **les deux lignes dans `app.js`** (la constante + la fonctio
 
 ### Check liste
 
-- [ ] `https://tricolor.co/` → 200, page rendu correctement
-- [ ] `https://www.tricolor.co/` → redirect 308 vers `tricolor.co` (ou l'inverse selon choix)
+- [ ] `https://latricolor.co/` → 200, page rendu correctement
+- [ ] `https://www.latricolor.co/` → redirect 308 vers `latricolor.co` (ou l'inverse selon choix)
 - [ ] Cert HTTPS valide (Let's Encrypt, vert dans le navigateur)
-- [ ] OG image OK : tester sur https://www.opengraph.xyz/url/https%3A%2F%2Ftricolor.co
+- [ ] OG image OK : tester sur https://www.opengraph.xyz/url/https%3A%2F%2Flatricolor.co
 - [ ] Twitter card OK : tester sur https://cards-dev.twitter.com/validator
 - [ ] Rich results OK (JSON-LD Product schemas) : https://search.google.com/test/rich-results
 - [ ] Tous les CTA WhatsApp ouvrent une conversation avec le bon numéro pré-rempli
 - [ ] Sticky mobile bar apparaît dans `.collection`, disparaît à `.footer`
 - [ ] Lightbox s'ouvre depuis chaque produit
 - [ ] Size calculator donne des recos cohérentes pour S (busto 82 / cintura 64 / cadera 90), M (92/72/100), L (100/80/106)
-- [ ] 404 personnalisé : `https://tricolor.co/n-existe-pas` → ta page 404 brandée
+- [ ] 404 personnalisé : `https://latricolor.co/n-existe-pas` → ta page 404 brandée
 
 ### Soumettre le sitemap à Google
 
 1. Va sur https://search.google.com/search-console
-2. Add property → `https://tricolor.co/`
+2. Add property → `https://latricolor.co/`
 3. Vérifie via DNS TXT record ou HTML tag (le DNS est plus simple, ajoute-le chez ton registrar)
-4. Sitemaps → ajoute `https://tricolor.co/sitemap.xml`
+4. Sitemaps → ajoute `https://latricolor.co/sitemap.xml`
 
 ---
 
@@ -229,7 +229,7 @@ Si on dépasse ou pour des features avancées (uptime monitoring, alertes Slack/
 
 ## 9. Bilan rapide
 
-Si tout est OK, en pratique, le déploiement complet (depuis le commit jusqu'au site en prod sur `tricolor.co`) prend :
+Si tout est OK, en pratique, le déploiement complet (depuis le commit jusqu'au site en prod sur `latricolor.co`) prend :
 - Premier setup : 10-30 minutes (mostly waiting on DNS propagation)
 - Push suivant : < 1 minute end-to-end
 

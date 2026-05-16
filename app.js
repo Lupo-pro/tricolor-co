@@ -1,5 +1,5 @@
 /* ============================================
-   TRICOLOR.CO — V5 HINCHADA CHAOS
+   LATRICOLOR.CO — V5 HINCHADA CHAOS
    Sé Fuerte. Sé Fiera. Sé Tricolor.
    ============================================ */
 
@@ -8,7 +8,7 @@
 // ⚠️ Placeholder — replace when the real line is ready.
 const WHATSAPP_NUMBER = '573000000000';
 
-const DEFAULT_WA_MSG = '¡Hola! Quiero pedir mi body Tricolor 🇨🇴';
+const DEFAULT_WA_MSG = '¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴';
 
 const buildWaUrl = (msg) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg || DEFAULT_WA_MSG)}`;
@@ -18,7 +18,9 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 // ============================================
 // WHATSAPP LINK INJECTION
 // Every <a data-wa data-wa-msg="..."> gets its href built from the constant
-// above. Keep the number in one place to avoid drift.
+// above. Keep the number in one place to avoid drift. Brand reference
+// inside the message bodies is "La Tricolor" (the way Colombians say it)
+// even though the domain + logo render as LATRICOLOR.CO.
 // ============================================
 document.querySelectorAll('[data-wa]').forEach((el) => {
   el.href = buildWaUrl(el.dataset.waMsg);
@@ -85,7 +87,7 @@ setInterval(updateCountdown, 1000);
 // DAILY COUNTDOWN — "Oferta válida solo hoy: HH:MM:SS"
 // Counts down to midnight in the user's local timezone. The "today"
 // boundary is per-user — easier and more relatable than forcing COL
-// time on a buyer who's already on tricolor.co.
+// time on a buyer who's already on latricolor.co.
 // ============================================
 const dcEls = {
   h: document.getElementById('dc-hours'),
@@ -1064,6 +1066,6 @@ document.querySelectorAll('.cap-option').forEach((btn) => {
 // ============================================
 // CONSOLE EASTER EGG — V5 palette
 // ============================================
-console.log('%c TRICOLOR.CO ', 'background:#FFD300;color:#0A0A0A;font-weight:bold;font-size:22px;padding:8px 16px;font-family:"Anton",sans-serif;letter-spacing:0.1em;');
+console.log('%c LATRICOLOR.CO ', 'background:#FFD300;color:#0A0A0A;font-weight:bold;font-size:22px;padding:8px 16px;font-family:"Anton",sans-serif;letter-spacing:0.1em;');
 console.log('%c 🇨🇴 SÉ FUERTE. SÉ FIERA. SÉ TRICOLOR. ', 'background:#E63946;color:#F0EBE0;font-size:14px;padding:6px 12px;letter-spacing:0.1em;');
 console.log('%c ★ V5 HINCHADA CHAOS · EDICIÓN MUNDIAL 2026 ★ ', 'background:#0033A0;color:#FFD300;font-size:12px;padding:4px 12px;letter-spacing:0.15em;');

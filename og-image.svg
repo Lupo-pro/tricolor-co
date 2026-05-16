@@ -25,7 +25,7 @@
     <rect x="0" y="0" width="14" height="36" rx="2" fill="#FCD116"/>
     <rect x="16" y="0" width="14" height="36" rx="2" fill="#003893"/>
     <rect x="32" y="0" width="14" height="36" rx="2" fill="#CE1126"/>
-    <text x="60" y="28" font-family="Georgia, serif" font-size="28" font-weight="900" fill="#0A0A0A" letter-spacing="-1">TRICOLOR<tspan fill="#CE1126" font-weight="400">.CO</tspan></text>
+    <text x="60" y="28" font-family="Georgia, serif" font-size="28" font-weight="900" fill="#0A0A0A" letter-spacing="-1">LATRICOLOR<tspan fill="#CE1126" font-weight="400">.CO</tspan></text>
   </g>
 
   <!-- Visual: bodysuit silhouette card -->
@@ -54,5 +54,5 @@
   </g>
 
   <!-- URL -->
-  <text x="80" y="600" font-family="Inter, sans-serif" font-size="16" font-weight="600" letter-spacing="3" fill="#8A867E">TRICOLOR.CO · BODYSUITS SELECCIÓN COLOMBIA</text>
+  <text x="80" y="600" font-family="Inter, sans-serif" font-size="16" font-weight="600" letter-spacing="3" fill="#8A867E">LATRICOLOR.CO · BODYSUITS SELECCIÓN COLOMBIA</text>
 </svg>
