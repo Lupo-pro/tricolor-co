@@ -604,10 +604,10 @@ const STICKY_BAR_PRODUCTS = {
   cafetera: { name: 'La Cafetera', price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa La Cafetera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
 };
 const STICKY_BAR_DEFAULT = {
-  name: 'El Once Inicial',
+  name: 'El Once Inicial · + 2 gorras gratis',
   price: '$329.000',
   old: '$596.000',
-  msg: '¡Hola! Quiero pedir el Once Inicial (Pack 4 ediciones) 🇨🇴 ¿Está disponible?',
+  msg: '¡Hola! Quiero el Once Inicial (Pack 4 ediciones) + 2 gorras tricolor GRATIS 🇨🇴\n\n¿Cuáles colores de gorra tienen disponibles?',
 };
 
 const stickyBuy = document.getElementById('stickyBuy');
