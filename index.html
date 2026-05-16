@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0A">
+
+<title>TRICOLOR.CO — Sé Tricolor · Mundial 2026</title>
+<meta name="description" content="Bodysuits Selección Colombia · Edición Mundial 2026. No es ropa. Es bandera. Envío contraentrega a toda Colombia.">
+<meta property="og:title" content="TRICOLOR.CO · Sé Tricolor">
+<meta property="og:description" content="No es ropa. Es bandera. Edición Mundial 2026.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="manifest" href="/site.webmanifest">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+</head>
+<body>
+
+<!-- ============================================
+     SVG SYMBOLS — reused body shape across cards
+     ============================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="body-shape" viewBox="0 0 200 280">
+      <path d="M55 25Q55 12 68 10L82 10Q86 10 88 14L94 28Q100 35 106 28L112 14Q114 10 118 10L132 10Q145 12 145 25L145 38Q152 45 158 58Q168 90 165 130Q162 175 154 210Q148 235 138 260L130 274Q126 278 120 278L110 278Q104 274 104 266L104 250Q104 244 100 244Q96 244 96 250L96 266Q96 274 90 278L80 278Q74 278 70 274L62 260Q52 235 46 210Q38 175 35 130Q32 90 42 58Q48 45 55 38Z"/>
+    </symbol>
+    <symbol id="ic-wa" viewBox="0 0 24 24">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413"/>
+    </symbol>
+    <symbol id="ic-ig" viewBox="0 0 24 24">
+      <path d="M12 2.2c3.2 0 3.6 0 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.25.07 1.62.07 4.81s0 3.56-.07 4.81c-.15 3.23-1.66 4.77-4.92 4.92-1.25.06-1.62.07-4.85.07s-3.6 0-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92C2.18 15.56 2.16 15.19 2.16 12s0-3.56.07-4.81C2.38 3.96 3.89 2.42 7.15 2.27 8.4 2.21 8.78 2.2 12 2.2zm0 5.16A4.63 4.63 0 1016.63 12 4.64 4.64 0 0012 7.36zm0 7.64A3.01 3.01 0 1115.01 12 3 3 0 0112 15zm5.97-7.86a1.08 1.08 0 11-1.08-1.08 1.08 1.08 0 011.08 1.08z"/>
+    </symbol>
+    <symbol id="ic-tt" viewBox="0 0 24 24">
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005.8 20.1a6.34 6.34 0 0010.86-4.43V7.43a8.16 8.16 0 005.84 1.83v-3.5a4.74 4.74 0 01-2.92.93z"/>
+    </symbol>
+    <symbol id="ic-check" viewBox="0 0 16 16">
+      <path d="M3 8.5 6.5 12 13 4.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </symbol>
+    <symbol id="ic-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h13v10H3zM16 9h4l3 3v4h-7M6 19a2 2 0 100-4 2 2 0 000 4zm12 0a2 2 0 100-4 2 2 0 000 4z"/>
+    </symbol>
+    <symbol id="ic-cash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="6" width="20" height="12" rx="1"/><circle cx="12" cy="12" r="2.5"/><path d="M5 9v6M19 9v6"/>
+    </symbol>
+    <symbol id="ic-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3l8 3v6c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V6l8-3z"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>
+    </symbol>
+    <symbol id="ic-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.5-7 10-7 10z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============================================
+     ANNOUNCE BAR — sticky top, marquee
+     ============================================ -->
+<div class="announce" role="banner" aria-label="Anuncio Mundial 2026">
+  <div class="announce-track">
+    <span>🇨🇴 EDICIÓN MUNDIAL 2026</span><span class="sep">★</span>
+    <span>47 PEDIDOS HOY</span><span class="sep">★</span>
+    <span>STOCK LIMITADO</span><span class="sep">★</span>
+    <span>¡VAMOS LAS CAFETERAS!</span><span class="sep">★</span>
+    <span>ENVÍO 24-72H A TODA COLOMBIA</span><span class="sep">★</span>
+    <span>🇨🇴 EDICIÓN MUNDIAL 2026</span><span class="sep">★</span>
+    <span>47 PEDIDOS HOY</span><span class="sep">★</span>
+    <span>STOCK LIMITADO</span><span class="sep">★</span>
+    <span>¡VAMOS LAS CAFETERAS!</span><span class="sep">★</span>
+    <span>ENVÍO 24-72H A TODA COLOMBIA</span><span class="sep">★</span>
+  </div>
+</div>
+
+<!-- ============================================
+     NAV — sticky black with red border
+     ============================================ -->
+<nav class="nav" id="nav" aria-label="Navegación principal">
+  <a href="#hero" class="logo" aria-label="TRICOLOR.CO inicio">
+    <span class="logo-flag" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </span>
+    <span class="logo-word">TRICOLOR.CO</span>
+  </a>
+
+  <div class="nav-links" role="menubar">
+    <a href="#manifesto" role="menuitem">Manifiesto</a>
+    <a href="#collection" role="menuitem">La Convocatoria</a>
+    <a href="#how" role="menuitem">Cómo Comprar</a>
+    <a href="#tribuna" role="menuitem">La Tribuna</a>
+    <a href="#faq" role="menuitem">FAQ</a>
+  </div>
+
+  <a href="#" class="nav-cta" data-wa data-wa-msg="¡Hola! Quiero pedir mi body Tricolor 🇨🇴">
+    Pedir <span aria-hidden="true">→</span>
+  </a>
+
+  <button class="burger" id="burger" type="button" aria-label="Abrir menú" aria-controls="mobileMenu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ============================================
+     TRIBUNE BAR — live status
+     ============================================ -->
+<div class="tribune-bar" role="status" aria-label="Estado en vivo">
+  <span class="live"><span class="live-dot" aria-hidden="true"></span> EN VIVO</span>
+  <span class="tribune-stat">47 PEDIDOS HOY</span>
+  <span class="tribune-sep" aria-hidden="true">★</span>
+  <span class="tribune-stat tribune-stat-cd">
+    MUNDIAL EN
+    <strong><span id="cd-days">--</span>D</strong>
+    <strong><span id="cd-hours">--</span>H</strong>
+    <strong><span id="cd-mins">--</span>M</strong>
+    <strong class="cd-secs"><span id="cd-secs">--</span>S</strong>
+  </span>
+</div>
+
+<!-- ============================================
+     MOBILE MENU
+     ============================================ -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Menú móvil" aria-modal="true">
+  <div class="mm-flag" aria-hidden="true">
+    <span></span><span></span><span></span>
+  </div>
+  <a href="#manifesto">★ El Manifiesto</a>
+  <a href="#collection">★ La Convocatoria</a>
+  <a href="#how">★ Cómo Comprar</a>
+  <a href="#tribuna">★ La Tribuna</a>
+  <a href="#faq">★ FAQ</a>
+  <a href="#" class="mm-cta" data-wa data-wa-msg="¡Hola! Quiero pedir mi body Tricolor 🇨🇴">
+    Pedir por WhatsApp →
+  </a>
+  <p class="mm-foot">Sé Fuerte. Sé Fiera. <strong>Sé Tricolor.</strong></p>
+</div>
+
+<!-- ============================================
+     HERO — vibrating title + banderoles
+     ============================================ -->
+<section class="hero" id="hero">
+  <div class="stadium-bg" aria-hidden="true"></div>
+
+  <div class="banderola banderola-1" aria-hidden="true">★ EDICIÓN MUNDIAL 2026 ★</div>
+  <div class="banderola banderola-2" aria-hidden="true">¡VAMOS LAS CAFETERAS!</div>
+  <div class="banderola banderola-3" aria-hidden="true">DROP · 200 UNIDADES</div>
+
+  <h1 class="huge" aria-label="Vamos Tricolor Vamos">
+    <span class="l1" aria-hidden="true">VAMOS</span>
+    <span class="l2" aria-hidden="true">tricolor</span>
+    <span class="l3" aria-hidden="true">VAMOS</span>
+  </h1>
+
+  <div class="confetti c1" aria-hidden="true">🇨🇴</div>
+  <div class="confetti c2" aria-hidden="true">⚽</div>
+  <div class="confetti c3" aria-hidden="true">★</div>
+  <div class="confetti c4" aria-hidden="true">🔥</div>
+
+  <div class="hero-info">
+    <div class="hero-stats">
+      <div><span>Ediciones</span><strong>04</strong></div>
+      <div><span>Stock</span><strong>47<small>/200</small></strong></div>
+      <div><span>Envío</span><strong>24-72h</strong></div>
+    </div>
+    <a href="#collection" class="cta cta-hero">Pedir el Mío <span aria-hidden="true">→</span></a>
+  </div>
+
+  <div class="hero-trust" aria-label="Garantías">
+    <span><svg class="ic"><use href="#ic-check"/></svg> Contraentrega</span>
+    <span><svg class="ic"><use href="#ic-check"/></svg> Garantía 7 días</span>
+    <span><svg class="ic"><use href="#ic-check"/></svg> Hecho en Colombia 🇨🇴</span>
+  </div>
+</section>
+
+<!-- ============================================
+     CHANT MARQUEE — yellow
+     ============================================ -->
+<div class="chant-marquee" aria-hidden="true">
+  <div class="chant-track">
+    <span>OLÉ OLÉ OLÉ</span><span class="sep">★</span>
+    <span>COLOMBIA COLOMBIA</span><span class="sep">★</span>
+    <span>VAMOS VAMOS VAMOS</span><span class="sep">★</span>
+    <span>TRICOLOR</span><span class="sep">★</span>
+    <span>SÉ FIERA</span><span class="sep">★</span>
+    <span>OLÉ OLÉ OLÉ</span><span class="sep">★</span>
+    <span>COLOMBIA COLOMBIA</span><span class="sep">★</span>
+    <span>VAMOS VAMOS VAMOS</span><span class="sep">★</span>
+    <span>TRICOLOR</span><span class="sep">★</span>
+    <span>SÉ FIERA</span><span class="sep">★</span>
+  </div>
+</div>
+
+<!-- ============================================
+     MANIFESTO — black with tricolor bars
+     ============================================ -->
+<section class="manifesto" id="manifesto">
+  <div class="manifesto-inner">
+    <div class="manifesto-label">★ El Manifiesto ★</div>
+    <div class="manifesto-text">
+      <p>Nacimos <span class="y">amarillas,</span> azules y rojas.</p>
+      <p>Crecimos cantando el himno con la mano en el pecho.</p>
+      <p>Lloramos cuando ganamos. <span class="r">Gritamos</span> cuando perdemos.</p>
+      <p>Somos <span class="b">tribuna,</span> somos sala, somos calle.</p>
+      <p>Este body no es ropa. <span class="hit">Es bandera.</span></p>
+      <p class="mf-coda">No lo usas. <span class="r">Lo llevas puesto</span> como llevas tu apellido.</p>
+    </div>
+    <div class="manifesto-sign">
+      <span class="dot" aria-hidden="true"></span>
+      <span>Sé Fuerte. Sé Fiera.</span>
+      <strong>SÉ TRICOLOR.</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     COLLECTION + BUNDLE
+     ============================================ -->
+<section class="collection" id="collection">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-tag">★ La Convocatoria · 04 Ediciones</div>
+      <h2 class="section-title">Cuatro bodies.<br><em>Una misma</em> camiseta.</h2>
+    </div>
+    <div class="section-meta">★ MUNDIAL 26 ★<br>STOCK LIMITADO</div>
+  </div>
+
+  <div class="cards-grid">
+
+    <article class="product player-card card-amarilla reveal" data-color="capitana" tabindex="0" aria-label="La Capitana — Edición Home">
+      <div class="card-top">
+        <span class="num">10</span>
+        <span class="pos-tag">★ TITULAR</span>
+      </div>
+      <div class="card-visual">
+        <svg class="body-svg" aria-hidden="true"><use href="#body-shape"/></svg>
+        <span class="card-watermark" aria-hidden="true">CAP·10</span>
+      </div>
+      <div class="card-info">
+        <div class="card-name-block">
+          <div class="pos">Home · Capitana</div>
+          <h3>La Capitana</h3>
+        </div>
+        <div class="card-price">
+          <span class="now">$99K</span>
+          <span class="old">$149K</span>
+        </div>
+      </div>
+      <button class="product-cta card-cta" type="button" data-product="La Capitana">
+        Pedir <span aria-hidden="true">→</span>
+      </button>
+    </article>
+
+    <article class="product player-card card-azul reveal" data-color="portera" tabindex="0" aria-label="La Portera — Edición Away">
+      <div class="card-top">
+        <span class="num">01</span>
+        <span class="pos-tag">★ ARQUERA</span>
+      </div>
+      <div class="card-visual">
+        <svg class="body-svg" aria-hidden="true"><use href="#body-shape"/></svg>
+        <span class="card-watermark" aria-hidden="true">POR·01</span>
+      </div>
+      <div class="card-info">
+        <div class="card-name-block">
+          <div class="pos">Away · Vintage</div>
+          <h3>La Portera</h3>
+        </div>
+        <div class="card-price">
+          <span class="now">$99K</span>
+          <span class="old">$149K</span>
+        </div>
+      </div>
+      <button class="product-cta card-cta" type="button" data-product="La Portera">
+        Pedir <span aria-hidden="true">→</span>
+      </button>
+    </article>
+
+    <article class="product player-card card-negro reveal" data-color="oronegro" tabindex="0" aria-label="Oro Negro — Edición Premium">
+      <div class="card-top">
+        <span class="num">07</span>
+        <span class="pos-tag">★ ESTRELLA</span>
+      </div>
+      <div class="card-visual">
+        <svg class="body-svg" aria-hidden="true"><use href="#body-shape"/></svg>
+        <span class="card-watermark" aria-hidden="true">ORO·07</span>
+      </div>
+      <div class="card-info">
+        <div class="card-name-block">
+          <div class="pos">Premium · Nocturna</div>
+          <h3>Oro Negro</h3>
+        </div>
+        <div class="card-price">
+          <span class="now">$99K</span>
+          <span class="old">$149K</span>
+        </div>
+      </div>
+      <button class="product-cta card-cta" type="button" data-product="Oro Negro">
+        Pedir <span aria-hidden="true">→</span>
+      </button>
+    </article>
+
+    <article class="product player-card card-rojo reveal" data-color="cafetera" tabindex="0" aria-label="La Cafetera — Edición Alterna">
+      <div class="card-top">
+        <span class="num">09</span>
+        <span class="pos-tag">★ GOLEADORA</span>
+      </div>
+      <div class="card-visual">
+        <svg class="body-svg" aria-hidden="true"><use href="#body-shape"/></svg>
+        <span class="card-watermark" aria-hidden="true">CAF·09</span>
+      </div>
+      <div class="card-info">
+        <div class="card-name-block">
+          <div class="pos">Alterna · Cafetera</div>
+          <h3>La Cafetera</h3>
+        </div>
+        <div class="card-price">
+          <span class="now">$99K</span>
+          <span class="old">$149K</span>
+        </div>
+      </div>
+      <button class="product-cta card-cta" type="button" data-product="La Cafetera">
+        Pedir <span aria-hidden="true">→</span>
+      </button>
+    </article>
+
+  </div>
+
+  <!-- BUNDLE -->
+  <article class="bundle reveal" aria-label="El Once Inicial — pack de 4 ediciones">
+    <div class="bundle-content">
+      <div class="bundle-badge">★ EL ONCE INICIAL ★</div>
+      <h3 class="bundle-title">Lleva <em>las cuatro</em> a la cancha.</h3>
+      <p class="bundle-desc">El pack completo para vivir cada partido con una edición diferente. Stock muy limitado, solo para la hinchada más fiera del continente.</p>
+      <div class="bundle-price-row">
+        <span class="bp-now">$329.000</span>
+        <span class="bp-old">$596.000</span>
+        <span class="bp-save">Ahorras $267.000</span>
+      </div>
+      <a href="#" class="bundle-cta btn-wa" data-wa data-wa-msg="¡Hola! Quiero pedir el Once Inicial (Pack 4 ediciones) 🇨🇴 ¿Está disponible?">
+        Lo Quiero Completo <span aria-hidden="true">→</span>
+      </a>
+      <p class="bundle-trust"><svg class="ic"><use href="#ic-check"/></svg> Pago contraentrega · Envío 24-72h</p>
+    </div>
+    <div class="bundle-visual" aria-hidden="true">
+      <div class="mini mini-1"><svg viewBox="0 0 200 280"><use href="#body-shape"/></svg></div>
+      <div class="mini mini-2"><svg viewBox="0 0 200 280"><use href="#body-shape"/></svg></div>
+      <div class="mini mini-3"><svg viewBox="0 0 200 280"><use href="#body-shape"/></svg></div>
+      <div class="mini mini-4"><svg viewBox="0 0 200 280"><use href="#body-shape"/></svg></div>
+    </div>
+  </article>
+</section>
+
+<!-- ============================================
+     BENEFITS — ticket-style cards
+     ============================================ -->
+<section class="benefits">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-tag">★ Garantías · La Hinchada Manda</div>
+      <h2 class="section-title">Cero drama. <em>Solo</em> fútbol.</h2>
+    </div>
+  </div>
+  <div class="benefits-grid">
+    <div class="benefit reveal">
+      <div class="benefit-icon"><svg><use href="#ic-truck"/></svg></div>
+      <h4>Envío Nacional</h4>
+      <p>A toda Colombia en <strong>24-72h</strong>. Interrapidísimo o Servientrega.</p>
+      <div class="benefit-stamp" aria-hidden="true">N° 01</div>
+    </div>
+    <div class="benefit reveal">
+      <div class="benefit-icon"><svg><use href="#ic-cash"/></svg></div>
+      <h4>Paga Contraentrega</h4>
+      <p>Recibes primero, pagas después. <strong>Efectivo, Nequi, Daviplata.</strong></p>
+      <div class="benefit-stamp" aria-hidden="true">N° 02</div>
+    </div>
+    <div class="benefit reveal">
+      <div class="benefit-icon"><svg><use href="#ic-shield"/></svg></div>
+      <h4>Garantía 7 Días</h4>
+      <p>Si no te gusta, te devolvemos. <strong>Sin preguntas raras.</strong></p>
+      <div class="benefit-stamp" aria-hidden="true">N° 03</div>
+    </div>
+    <div class="benefit reveal">
+      <div class="benefit-icon"><svg><use href="#ic-heart"/></svg></div>
+      <h4>Hecho con Pasión</h4>
+      <p>Empacado en el <strong>Eje Cafetero</strong>. Con orgullo y café.</p>
+      <div class="benefit-stamp" aria-hidden="true">N° 04</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     CÓMO COMPRAR — black, 3 steps
+     ============================================ -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="section-head dark reveal">
+      <div>
+        <div class="section-tag">★ Cómo Comprar · Tres Pasos</div>
+        <h2 class="section-title">Tres pasos. <em>Cero</em> drama.</h2>
+      </div>
+      <div class="section-meta">★ SIN CARRITO ★<br>DIRECTO POR WHATSAPP</div>
+    </div>
+
+    <ol class="steps">
+      <li class="step reveal">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>ESCRÍBENOS</h4>
+          <p>Tocas el botón verde y nos cuentas qué edición querés. Ya viene con el mensaje listo, vos solo dale enviar.</p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>CONFIRMAS</h4>
+          <p>Te asesoramos la talla, confirmas dirección y carrier. Stock se aparta inmediato.</p>
+        </div>
+      </li>
+      <li class="step reveal">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>RECIBES Y PAGAS</h4>
+          <p>Llega a tu puerta en 24-72h. Lo medís, te encanta, pagas. <strong>Contraentrega.</strong></p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="how-cta-row reveal">
+      <a href="#" class="cta cta-yellow btn-wa" data-wa data-wa-msg="¡Hola! Quiero pedir mi body Tricolor 🇨🇴">
+        <svg class="ic-wa-mini" aria-hidden="true"><use href="#ic-wa"/></svg>
+        Únete a la Hinchada <span aria-hidden="true">→</span>
+      </a>
+      <p class="how-trust">★ 500+ pedidos · 98% recomiendan · 4.9 estrellas</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SIZE GUIDE — interactive calculator
+     ============================================ -->
+<section class="size-guide" id="size">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-tag">★ Guía de Tallas · S / M / L</div>
+      <h2 class="section-title">Tu talla, <em>sin</em> adivinar.</h2>
+    </div>
+    <div class="section-meta">★ MEDIDAS EN CM ★<br>3 PARÁMETROS</div>
+  </div>
+
+  <div class="sg-grid">
+    <form class="sg-form" id="sizeCalc" autocomplete="off" novalidate>
+      <p class="sg-intro">Mide en cm con cinta métrica encima de la piel. Llena 1, 2 o las 3 medidas — más datos = mejor recomendación.</p>
+
+      <div class="sg-fields">
+        <label class="sg-field">
+          <span class="sg-field-label">Busto</span>
+          <input type="number" id="sc-busto" inputmode="decimal" min="60" max="130" step="0.5" placeholder="ej. 88">
+          <span class="sg-field-unit">cm</span>
+        </label>
+        <label class="sg-field">
+          <span class="sg-field-label">Cintura</span>
+          <input type="number" id="sc-cintura" inputmode="decimal" min="50" max="120" step="0.5" placeholder="ej. 68">
+          <span class="sg-field-unit">cm</span>
+        </label>
+        <label class="sg-field">
+          <span class="sg-field-label">Cadera</span>
+          <input type="number" id="sc-cadera" inputmode="decimal" min="70" max="140" step="0.5" placeholder="ej. 94">
+          <span class="sg-field-unit">cm</span>
+        </label>
+      </div>
+
+      <table class="sg-chart" aria-label="Tabla de tallas">
+        <thead>
+          <tr><th>Talla</th><th>Busto</th><th>Cintura</th><th>Cadera</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>S</strong> (32-34)</td><td>80-87</td><td>60-67</td><td>86-93</td></tr>
+          <tr><td><strong>M</strong> (36-38)</td><td>88-95</td><td>68-75</td><td>94-101</td></tr>
+          <tr><td><strong>L</strong> (40-42)</td><td>96-104</td><td>76-84</td><td>102-110</td></tr>
+        </tbody>
+      </table>
+      <p class="sg-note">★ Si tus medidas caen entre dos tallas, recomendamos la <strong>más amplia</strong> — el body abraza, no aprieta.</p>
+    </form>
+
+    <aside class="sg-result" id="scResult" data-state="empty" aria-live="polite">
+      <div class="sc-result-empty">
+        <div class="sg-flag" aria-hidden="true"><span></span><span></span><span></span></div>
+        <h4>Esperando tus medidas</h4>
+        <p>Llena al menos un campo y te decimos tu talla recomendada.</p>
+      </div>
+      <div class="sc-result-filled" hidden>
+        <div class="sg-recommend">
+          <span class="sg-recommend-label">Te recomendamos</span>
+          <strong id="scSize">M</strong>
+        </div>
+        <p id="scDetail" class="sg-detail"></p>
+        <div id="scRanges" class="sg-ranges"></div>
+        <a href="#" id="scCta" class="cta cta-wa-green btn-wa" data-wa data-wa-msg="¡Hola! Quiero asesoría de talla 🇨🇴">
+          <svg class="ic-wa-mini" aria-hidden="true"><use href="#ic-wa"/></svg>
+          Confirmar por WhatsApp <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================================
+     LA TRIBUNA — reviews marquee
+     ============================================ -->
+<section class="tribuna" id="tribuna">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-tag">★ La Tribuna · 500+ Hinchas</div>
+      <h2 class="section-title">Lo que dice <em>nuestra</em> hinchada.</h2>
+    </div>
+    <div class="section-meta">★ 4.9 / 5 ★<br>98% RECOMIENDAN</div>
+  </div>
+
+  <div class="reviews-marquee">
+    <div class="reviews-track">
+      <figure class="review">
+        <div class="review-stars" aria-label="5 estrellas">★★★★★</div>
+        <blockquote>"Lo recibí ayer y <em>lloré</em>. Es exactamente lo que necesitaba para el primer partido. La tela es brutal."</blockquote>
+        <figcaption>— Valentina M. · <span>Bogotá</span></figcaption>
+      </figure>
+      <figure class="review">
+        <div class="review-stars">★★★★★</div>
+        <blockquote>"Llegó en <em>48 horas</em> hasta Medellín. Calidad premium real, no es replica. Ya pedí la segunda."</blockquote>
+        <figcaption>— Sara C. · <span>Medellín</span></figcaption>
+      </figure>
+      <figure class="review">
+        <div class="review-stars">★★★★★</div>
+        <blockquote>"La Capitana queda <em>como guante</em>. Probé con jeans, con falda, con todo. Es bandera literal."</blockquote>
+        <figcaption>— María Camila R. · <span>Cali</span></figcaption>
+      </figure>
+      <figure class="review">
+        <div class="review-stars">★★★★★</div>
+        <blockquote>"Pedí el pack completo. <em>Las 4 son hermosas.</em> La de Oro Negro es mi favorita para salir."</blockquote>
+        <figcaption>— Laura P. · <span>Pereira</span></figcaption>
+      </figure>
+      <figure class="review">
+        <div class="review-stars">★★★★★</div>
+        <blockquote>"Contraentrega <em>de verdad</em>, sin trucos. Mi mamá quedó tranquila. Ahora ella también quiere el suyo."</blockquote>
+        <figcaption>— Andrea V. · <span>Barranquilla</span></figcaption>
+      </figure>
+      <figure class="review">
+        <div class="review-stars">★★★★★</div>
+        <blockquote>"Ya tengo el outfit para la final. <em>Tricolor</em> de pies a cabeza. Vamos Colombia carajo."</blockquote>
+        <figcaption>— Daniela O. · <span>Bucaramanga</span></figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="tribuna-stats reveal">
+    <div><strong data-counter="4.9">0</strong><span>de 5 estrellas</span></div>
+    <div><strong data-counter="500">0</strong><small>+</small><span>tricolores activas</span></div>
+    <div><strong data-counter="98">0</strong><small>%</small><span>recomiendan</span></div>
+  </div>
+</section>
+
+<!-- ============================================
+     FAQ
+     ============================================ -->
+<section class="faq" id="faq">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-tag">★ FAQ · Resolvemos Todo</div>
+      <h2 class="section-title">Preguntas <em>de</em> la hinchada.</h2>
+    </div>
+    <div class="section-meta">★ DUDAS? ★<br>RESPONDEMOS POR WA</div>
+  </div>
+
+  <div class="faq-list">
+    <details class="faq-item reveal">
+      <summary>
+        <span>¿Cómo es el envío y cuánto demora?</span>
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </summary>
+      <div class="faq-body">
+        <p>Enviamos a toda Colombia con <strong>Interrapidísimo</strong> o <strong>Servientrega</strong>. Llega en <strong>24-72h</strong> según tu ciudad. Una vez confirmas el pedido por WhatsApp, te mandamos la guía de seguimiento.</p>
+      </div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>
+        <span>¿Cómo funciona el pago contraentrega?</span>
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </summary>
+      <div class="faq-body">
+        <p>Recibís tu body en tu puerta, lo probás, y <strong>solo entonces pagás</strong>. Aceptamos efectivo, Nequi, Daviplata o transferencia. Sin pagar nada por adelantado, sin tarjetas, sin formularios largos.</p>
+      </div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>
+        <span>¿Qué pasa si no me queda la talla?</span>
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </summary>
+      <div class="faq-body">
+        <p>Tenés <strong>7 días</strong> para cambio o devolución. Sin preguntas raras. Solo escribinos por WhatsApp y coordinamos. Usá la <a href="#size">calculadora de tallas</a> antes de pedir si tenés dudas.</p>
+      </div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>
+        <span>¿Es una réplica oficial de la Selección?</span>
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </summary>
+      <div class="faq-body">
+        <p>No. Es una <strong>edición inspirada</strong> en los colores de la Tricolor, diseñada exclusivamente como bodywear para mujer. No usamos escudos oficiales — es una pieza de moda con identidad propia.</p>
+      </div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>
+        <span>¿Hasta cuándo está disponible?</span>
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </summary>
+      <div class="faq-body">
+        <p>La <strong>Edición Mundial 2026</strong> es de stock limitado: <strong>200 unidades en total</strong> en las 4 ediciones combinadas. Cuando se agote, se agotó. No habrá restock para el Mundial.</p>
+      </div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>
+        <span>¿Hacen pedidos al por mayor?</span>
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </summary>
+      <div class="faq-body">
+        <p>Sí, desde <strong>10 unidades</strong> manejamos condiciones especiales. <a href="#" class="faq-wa" data-wa data-wa-msg="¡Hola! Quiero hacer un pedido al por mayor 🇨🇴%0A%0ACantidad estimada: %0ACiudad: %0A%0A¿Me cuentan condiciones?">Escríbenos por WhatsApp</a> y te contamos todo.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ============================================
+     CTA FINAL
+     ============================================ -->
+<section class="cta-final" id="cta-final">
+  <div class="cta-final-bg" aria-hidden="true"></div>
+
+  <div class="banderola banderola-cta" aria-hidden="true">★ STOCK LIMITADO ★</div>
+
+  <div class="cta-final-inner">
+    <p class="cta-final-tag">★ Mundial 2026 · Edición Limitada ★</p>
+    <h2 class="cta-final-title">No te quedes <br><em>sin el tuyo.</em></h2>
+    <p class="cta-final-sub">200 unidades. 4 ediciones. Una sola hinchada. <strong>La tuya.</strong></p>
+
+    <a href="#" class="cta cta-wa-huge btn-wa" data-wa data-wa-msg="¡Hola! Quiero pedir mi body Tricolor 🇨🇴">
+      <svg class="ic-wa-big" aria-hidden="true"><use href="#ic-wa"/></svg>
+      Pedir por WhatsApp
+    </a>
+
+    <div class="cta-final-trust">
+      <span><svg class="ic"><use href="#ic-check"/></svg> Pago contraentrega</span>
+      <span><svg class="ic"><use href="#ic-check"/></svg> Envío 24-72h</span>
+      <span><svg class="ic"><use href="#ic-check"/></svg> Garantía 7 días</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FOOTER MARQUEE — red
+     ============================================ -->
+<div class="foot-marquee" aria-hidden="true">
+  <div class="foot-track">
+    <span>★ SÉ FUERTE</span><span> ★ SÉ FIERA</span><span> ★ SÉ TRICOLOR</span>
+    <span> ★ SÉ FUERTE</span><span> ★ SÉ FIERA</span><span> ★ SÉ TRICOLOR</span>
+    <span> ★ SÉ FUERTE</span><span> ★ SÉ FIERA</span><span> ★ SÉ TRICOLOR</span>
+    <span> ★ SÉ FUERTE</span><span> ★ SÉ FIERA</span><span> ★ SÉ TRICOLOR</span>
+  </div>
+</div>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">
+        <span class="logo-flag" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+        <span class="logo-word">TRICOLOR.CO</span>
+      </div>
+      <p class="footer-mf">Nacimos amarillas, azules y rojas. <em>No es ropa, es bandera.</em></p>
+      <div class="footer-social" aria-label="Redes sociales">
+        <a href="https://instagram.com/tricolor.co" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg><use href="#ic-ig"/></svg>
+        </a>
+        <a href="https://tiktok.com/@tricolor.co" target="_blank" rel="noopener" aria-label="TikTok">
+          <svg><use href="#ic-tt"/></svg>
+        </a>
+        <a href="#" data-wa data-wa-msg="¡Hola! Quiero pedir mi body Tricolor 🇨🇴" aria-label="WhatsApp">
+          <svg><use href="#ic-wa"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h5>★ La Tienda</h5>
+      <a href="#collection">La Capitana</a>
+      <a href="#collection">La Portera</a>
+      <a href="#collection">Oro Negro</a>
+      <a href="#collection">La Cafetera</a>
+      <a href="#collection">El Once Inicial</a>
+    </div>
+    <div class="footer-col">
+      <h5>★ Ayuda</h5>
+      <a href="#size">Guía de Tallas</a>
+      <a href="#how">Cómo Comprar</a>
+      <a href="#faq">FAQ</a>
+      <a href="#" data-wa data-wa-msg="¡Hola! Necesito ayuda con mi pedido 🇨🇴">Contacto</a>
+    </div>
+    <div class="footer-col">
+      <h5>★ La Hinchada</h5>
+      <a href="#manifesto">El Manifiesto</a>
+      <a href="#tribuna">La Tribuna</a>
+      <a href="https://instagram.com/tricolor.co" target="_blank" rel="noopener">@tricolor.co</a>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>© 2026 TRICOLOR.CO · Con orgullo cafetero 🇨🇴</span>
+    <span>Pereira · Armenia · Eje Cafetero</span>
+  </div>
+</footer>
+
+<!-- ============================================
+     STICKY WA FLOAT
+     ============================================ -->
+<a href="#" class="wa-float" id="waFloat" data-wa data-wa-msg="¡Hola! Quiero pedir mi body Tricolor 🇨🇴" aria-label="Pedir por WhatsApp">
+  <svg aria-hidden="true"><use href="#ic-wa"/></svg>
+  <span>Pedir</span>
+</a>
+
+<!-- ============================================
+     STICKY BUY BAR (mobile)
+     ============================================ -->
+<div class="sticky-buy" id="stickyBuy" hidden>
+  <div class="sb-info">
+    <div class="sb-name" id="sbName">El Once Inicial</div>
+    <div class="sb-price">
+      <span id="sbPrice">$329.000</span>
+      <span class="sb-old" id="sbOld">$596.000</span>
+    </div>
+  </div>
+  <a href="#" id="sbCta" class="sb-cta mobile-cta" data-wa data-wa-msg="¡Hola! Quiero pedir el Once Inicial (Pack 4 ediciones) 🇨🇴 ¿Está disponible?">
+    Pedir <span aria-hidden="true">→</span>
+  </a>
+</div>
+
+<!-- ============================================
+     MODAL — product detail
+     ============================================ -->
+<div class="modal-backdrop" id="modal" aria-hidden="true" inert>
+  <div class="modal" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+    <button class="modal-close" id="modalClose" type="button" aria-label="Cerrar">✕</button>
+
+    <div class="modal-visual" id="modalVisual">
+      <svg class="body-svg" aria-hidden="true"><use href="#body-shape"/></svg>
+    </div>
+
+    <button class="modal-gallery-btn" id="modalGalleryBtn" type="button" aria-label="Abrir galería de fotos">
+      Ver galería ⛶
+    </button>
+
+    <div class="modal-body">
+      <div class="modal-tag" id="modalTag">Edición Home · Más Vendido</div>
+      <h3 class="modal-title" id="modalTitle">La Capitana</h3>
+      <p class="modal-desc" id="modalDesc">El amarillo eterno de la Tricolor.</p>
+
+      <div class="modal-price-row">
+        <span class="mp-now" id="modalPriceNow">$99.000</span>
+        <span class="mp-old" id="modalPriceOld">$149.000</span>
+        <span class="mp-save">-34%</span>
+      </div>
+
+      <div class="modal-sizes">
+        <p class="size-label">Talla <a href="#size" class="size-help">Guía →</a></p>
+        <div class="size-row" role="radiogroup" aria-label="Selección de talla">
+          <button class="size-btn" type="button" data-size="S" role="radio" aria-pressed="false" aria-checked="false">S</button>
+          <button class="size-btn active" type="button" data-size="M" role="radio" aria-pressed="true" aria-checked="true">M</button>
+          <button class="size-btn" type="button" data-size="L" role="radio" aria-pressed="false" aria-checked="false">L</button>
+        </div>
+      </div>
+
+      <ul class="modal-features">
+        <li><svg class="ic"><use href="#ic-check"/></svg> Tela técnica AEROREADY, alta elasticidad</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg> Costuras planas reforzadas</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg> Detalles bordados exclusivos</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg> Stock muy limitado · Mundial 2026</li>
+      </ul>
+
+      <a href="#" class="cta cta-wa-modal" id="modalCta">
+        <svg class="ic-wa-mini" aria-hidden="true"><use href="#ic-wa"/></svg>
+        Pedir por WhatsApp
+      </a>
+
+      <p class="modal-trust">★ Pago contraentrega · Envío 24-72h · Garantía 7 días</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     LIGHTBOX — product gallery
+     ============================================ -->
+<div class="lightbox" id="lightbox" aria-hidden="true" inert>
+  <div class="lb-overlay" id="lbOverlay"></div>
+  <div class="lb-dialog" role="dialog" aria-labelledby="lbTitle" aria-modal="true">
+    <div class="lb-header">
+      <div>
+        <span class="lb-tag">★ Galería</span>
+        <h4 class="lb-title" id="lbTitle">La Capitana</h4>
+      </div>
+      <button class="lb-close" id="lbClose" type="button" aria-label="Cerrar galería">✕</button>
+    </div>
+
+    <div class="lb-viewer">
+      <button class="lb-nav lb-prev" id="lbPrev" type="button" aria-label="Vista anterior">‹</button>
+      <div class="lb-slides-wrap">
+        <div class="lb-slides" id="lbSlides">
+          <div class="lb-slide" data-view="front" aria-label="Vista frente">
+            <svg class="lb-body-svg" viewBox="0 0 200 280" aria-hidden="true">
+              <use href="#body-shape"/>
+            </svg>
+            <div class="lb-watermark" aria-hidden="true">FRONT · 01</div>
+          </div>
+          <div class="lb-slide" data-view="side" aria-label="Vista lateral">
+            <svg class="lb-body-svg lb-side" viewBox="0 0 200 280" aria-hidden="true">
+              <use href="#body-shape"/>
+            </svg>
+            <div class="lb-watermark" aria-hidden="true">SIDE · 02</div>
+          </div>
+          <div class="lb-slide" data-view="detalle" aria-label="Vista detalle">
+            <svg class="lb-body-svg lb-detail" viewBox="0 0 200 280" aria-hidden="true">
+              <use href="#body-shape"/>
+            </svg>
+            <div class="lb-watermark" aria-hidden="true">DETALLE · 03</div>
+          </div>
+        </div>
+      </div>
+      <button class="lb-nav lb-next" id="lbNext" type="button" aria-label="Siguiente vista">›</button>
+    </div>
+
+    <div class="lb-footer">
+      <div class="lb-thumbs" role="tablist">
+        <button class="lb-thumb" type="button" role="tab" aria-selected="true" aria-label="Vista frente">
+          <svg viewBox="0 0 200 280" aria-hidden="true"><use href="#body-shape"/></svg>
+        </button>
+        <button class="lb-thumb" type="button" role="tab" aria-selected="false" aria-label="Vista lateral">
+          <svg viewBox="0 0 200 280" aria-hidden="true"><use href="#body-shape"/></svg>
+        </button>
+        <button class="lb-thumb" type="button" role="tab" aria-selected="false" aria-label="Vista detalle">
+          <svg viewBox="0 0 200 280" aria-hidden="true"><use href="#body-shape"/></svg>
+        </button>
+      </div>
+      <span class="lb-view-name" id="lbViewName">Front · 1 / 3</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
