@@ -4178,6 +4178,220 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
   padding: 2rem;
 }
 
+/* Match card — common */
+.m-card {
+  background: var(--bg);
+  border: var(--border);
+  padding: 1.1rem 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  position: relative;
+  box-shadow: var(--shadow-soft);
+}
+.m-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+.m-phase {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+.m-status {
+  font-family: 'Anton', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.5rem;
+  border: 1.5px solid var(--ink);
+}
+.m-status-upcoming { background: var(--bg-warm); color: var(--ink); }
+.m-status-live {
+  background: var(--red);
+  color: var(--bg);
+  border-color: var(--ink);
+  animation: muPulse 1.6s ease-in-out infinite;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.m-live-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--bg);
+  display: inline-block;
+}
+.m-status-played { background: var(--ink); color: var(--bg); }
+
+.m-when {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.m-date {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.m-time {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.4rem;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+.m-time small {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.55em;
+  color: var(--red);
+  letter-spacing: 0.18em;
+  margin-left: 0.3em;
+  vertical-align: middle;
+}
+
+.m-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-top: 2px dashed var(--line);
+  border-bottom: 2px dashed var(--line);
+  padding: 0.55rem 0;
+  margin: 0.2rem 0;
+}
+.m-team {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: 'Anton', sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+  flex: 1;
+  min-width: 0;
+}
+.m-team:last-of-type { justify-content: flex-end; text-align: right; }
+.m-flag { font-size: 1.3em; flex-shrink: 0; }
+.m-vs {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  color: var(--red);
+  text-transform: uppercase;
+}
+
+.m-score {
+  font-family: 'Anton', sans-serif;
+  font-size: 2rem;
+  color: var(--ink);
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+.m-score span { color: var(--red); margin: 0 0.4em; }
+
+.m-stadium {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-mid);
+  text-transform: uppercase;
+}
+.m-note {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Colombia match — big & colorful */
+.m-card-col {
+  background: var(--ink);
+  color: var(--bg);
+  border: 3px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--ink);
+  padding: 1.3rem 1.2rem 1.1rem;
+}
+.m-card-col::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(90deg,
+    var(--yellow) 0%, var(--yellow) 33.33%,
+    var(--blue)   33.33%, var(--blue)   66.66%,
+    var(--red)    66.66%, var(--red)    100%);
+}
+.m-card-col .m-phase    { color: var(--yellow); }
+.m-card-col .m-date     { color: rgba(240,235,224,0.7); }
+.m-card-col .m-time     { color: var(--bg); }
+.m-card-col .m-time small { color: var(--yellow); }
+.m-card-col .m-teams    { border-color: rgba(240,235,224,0.18); }
+.m-card-col .m-team     { color: var(--bg); font-size: 1.2rem; }
+.m-card-col .m-stadium  { color: rgba(240,235,224,0.55); }
+.m-card-col .m-status-upcoming { background: var(--yellow); color: var(--ink); border-color: var(--yellow); }
+
+/* Per-outfit accent — pulls the same gradient palette as the card visuals */
+.m-card-col.m-outfit-capitana { box-shadow: 6px 6px 0 var(--yellow); }
+.m-card-col.m-outfit-portera  { box-shadow: 6px 6px 0 var(--blue); }
+.m-card-col.m-outfit-cafetera { box-shadow: 6px 6px 0 var(--red); }
+.m-card-col.m-outfit-oronegro { box-shadow: 6px 6px 0 #C9A961; }
+
+.m-outfit {
+  background: rgba(255,211,0,0.08);
+  border: 2px dashed var(--yellow);
+  padding: 0.65rem 0.8rem;
+  margin-top: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.m-outfit-tag {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--yellow);
+}
+.m-outfit-name {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--bg);
+}
+.m-outfit-cta {
+  align-self: flex-start;
+  font-family: 'Anton', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--yellow);
+  border: 2px solid var(--bg);
+  padding: 0.4rem 0.7rem;
+  text-decoration: none;
+  box-shadow: 3px 3px 0 var(--red);
+  transition: transform 0.12s, box-shadow 0.12s, background 0.15s;
+}
+.m-outfit-cta:hover {
+  background: var(--bg);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--red);
+}
+
+@media (min-width: 768px) {
+  .mundial-matches { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .mundial-matches { grid-template-columns: repeat(3, 1fr); }
+}
+
 /* CTA Final */
 .mundial-cta-final {
   background: var(--bg);
