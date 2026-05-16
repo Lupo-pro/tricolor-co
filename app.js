@@ -636,10 +636,10 @@ const STICKY_BAR_PRODUCTS = {
   cafetera: { name: 'La Cafetera', price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa La Cafetera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
 };
 const STICKY_BAR_DEFAULT = {
-  name: 'El Once Inicial · + 2 gorras gratis',
-  price: '$329.000',
-  old: '$596.000',
-  msg: '¡Hola! Quiero el Once Inicial (Pack 4 ediciones) + 2 gorras tricolor GRATIS 🇨🇴\n\n¿Cuáles colores de gorra tienen disponibles?',
+  name: 'Desde $99K · 🎁 Gorra gratis con 2+',
+  price: '',           // empty → JS collapses the price column
+  old: '',
+  msg: '¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴',
 };
 
 const stickyBuy = document.getElementById('stickyBuy');
@@ -666,8 +666,12 @@ const stickyBuy = document.getElementById('stickyBuy');
 
   function setProduct(p) {
     sbName.textContent = p.name;
-    sbPrice.textContent = p.price;
-    sbOld.textContent = p.old;
+    sbPrice.textContent = p.price || '';
+    sbOld.textContent = p.old || '';
+    // When no price (default "Desde $99K · 🎁 Gorra gratis..." state),
+    // collapse the price column so the name has the whole row.
+    const priceWrap = sbPrice.parentElement;
+    if (priceWrap) priceWrap.style.display = p.price ? '' : 'none';
     sbCta.dataset.waMsg = p.msg;
     sbCta.href = buildWaUrl(p.msg);
   }
