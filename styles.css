@@ -3786,6 +3786,19 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
   .banderola { display: none; }
   .confetti  { display: none; }
 
+  /* Product card overlays: keep visual + name + price + CTA + -34%
+     sticker. Drop the rest — every piece of info has a redundant home
+     elsewhere (gorra sticker → sticky bar + announce; mini-review →
+     Tribuna section; garantía → Promesas; stock urgency → bundle).
+     The sticker for -34% stays because that's the single biggest
+     proof of value on the card. */
+  .player-card .card-gorra-sticker { display: none; }
+  .player-card .card-mini-review   { display: none; }
+  .player-card .card-garantia      { display: none; }
+  .player-card .stock-urgency      { display: none; }
+  /* Bundle keeps its stock-urgency variant — fewer cards there means
+     the urgency message lands differently. */
+
   /* Smaller hero title — was clamp(4rem, 18vw, 13rem). On 375px width
      the 18vw size pushed the title close to the chrome edges. */
   .huge { font-size: clamp(3.5rem, 14vw, 6rem); }
