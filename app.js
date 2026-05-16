@@ -799,6 +799,121 @@ document.querySelectorAll('.cta, .product-cta, .size-btn, .nav-cta, .bundle-cta,
   .forEach((b) => b.addEventListener('click', () => vibrate(8)));
 
 // ============================================
+// STADIUM ANTHEM — floating audio player
+// Three-state toggle (muted → playing → paused → playing → ...).
+// Browsers block autoplay without user interaction, so the player
+// always starts in "muted" — visual cue to the user that they have to
+// opt in. Once opted in for the session, the state survives refresh
+// inside the same tab via sessionStorage, but on refresh we drop back
+// to "paused" so the user re-confirms playback.
+// ============================================
+(function initAudioPlayer() {
+  const audio = document.getElementById('anthem');
+  const btn = document.getElementById('audioPlayer');
+  if (!audio || !btn) return;
+
+  const STORAGE_KEY = 'tricolor_audio';
+  const FLASH_KEY = 'tricolor_audio_flash';
+  const huge = document.querySelector('.huge');
+
+  let resumeOnVisible = false;
+  let audioReady = true;
+
+  // Hide gracefully if the file is missing (404) or fails to decode.
+  audio.addEventListener('error', () => {
+    audioReady = false;
+    btn.hidden = true;
+  });
+
+  function safeGet(key, fallback) {
+    try { return sessionStorage.getItem(key) ?? fallback; }
+    catch (_) { return fallback; }
+  }
+  function safeSet(key, value) {
+    try { sessionStorage.setItem(key, value); } catch (_) {}
+  }
+
+  function setState(state) {
+    btn.dataset.state = state;
+    btn.setAttribute('aria-pressed', state === 'playing' ? 'true' : 'false');
+    btn.setAttribute(
+      'aria-label',
+      state === 'muted'   ? 'Activar música de fondo' :
+      state === 'playing' ? 'Pausar música de fondo' :
+                            'Reanudar música de fondo'
+    );
+    safeSet(STORAGE_KEY, state);
+  }
+
+  function triggerDramaFlash() {
+    if (!huge) return;
+    if (safeGet(FLASH_KEY, '0') === '1') return;
+    huge.classList.add('stadium-flash');
+    // Remove after the animation completes so it can theoretically run
+    // again in a future session (sessionStorage gate handles "once per
+    // session" semantics independently).
+    setTimeout(() => huge.classList.remove('stadium-flash'), 600);
+    safeSet(FLASH_KEY, '1');
+  }
+
+  function play() {
+    audio.volume = 0.3;
+    const p = audio.play();
+    if (p && typeof p.then === 'function') {
+      p.then(() => {
+        setState('playing');
+        triggerDramaFlash();
+      }).catch(() => {
+        // Autoplay rejected — stay muted, user can try again.
+        setState('muted');
+      });
+    } else {
+      setState('playing');
+      triggerDramaFlash();
+    }
+  }
+
+  function pause() {
+    audio.pause();
+    setState('paused');
+  }
+
+  btn.addEventListener('click', () => {
+    const s = btn.dataset.state;
+    if (s === 'playing') pause();
+    else play();
+  });
+
+  // Page Visibility — pause when tab hides, resume when it returns.
+  // Don't touch the visible state: from the user's perspective the
+  // music is still "on", it just goes quiet while they're elsewhere.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && btn.dataset.state === 'playing') {
+      audio.pause();
+      resumeOnVisible = true;
+    } else if (!document.hidden && resumeOnVisible) {
+      audio.play().catch(() => {});
+      resumeOnVisible = false;
+    }
+  });
+
+  // Restore visual state from sessionStorage. On refresh, even if the
+  // user had it 'playing', we land on 'paused' — browsers won't let us
+  // autoplay across a navigation without a fresh user gesture.
+  const stored = safeGet(STORAGE_KEY, 'muted');
+  if (stored === 'playing') setState('paused');
+  else setState(stored);
+
+  // Scroll-gated visibility, mirrors .wa-float behavior.
+  function applyAudioFloatVisibility() {
+    if (!audioReady) return;
+    btn.classList.toggle('visible', window.scrollY > 300);
+  }
+  registerScrollHook(applyAudioFloatVisibility);
+  applyAudioFloatVisibility();
+})();
+
+// ============================================
 // CONSOLE EASTER EGG — V5 palette
 // ============================================
 console.log('%c TRICOLOR.CO ', 'background:#FFD300;color:#0A0A0A;font-weight:bold;font-size:22px;padding:8px 16px;font-family:"Anton",sans-serif;letter-spacing:0.1em;');

@@ -2255,6 +2255,151 @@ table { border-collapse: collapse; }
 .wa-float svg { width: 22px; height: 22px; fill: currentColor; }
 
 /* ============================================================
+   STADIUM ANTHEM — floating audio player (bottom-left)
+   ============================================================ */
+.audio-float {
+  position: fixed;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0));
+  left: 1rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--yellow);
+  border: 2px solid var(--yellow);
+  box-shadow: 4px 4px 0 var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  /* Two stacked transforms: visibility translate + sticky-buy offset.
+     We drive visibility from JS via inline style, keep CSS clean. */
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.15s, background 0.15s, border-color 0.15s, bottom 0.3s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  padding: 0;
+}
+.audio-float.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.audio-float:hover {
+  box-shadow: 6px 6px 0 var(--ink);
+  background: var(--yellow);
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.audio-float:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+/* When sticky-buy mobile bar is up, lift the float so it stays accessible */
+body.sticky-buy-on .audio-float {
+  bottom: calc(5.5rem + env(safe-area-inset-bottom, 0));
+}
+
+/* Subtle yellow pulse in MUTED state — hints there's something to click */
+.audio-float[data-state="muted"] {
+  animation: audioMutedPulse 2.6s ease-in-out infinite;
+}
+@keyframes audioMutedPulse {
+  0%, 100% { box-shadow: 4px 4px 0 var(--ink), 0 0 0 0 rgba(255,211,0,0.55); }
+  50%      { box-shadow: 4px 4px 0 var(--ink), 0 0 0 8px rgba(255,211,0,0); }
+}
+
+/* Hide all icons by default; show the one matching data-state */
+.audio-float .ap-icon { display: none; }
+.audio-float[data-state="muted"]   .ap-icon-muted   { display: flex; }
+.audio-float[data-state="playing"] .ap-icon-playing { display: inline-flex; }
+.audio-float[data-state="paused"]  .ap-icon-paused  { display: flex; }
+.audio-float .ap-icon-muted,
+.audio-float .ap-icon-paused {
+  width: 22px; height: 22px;
+}
+.audio-float .ap-icon-playing {
+  align-items: center;
+  gap: 3px;
+}
+.audio-float .ap-icon-playing svg {
+  width: 14px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* 3-bar equalizer (PLAYING state only) — yellow bars pulsing */
+.ap-eq {
+  display: inline-flex;
+  align-items: flex-end;
+  height: 16px;
+  gap: 2px;
+}
+.ap-eq span {
+  display: block;
+  width: 2.5px;
+  height: 100%;
+  background: var(--yellow);
+  border-radius: 1px;
+  transform-origin: bottom center;
+  animation: eqBar 0.7s ease-in-out infinite;
+}
+.ap-eq span:nth-child(2) { animation-delay: 0.16s; }
+.ap-eq span:nth-child(3) { animation-delay: 0.32s; }
+.audio-float:hover .ap-eq span { background: var(--ink); }
+
+@keyframes eqBar {
+  0%, 100% { transform: scaleY(0.28); }
+  35%      { transform: scaleY(0.78); }
+  60%      { transform: scaleY(1); }
+}
+
+/* Tooltip — right of button, desktop hover only */
+.ap-tooltip {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-6px);
+  white-space: nowrap;
+  background: var(--ink);
+  color: var(--yellow);
+  border: 2px solid var(--yellow);
+  padding: 0.5rem 0.8rem;
+  font-family: 'Anton', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow: 3px 3px 0 var(--red);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s cubic-bezier(.22,.61,.36,1);
+}
+.audio-float:hover .ap-tooltip,
+.audio-float:focus-visible .ap-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+@media (hover: none) {
+  .ap-tooltip { display: none; }
+}
+
+/* DRAMA FLASH — hero title spotlight on first play of the session.
+   Applied to the .huge parent (not the children) so the per-line
+   vibrate animations on .l1/.l2/.l3 stay running underneath. */
+.stadium-flash {
+  animation: stadiumFlash 0.5s ease-out;
+}
+@keyframes stadiumFlash {
+  0%   { opacity: 1; filter: brightness(1); }
+  35%  { opacity: 0.3; filter: brightness(1.5); }
+  70%  { opacity: 1; filter: brightness(1.15); }
+  100% { opacity: 1; filter: brightness(1); }
+}
+
+/* ============================================================
    STICKY BUY BAR — mobile
    ============================================================ */
 .sticky-buy {

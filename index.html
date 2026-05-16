@@ -801,6 +801,35 @@
 </footer>
 
 <!-- ============================================
+     STADIUM ANTHEM — floating audio player (bottom-left)
+     User must click to start (browser autoplay policy).
+     ============================================ -->
+<audio id="anthem" src="/assets/audio/anthem.mp3" loop preload="metadata"></audio>
+
+<button id="audioPlayer" class="audio-float" type="button" data-state="muted"
+        aria-label="Activar música de fondo" aria-pressed="false">
+  <!-- MUTED — speaker with X overlay -->
+  <svg class="ap-icon ap-icon-muted" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
+    <path d="M15.5 9l6 6m0-6l-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+  </svg>
+  <!-- PLAYING — speaker + animated equalizer -->
+  <span class="ap-icon ap-icon-playing" aria-hidden="true">
+    <svg viewBox="0 0 14 24">
+      <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
+    </svg>
+    <span class="ap-eq">
+      <span></span><span></span><span></span>
+    </span>
+  </span>
+  <!-- PAUSED — play triangle -->
+  <svg class="ap-icon ap-icon-paused" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M8 5l11 7-11 7V5z" fill="currentColor"/>
+  </svg>
+  <span class="ap-tooltip" aria-hidden="true">🎵 El Ritmo Que Nos Une</span>
+</button>
+
+<!-- ============================================
      STICKY WA FLOAT
      ============================================ -->
 <a href="#" class="wa-float" id="waFloat" data-wa data-wa-msg="¡Hola! Quiero pedir mi body Tricolor 🇨🇴" aria-label="Pedir por WhatsApp">

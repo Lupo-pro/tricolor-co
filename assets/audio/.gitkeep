@@ -1,0 +1,3 @@
+# Stadium anthem placeholder folder.
+# Drop anthem.mp3 in here — the player auto-detects 404 and hides itself
+# until the file is available, so the page works in either state.
