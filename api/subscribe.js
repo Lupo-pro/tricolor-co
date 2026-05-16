@@ -9,6 +9,8 @@
    subscription log line is captured either way for backfill.
    ============================================ */
 
+const { renderWelcomeEmail } = require('./_welcome-email');
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FROM = 'La Tricolor <hola@latricolor.co>';
 const SUBJECT = '🇨🇴 Bienvenida a La Tribuna · Tu calendario Mundial';
@@ -68,14 +70,5 @@ module.exports = async function handler(req, res) {
   return res.status(200).json({ ok: true });
 };
 
-// Welcome email — temporary placeholder; the polished V5-styled
-// template lands in the next commit (welcome email template).
-function renderWelcomeEmail({ email }) {
-  return `
-    <p>¡Hola cafetera!</p>
-    <p>Te uniste a La Tribuna. Pronto vas a recibir alertas antes de
-       cada partido de la Tricolor en el Mundial 2026.</p>
-    <p>Tu código de bienvenida: <strong>TRIBUNA10</strong></p>
-    <p><a href="https://latricolor.co">latricolor.co</a></p>
-  `;
-}
+// renderWelcomeEmail lives in ./_welcome-email.js — the underscore
+// prefix keeps it out of Vercel's auto-route detection.
