@@ -167,6 +167,8 @@
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="body-shape" viewBox="0 0 200 280"><path d="M 55 25 Q 55 12 68 10 L 82 10 Q 86 10 88 14 L 94 28 Q 100 35 106 28 L 112 14 Q 114 10 118 10 L 132 10 Q 145 12 145 25 L 145 38 Q 152 45 158 58 Q 168 90 165 130 Q 162 175 154 210 Q 148 235 138 260 L 130 274 Q 126 278 120 278 L 110 278 Q 104 274 104 266 L 104 250 Q 104 244 100 244 Q 96 244 96 250 L 96 266 Q 96 274 90 278 L 80 278 Q 74 278 70 274 L 62 260 Q 52 235 46 210 Q 38 175 35 130 Q 32 90 42 58 Q 48 45 55 38 Z" fill="currentColor"/><circle cx="128" cy="78" r="14" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/><circle cx="72" cy="68" r="8" fill="rgba(255,255,255,0.2)"/></symbol>
+<symbol id="body-shape-side" viewBox="0 0 200 280"><path d="M 80 25 Q 80 12 93 10 L 115 10 Q 122 10 124 18 L 128 32 Q 132 45 142 56 Q 156 75 160 110 Q 162 150 156 195 Q 150 232 138 258 L 132 274 Q 128 278 122 278 L 112 278 Q 106 274 106 266 L 106 252 Q 106 246 102 246 Q 98 246 98 254 L 98 268 Q 96 274 90 276 L 82 276 Q 76 274 74 268 L 68 250 Q 62 220 60 180 Q 58 130 64 92 Q 70 60 78 42 Z" fill="currentColor"/><path d="M 90 100 Q 110 95 130 105 Q 140 130 138 160 Q 130 190 110 195" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/><circle cx="138" cy="78" r="10" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.35)" stroke-width="1"/></symbol>
+<symbol id="body-shape-detail" viewBox="0 0 200 280"><circle cx="100" cy="140" r="78" fill="currentColor" opacity="0.95"/><circle cx="100" cy="140" r="78" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="2 6"/><path d="M 70 110 L 100 80 L 130 110 L 130 150 Q 130 180 100 200 Q 70 180 70 150 Z" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linejoin="round"/><path d="M 86 120 L 100 110 L 114 120 L 114 148 Q 114 168 100 178 Q 86 168 86 148 Z" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/><circle cx="100" cy="142" r="6" fill="rgba(255,255,255,0.8)"/></symbol>
 <symbol id="ic-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413"/></symbol>
 <symbol id="ic-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></symbol>
 <symbol id="ic-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
@@ -668,6 +670,47 @@
   </div>
 </footer>
 
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" inert aria-hidden="true">
+  <div class="lb-overlay" id="lbOverlay"></div>
+  <div class="lb-dialog" role="dialog" aria-modal="true" aria-labelledby="lbTitle">
+    <button type="button" class="lb-close" id="lbClose" aria-label="Cerrar galería">
+      <svg aria-hidden="true"><use href="#ic-close"/></svg>
+    </button>
+    <div class="lb-thumbs" id="lbThumbs" role="tablist" aria-label="Vistas">
+      <button type="button" class="lb-thumb" role="tab" data-view="0" aria-selected="true" aria-controls="lbViewer">
+        <svg viewBox="0 0 200 280" aria-hidden="true"><use href="#body-shape"/></svg>
+        <span>Front</span>
+      </button>
+      <button type="button" class="lb-thumb" role="tab" data-view="1" aria-selected="false" aria-controls="lbViewer">
+        <svg viewBox="0 0 200 280" aria-hidden="true"><use href="#body-shape-side"/></svg>
+        <span>Side</span>
+      </button>
+      <button type="button" class="lb-thumb" role="tab" data-view="2" aria-selected="false" aria-controls="lbViewer">
+        <svg viewBox="0 0 200 280" aria-hidden="true"><use href="#body-shape-detail"/></svg>
+        <span>Detalle</span>
+      </button>
+    </div>
+    <div class="lb-viewer" id="lbViewer" role="tabpanel">
+      <button type="button" class="lb-arrow lb-prev" id="lbPrev" aria-label="Vista anterior">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="lb-slides" id="lbSlides">
+        <div class="lb-slide" data-view="0"><div class="lb-slide-inner"><svg viewBox="0 0 200 280" aria-hidden="true"><use href="#body-shape"/></svg></div></div>
+        <div class="lb-slide" data-view="1"><div class="lb-slide-inner"><svg viewBox="0 0 200 280" aria-hidden="true"><use href="#body-shape-side"/></svg></div></div>
+        <div class="lb-slide" data-view="2"><div class="lb-slide-inner"><svg viewBox="0 0 200 280" aria-hidden="true"><use href="#body-shape-detail"/></svg></div></div>
+      </div>
+      <button type="button" class="lb-arrow lb-next" id="lbNext" aria-label="Vista siguiente">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+    <div class="lb-caption">
+      <span class="lb-product" id="lbTitle">La Capitana</span>
+      <span class="lb-view-name" id="lbViewName">Front · 1 / 3</span>
+    </div>
+  </div>
+</div>
+
 <!-- STICKY BUY BAR (mobile only) -->
 <aside class="sticky-buy" id="stickyBuy" hidden aria-label="Resumen de compra">
   <div class="sb-meta">
@@ -699,6 +742,11 @@
       <div class="modal-tag" id="modalTag">Edición Home</div>
       <h3 class="modal-title" id="modalTitle">La Capitana</h3>
       <p class="modal-desc" id="modalDesc">El amarillo eterno de la Tricolor.</p>
+      <button type="button" class="modal-gallery-trigger" id="modalGalleryBtn">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 5h14v10H3zM7 9h6v4H7zM21 9v10H7"/></svg>
+        Ver más fotos
+        <span class="mgb-count" aria-hidden="true">3</span>
+      </button>
       <div class="modal-price">
         <span class="mp-now" id="modalPriceNow">$99.000</span>
         <span class="mp-old" id="modalPriceOld">$149.000</span>

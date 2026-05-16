@@ -293,6 +293,10 @@ document.querySelectorAll('.product-cta, [data-product]').forEach((btn) => {
 modalClose.addEventListener('click', closeModal);
 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', (e) => {
+  // Don't intercept ESC when the lightbox is active — it owns ESC first and
+  // closes itself, leaving the modal context intact for the user to continue.
+  const lb = document.getElementById('lightbox');
+  if (lb && lb.classList.contains('active')) return;
   if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
 });
 
@@ -307,6 +311,122 @@ document.querySelectorAll('.size-btn').forEach((btn) => {
     updateModalCta(modalTitle.textContent, modalPriceNow.textContent);
   });
 });
+
+// ============================================
+// LIGHTBOX (product photo gallery — SVG placeholders for now)
+// Three views per product (front, side, detail) shown as thumbnails + a
+// swipeable main viewer. Triggered from the modal so users can keep their
+// current product context (color/edition) when they zoom in.
+// ============================================
+const VIEW_NAMES = ['Front', 'Side', 'Detalle'];
+
+(function initLightbox() {
+  const lb = document.getElementById('lightbox');
+  if (!lb) return;
+  const overlay = document.getElementById('lbOverlay');
+  const closeBtn = document.getElementById('lbClose');
+  const thumbs = lb.querySelectorAll('.lb-thumb');
+  const slides = document.getElementById('lbSlides');
+  const prev = document.getElementById('lbPrev');
+  const next = document.getElementById('lbNext');
+  const titleEl = document.getElementById('lbTitle');
+  const viewNameEl = document.getElementById('lbViewName');
+  const trigger = document.getElementById('modalGalleryBtn');
+
+  let currentIndex = 0;
+  let returnFocus = null;
+
+  function goTo(index, animate = true) {
+    currentIndex = (index + 3) % 3;
+    slides.style.transition = animate ? '' : 'none';
+    slides.style.transform = `translateX(-${currentIndex * (100 / 3)}%)`;
+    if (!animate) requestAnimationFrame(() => { slides.style.transition = ''; });
+    thumbs.forEach((t, i) => t.setAttribute('aria-selected', String(i === currentIndex)));
+    viewNameEl.textContent = `${VIEW_NAMES[currentIndex]} · ${currentIndex + 1} / 3`;
+  }
+
+  function setProduct(color, name) {
+    lb.dataset.color = color || 'capitana';
+    titleEl.textContent = name || 'TRICOLOR';
+  }
+
+  function open() {
+    // The currently active modal product tells the lightbox which color +
+    // name to render. Fall back to La Capitana if opened in isolation.
+    const color = (document.querySelector('.modal-visual') || {}).classList?.value.match(/color-(\w+)/)?.[1] || 'capitana';
+    const name = modalTitle?.textContent || 'TRICOLOR';
+    setProduct(color, name);
+    goTo(0, false);
+    returnFocus = document.activeElement;
+    lb.inert = false;
+    lb.classList.add('active');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKey);
+    setTimeout(() => closeBtn.focus(), 50);
+  }
+
+  function close() {
+    lb.classList.remove('active');
+    lb.inert = true;
+    lb.setAttribute('aria-hidden', 'true');
+    document.removeEventListener('keydown', onKey);
+    // If the modal is still open behind the lightbox, scroll lock stays on it.
+    if (!modal.classList.contains('active')) document.body.style.overflow = '';
+    if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
+    returnFocus = null;
+  }
+
+  function onKey(e) {
+    if (e.key === 'Escape') { e.preventDefault(); close(); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); goTo(currentIndex + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(currentIndex - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    else if (e.key === 'End') { e.preventDefault(); goTo(2); }
+  }
+
+  thumbs.forEach((t, i) => t.addEventListener('click', () => goTo(i)));
+  prev.addEventListener('click', () => goTo(currentIndex - 1));
+  next.addEventListener('click', () => goTo(currentIndex + 1));
+  overlay.addEventListener('click', close);
+  closeBtn.addEventListener('click', close);
+
+  // Touch swipe (horizontal). Track delta and snap when released.
+  let touchStartX = null;
+  let touchDelta = 0;
+  slides.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchDelta = 0;
+    slides.style.transition = 'none';
+  }, { passive: true });
+  slides.addEventListener('touchmove', (e) => {
+    if (touchStartX == null) return;
+    touchDelta = e.touches[0].clientX - touchStartX;
+    const base = -currentIndex * (100 / 3);
+    const pct = (touchDelta / window.innerWidth) * (100 / 3);
+    slides.style.transform = `translateX(${base + pct}%)`;
+  }, { passive: true });
+  slides.addEventListener('touchend', () => {
+    if (touchStartX == null) return;
+    slides.style.transition = '';
+    const threshold = 50;
+    if (touchDelta < -threshold) goTo(currentIndex + 1);
+    else if (touchDelta > threshold) goTo(currentIndex - 1);
+    else goTo(currentIndex);
+    touchStartX = null;
+    touchDelta = 0;
+  });
+
+  if (trigger) {
+    trigger.addEventListener('click', () => {
+      open();
+    });
+  }
+
+  // Expose for any other surfaces that want to open the gallery.
+  window.__lightboxOpen = open;
+})();
 
 // ============================================
 // SMOOTH SCROLL
