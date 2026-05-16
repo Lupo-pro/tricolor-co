@@ -812,6 +812,34 @@ document.querySelectorAll('.cta, .product-cta, .size-btn, .nav-cta, .bundle-cta,
   .forEach((b) => b.addEventListener('click', () => vibrate(8)));
 
 // ============================================
+// GORRA GRATIS — cap color selection state
+// One source of truth for the user's preferred gorra color. Both the
+// Regalo section and the product modal read/write through this, so a
+// click in one place reflects in the other (and in the WhatsApp
+// message). Defaults to null until the user picks.
+// ============================================
+let selectedCapColor = null;
+const CAP_LABELS = { negra: 'Negra', roja: 'Roja', amarilla: 'Amarilla', blanca: 'Blanca' };
+
+function setCapColor(color) {
+  if (color && !CAP_LABELS[color]) return;
+  selectedCapColor = color;
+  document.querySelectorAll('.cap-option').forEach((opt) => {
+    const on = opt.dataset.color === color;
+    opt.setAttribute('aria-checked', String(on));
+    opt.classList.toggle('active', on);
+  });
+  // Modal CTA may need to refresh if the modal is open with the gorra
+  // toggle enabled. The modal code below re-reads selectedCapColor when
+  // it rebuilds the message.
+  if (typeof window.__refreshModalCta === 'function') window.__refreshModalCta();
+}
+
+document.querySelectorAll('.cap-option').forEach((btn) => {
+  btn.addEventListener('click', () => setCapColor(btn.dataset.color));
+});
+
+// ============================================
 // STADIUM ANTHEM — floating audio player
 // Three-state toggle (muted → playing → paused → playing → ...).
 // Browsers block autoplay without user interaction, so the player

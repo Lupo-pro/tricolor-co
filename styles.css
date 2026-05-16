@@ -1810,6 +1810,187 @@ html:not(.has-entered) body {
 .mini-4 { background: radial-gradient(circle at 30% 30%, var(--red-warm), var(--red-deep)); color: rgba(0,0,0,0.55); }
 
 /* ============================================================
+   EL REGALO — gorra tricolor gratis section
+   Sits between Collection and Benefits. Black card with tricolor
+   top-bar + a 4-cap picker that lets users preview which color they
+   want before they ever open a product modal.
+   ============================================================ */
+.regalo {
+  padding: 4rem var(--gutter) 5rem;
+  background: var(--bg);
+}
+.regalo-card {
+  position: relative;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  background: var(--ink);
+  color: var(--bg);
+  border: var(--border);
+  padding: 3rem 1.5rem 2.5rem;
+  text-align: center;
+  overflow: hidden;
+}
+.regalo-bars {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 8px;
+  background: linear-gradient(90deg,
+    var(--yellow) 0%, var(--yellow) 33.33%,
+    var(--blue)   33.33%, var(--blue)   66.66%,
+    var(--red)    66.66%, var(--red)    100%);
+}
+.regalo-label {
+  display: inline-block;
+  background: var(--red);
+  color: var(--bg);
+  padding: 0.4rem 1rem;
+  font-family: 'Anton', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border: 2px solid var(--yellow);
+  box-shadow: 3px 3px 0 var(--yellow);
+  transform: rotate(-2deg);
+  margin-bottom: 1.4rem;
+}
+.regalo-title {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(2.4rem, 7vw, 5rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.6rem;
+}
+.regalo-title em {
+  font-family: 'Bebas Neue', sans-serif;
+  color: var(--yellow);
+  font-style: italic;
+  letter-spacing: 0;
+}
+.regalo-sub {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(240,235,224,0.7);
+  margin-bottom: 1.8rem;
+}
+
+/* Cap picker — 4 buttons with SVG caps inside */
+.cap-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 1.4rem;
+  justify-items: center;
+}
+.cap-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255,255,255,0.04);
+  border: 3px solid rgba(240,235,224,0.18);
+  padding: 0.9rem 0.8rem 0.6rem;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(.22,.61,.36,1), border-color 0.18s, background 0.18s, box-shadow 0.18s;
+  width: 100%;
+  max-width: 150px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+.cap-option:hover,
+.cap-option:focus-visible {
+  transform: translateY(-3px);
+  border-color: rgba(255,211,0,0.6);
+  background: rgba(255,211,0,0.05);
+}
+.cap-option[aria-checked="true"] {
+  border-color: var(--yellow);
+  background: rgba(255,211,0,0.08);
+  transform: translateY(-3px);
+  box-shadow: 5px 5px 0 var(--yellow);
+}
+.cap-svg-wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.cap-option svg {
+  width: 80px;
+  height: auto;
+  filter: drop-shadow(2px 3px 0 rgba(0,0,0,0.35));
+}
+.cap-check {
+  position: absolute;
+  top: -8px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--green-grass);
+  color: var(--bg);
+  border: 2px solid var(--ink);
+  font-family: 'Anton', sans-serif;
+  font-size: 0.85rem;
+  line-height: 22px;
+  text-align: center;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.18s, transform 0.18s cubic-bezier(.22,.61,.36,1);
+}
+.cap-option[aria-checked="true"] .cap-check {
+  opacity: 1;
+  transform: scale(1);
+}
+.cap-label {
+  font-family: 'Anton', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bg);
+}
+
+/* Per-color caps — color = SVG currentColor (body+visor); --cap-badge
+   + --cap-star override the badge and star fill so each variant has
+   readable contrast. */
+.cap-negra    { color: #0A0A0A; }
+.cap-negra .cap-option-bg, .cap-negra svg path:first-child { /* dark body */ }
+.cap-roja     { color: #E63946; }
+.cap-amarilla { color: #FFD300; --cap-badge: #E63946; --cap-star: #F0EBE0; }
+.cap-blanca   { color: #F0EBE0; --cap-badge: #E63946; --cap-star: #F0EBE0; }
+
+.regalo-fine {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(240,235,224,0.45);
+  margin-bottom: 1.4rem;
+}
+.regalo-fine strong { color: var(--yellow); font-family: 'Anton', sans-serif; font-weight: 400; }
+
+.regalo-cta {
+  background: var(--yellow);
+  color: var(--ink);
+  border-color: var(--ink);
+  box-shadow: 5px 5px 0 var(--red);
+}
+.regalo-cta:hover {
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: 7px 7px 0 var(--red);
+}
+
+@media (min-width: 640px) {
+  .regalo-card { padding: 3rem 2.5rem 2.5rem; }
+  .cap-picker { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .cap-option svg { width: 90px; }
+}
+
+/* ============================================================
    BENEFITS — ticket-style cards
    ============================================================ */
 .benefits {
