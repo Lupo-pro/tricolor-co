@@ -1780,6 +1780,85 @@ html:not(.has-entered) body {
   margin-left: 0.5rem;
 }
 
+/* Bundle comparison — 4-row breakdown of the savings math under the
+   headline price. Makes the value rational (some buyers want numbers
+   alongside the emotional banner). */
+.bundle-compare {
+  width: 100%;
+  margin: 0 0 1.4rem;
+  border: 2px solid var(--yellow);
+  background: rgba(0,0,0,0.35);
+  border-collapse: collapse;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.06em;
+  font-size: 0.95rem;
+}
+.bundle-compare th,
+.bundle-compare td {
+  padding: 0.6rem 0.85rem;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(240,235,224,0.12);
+  text-transform: uppercase;
+}
+.bundle-compare th {
+  font-weight: 400;
+  color: rgba(240,235,224,0.78);
+}
+.bundle-compare td {
+  text-align: right;
+  color: var(--bg);
+  font-family: 'Anton', sans-serif;
+  letter-spacing: 0.02em;
+}
+.bundle-compare s {
+  color: rgba(240,235,224,0.4);
+  text-decoration: line-through;
+}
+.bundle-compare .bc-bonus th { color: var(--yellow); }
+.bundle-compare .bc-bonus em {
+  font-style: normal;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85em;
+  color: rgba(240,235,224,0.5);
+  letter-spacing: 0.06em;
+  margin-right: 0.4em;
+}
+.bundle-compare .bc-bonus span {
+  background: var(--yellow);
+  color: var(--ink);
+  padding: 0.15rem 0.45rem;
+  font-family: 'Anton', sans-serif;
+  font-size: 0.78em;
+}
+
+.bundle-compare .bc-total {
+  background: var(--ink);
+  border-top: 2px solid var(--yellow);
+}
+.bundle-compare .bc-total th,
+.bundle-compare .bc-total td {
+  border-bottom: 0;
+  padding: 0.85rem;
+  font-size: 1rem;
+}
+.bundle-compare .bc-total th {
+  color: var(--bg);
+  font-family: 'Anton', sans-serif;
+  letter-spacing: 0.08em;
+}
+.bundle-compare .bc-total td {
+  color: var(--yellow);
+}
+.bundle-compare .bc-total strong {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.55em;
+  color: var(--yellow);
+  letter-spacing: 0;
+  margin-right: 0.2em;
+  text-shadow: 2px 2px 0 var(--red);
+}
+
 .bundle-cta {
   background: var(--yellow);
   color: var(--ink);
