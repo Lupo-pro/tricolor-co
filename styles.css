@@ -40,7 +40,15 @@
   --nav-h:       54px;
   --announce-h:  28px;
   --tribune-h:   34px;
-  --offset:      calc(var(--announce-h) + var(--nav-h) + var(--tribune-h));
+  --promo-h:     0px;
+  --offset:      calc(var(--promo-h) + var(--announce-h) + var(--nav-h) + var(--tribune-h));
+}
+
+/* When the -10% promo bar is mounted, the whole top stack shifts down
+   by --promo-h. Variable cascade keeps --offset and every fixed-top
+   bar in sync without per-rule overrides. */
+html.promo-active {
+  --promo-h: 40px;
 }
 
 /* ============================================================
@@ -410,11 +418,106 @@ html:not(.has-entered) body {
 }
 
 /* ============================================================
+   PROMO BAR — persistent -10% bar shown when html.promo-active
+   Sits at the very top of the stack (above announce). Hidden via
+   `display: none` until the promo activates.
+   ============================================================ */
+.promo-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--promo-h);
+  background: linear-gradient(90deg, var(--ink) 0%, var(--red) 50%, var(--ink) 100%);
+  color: var(--bg);
+  border-bottom: 2px solid var(--yellow);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  z-index: 52;
+  padding: 0 1rem;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: promoBarIn 0.4s cubic-bezier(.22,.61,.36,1) both;
+}
+html.promo-active .promo-bar { display: flex; }
+@keyframes promoBarIn {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(0); }
+}
+.pb-icon { font-size: 1.05em; }
+.pb-label { color: rgba(240,235,224,0.85); }
+.pb-label strong { color: var(--yellow); font-family: 'Anton', sans-serif; font-weight: 400; letter-spacing: 0.04em; }
+.pb-code {
+  background: var(--yellow);
+  color: var(--ink);
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  padding: 0.15rem 0.5rem;
+  letter-spacing: 0.08em;
+  border: 1.5px solid var(--ink);
+}
+.pb-expires {
+  color: rgba(240,235,224,0.85);
+}
+.pb-expires #pbExpires {
+  color: var(--yellow);
+  font-family: 'Anton', sans-serif;
+  letter-spacing: 0.04em;
+}
+.pb-copy {
+  background: var(--ink);
+  color: var(--yellow);
+  border: 1.5px solid var(--yellow);
+  font-family: 'Anton', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.12s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+.pb-copy:hover, .pb-copy:focus-visible {
+  background: var(--yellow);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+.pb-copy .pb-copy-done {
+  display: none;
+  color: var(--wa);
+}
+.pb-copy.done {
+  background: var(--wa);
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.pb-copy.done .pb-copy-default { display: none; }
+.pb-copy.done .pb-copy-done { display: inline; color: var(--ink); }
+
+@media (max-width: 640px) {
+  /* Drop the verbose label on small screens. Icon + code + expires +
+     short Copiar button stay visible. */
+  .promo-bar { font-size: 0.7rem; gap: 0.5rem; letter-spacing: 0.08em; padding: 0 0.7rem; }
+  .pb-label { display: none; }
+  .pb-expires { font-size: 0.95em; }
+  .pb-code { padding: 0.1rem 0.4rem; font-size: 0.85rem; }
+  .pb-copy { font-size: 0.65rem; padding: 0.25rem 0.5rem; }
+}
+
+/* ============================================================
    ANNOUNCE BAR — sticky top, marquee, black bg yellow text
    ============================================================ */
 .announce {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: var(--promo-h); left: 0; right: 0;
   background: var(--ink);
   color: var(--yellow);
   height: var(--announce-h);
@@ -447,7 +550,7 @@ html:not(.has-entered) body {
    ============================================================ */
 .nav {
   position: fixed;
-  top: var(--announce-h);
+  top: calc(var(--promo-h) + var(--announce-h));
   left: 0; right: 0;
   height: var(--nav-h);
   padding: 0 var(--gutter);
@@ -579,7 +682,7 @@ html:not(.has-entered) body {
    ============================================================ */
 .tribune-bar {
   position: fixed;
-  top: calc(var(--announce-h) + var(--nav-h));
+  top: calc(var(--promo-h) + var(--announce-h) + var(--nav-h));
   left: 0; right: 0;
   height: var(--tribune-h);
   padding: 0 var(--gutter);

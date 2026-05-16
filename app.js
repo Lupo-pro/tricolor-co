@@ -995,6 +995,100 @@ document.querySelectorAll('.cap-option').forEach((btn) => {
 })();
 
 // ============================================
+// PROMO BAR — persistent -10% sticky bar
+// Lifecycle: on load, check sessionStorage. If promo is ACTIVE and
+// hasn't expired, mount the bar + start the every-minute countdown.
+// When the splash activates the promo, it calls window.__activatePromoBar
+// which is the same function — single source of truth.
+// ============================================
+(function initPromoBar() {
+  const bar = document.getElementById('promoBar');
+  if (!bar) return;
+  const expiresEl = document.getElementById('pbExpires');
+  const copyBtn = document.getElementById('pbCopy');
+
+  function readState() {
+    try {
+      const promo = sessionStorage.getItem('tricolor_promo');
+      const expires = parseInt(sessionStorage.getItem('tricolor_promo_expires') || '0', 10);
+      return { promo, expires };
+    } catch (_) {
+      return { promo: null, expires: 0 };
+    }
+  }
+
+  function clearPromo() {
+    try {
+      sessionStorage.removeItem('tricolor_promo');
+      sessionStorage.removeItem('tricolor_promo_code');
+      sessionStorage.removeItem('tricolor_promo_expires');
+    } catch (_) {}
+    document.documentElement.classList.remove('promo-active');
+  }
+
+  let countdownTimer = null;
+  function tickCountdown() {
+    const { promo, expires } = readState();
+    if (promo !== 'ACTIVE' || Date.now() >= expires) {
+      clearPromo();
+      countdownTimer = null;
+      return;
+    }
+    const left = expires - Date.now();
+    const h = Math.floor(left / 3600000);
+    const m = Math.floor((left % 3600000) / 60000);
+    if (expiresEl) expiresEl.textContent = `${h}h ${String(m).padStart(2, '0')}m`;
+    countdownTimer = setTimeout(tickCountdown, 60000);
+  }
+
+  function mount() {
+    const { promo, expires } = readState();
+    if (promo !== 'ACTIVE' || Date.now() >= expires) {
+      // Stale or absent → make sure bar is hidden + state cleared.
+      clearPromo();
+      return;
+    }
+    document.documentElement.classList.add('promo-active');
+    if (countdownTimer) clearTimeout(countdownTimer);
+    tickCountdown();
+  }
+
+  // Copy to clipboard with toast feedback. Falls back to execCommand
+  // for HTTP-served dev environments where clipboard API is gated.
+  copyBtn?.addEventListener('click', async () => {
+    const code = 'TRICOLOR10';
+    let copied = false;
+    try {
+      await navigator.clipboard.writeText(code);
+      copied = true;
+    } catch (_) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = code;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        copied = true;
+      } catch (__) {}
+    }
+    if (copied) {
+      copyBtn.classList.add('done');
+      setTimeout(() => copyBtn.classList.remove('done'), 1800);
+    }
+  });
+
+  // Expose for the splash IIFE.
+  window.__activatePromoBar = mount;
+
+  // Run once on load — for visitors who already activated earlier in
+  // this session and just reloaded.
+  mount();
+})();
+
+// ============================================
 // SPLASH GATE — first-visit -10% offer screen
 // Loss aversion: the user must actively "activate" the bonus or
 // consciously "continue without it". No auto-dismiss — forcing a
