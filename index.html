@@ -28,57 +28,9 @@
 <meta name="twitter:image" content="https://tricolor.co/og-image.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Critical above-fold CSS (announce, nav, hero) to unblock FCP/LCP. Full styles loaded async below. -->
-<style>
-:root{--bg:#FAF7F2;--bg-warm:#F2EDE4;--ink:#0A0A0A;--ink-soft:#2A2A28;--muted:#5A5752;--line:rgba(10,10,10,0.08);--line-strong:rgba(10,10,10,0.15);--yellow:#FCD116;--yellow-deep:#E8B800;--blue:#003893;--red:#CE1126;--wa:#25D366;--display:'Fraunces',Georgia,serif;--body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;--ease-out:cubic-bezier(0.16,1,0.3,1)}
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-rendering:optimizeLegibility}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-img,svg{max-width:100%;display:block}
-button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
-a{color:inherit;text-decoration:none}
-ul{list-style:none}
-mark{background:transparent;color:inherit}
-.announce{background:var(--ink);color:var(--bg);overflow:hidden;padding:.55rem 0;position:relative;z-index:101}
-.announce-track{display:flex;gap:2rem;white-space:nowrap;animation:scroll 40s linear infinite;font-size:.68rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase}
-.announce-track span{flex-shrink:0}
-@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-nav{position:sticky;top:0;z-index:100;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;background:rgba(250,247,242,.92);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
-.logo{font-family:var(--display);font-weight:900;font-size:1.1rem;letter-spacing:-.02em;display:flex;align-items:center;gap:.5rem;color:var(--ink)}
-.logo em{font-style:normal;font-weight:400;color:var(--red)}
-.logo-mark{display:inline-flex;height:16px;border-radius:2px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.08)}
-.logo-mark span{width:5px;height:100%;display:block}
-.logo-mark span:nth-child(1){background:var(--yellow)}
-.logo-mark span:nth-child(2){background:var(--blue)}
-.logo-mark span:nth-child(3){background:var(--red)}
-.nav-links{display:none}
-.nav-cta{display:none}
-.nav-burger{display:flex;flex-direction:column;justify-content:center;gap:4px;width:32px;height:32px}
-.nav-burger span{display:block;width:22px;height:1.5px;background:var(--ink);border-radius:2px;margin-left:auto}
-.nav-burger span:nth-child(2){width:16px}
-.hero{position:relative;padding:2rem 1.25rem 3rem;overflow:hidden}
-.hero-grid{display:flex;flex-direction:column;gap:3rem}
-.hero-tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.68rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:1.25rem;padding:.4rem .85rem;background:rgba(206,17,38,.06);border:1px solid rgba(206,17,38,.15);border-radius:999px;width:fit-content}
-.tag-dot{width:6px;height:6px;background:var(--red);border-radius:50%}
-.hero-title{font-family:var(--display);font-weight:400;font-size:clamp(3.25rem,14vw,5rem);line-height:.9;letter-spacing:-.04em;margin-bottom:1.25rem}
-.hero-title .line-1,.hero-title .line-2,.hero-title .line-3{display:block}
-.hero-title em{font-style:italic;font-weight:300;color:var(--red)}
-.hero-title mark{position:relative;display:inline-block;font-weight:500;padding:0 .1em}
-.hero-title mark::before{content:'';position:absolute;inset:18% -4% 14% -4%;background:var(--yellow);z-index:-1;transform:rotate(-1deg) skewX(-3deg);border-radius:2px}
-.hero-sub{font-size:1rem;color:var(--ink-soft);max-width:480px;line-height:1.6;margin-bottom:1.75rem}
-.hero-ctas{display:flex;flex-wrap:wrap;gap:.7rem;margin-bottom:2.5rem}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:1rem 1.5rem;border-radius:999px;font-size:.9rem;font-weight:600;letter-spacing:.02em;white-space:nowrap;position:relative;overflow:hidden;transition:all .3s var(--ease-out)}
-.btn svg{width:16px;height:16px;flex-shrink:0}
-.btn-dark{background:var(--ink);color:var(--bg)}
-.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--ink)}
-.hero-stats{display:flex;align-items:center;gap:1.1rem;padding-top:1.5rem;border-top:1px solid var(--line)}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
-</style>
-<!-- Async-load full stylesheet (non-blocking) + noscript fallback for crawlers / no-JS clients. -->
-<link rel="preload" as="style" href="styles.css">
-<link rel="stylesheet" href="styles.css" media="print" onload="this.media='all';this.onload=null">
-<noscript><link rel="stylesheet" href="styles.css"></noscript>
-<!-- Async-load Google Fonts CSS the same way; font-display=swap means fallback shows immediately. -->
+<!-- Main stylesheet blocks render to avoid CLS from a partial critical CSS; it's small (~10KB gzipped). -->
+<link rel="stylesheet" href="styles.css">
+<!-- Async-load Google Fonts CSS; font-display=swap means the fallback renders immediately and the webfont swaps in when ready. -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all';this.onload=null">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
@@ -235,7 +187,7 @@ nav{position:sticky;top:0;z-index:100;padding:1rem 1.25rem;display:flex;justify-
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#top" class="logo" aria-label="Tricolor inicio">
+  <a href="#top" class="logo" aria-label="TRICOLOR.CO — Inicio">
     <span class="logo-mark" aria-hidden="true"><span></span><span></span><span></span></span>
     <span class="logo-text">TRICOLOR<em>.CO</em></span>
   </a>

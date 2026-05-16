@@ -1254,7 +1254,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.55); padding: 0 0 1.5
   align-items: center;
   gap: 0.5rem;
 }
-.footer-brand em { font-style: normal; font-weight: 400; color: var(--red); }
+.footer-brand em { font-style: normal; font-weight: 500; color: var(--yellow); }
 
 .footer-desc { font-size: 0.84rem; line-height: 1.6; margin-bottom: 1.25rem; max-width: 380px; }
 
