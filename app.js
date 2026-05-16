@@ -69,6 +69,39 @@ updateCountdown();
 setInterval(updateCountdown, 1000);
 
 // ============================================
+// DAILY COUNTDOWN — "Oferta válida solo hoy: HH:MM:SS"
+// Counts down to midnight in the user's local timezone. The "today"
+// boundary is per-user — easier and more relatable than forcing COL
+// time on a buyer who's already on tricolor.co.
+// ============================================
+const dcEls = {
+  h: document.getElementById('dc-hours'),
+  m: document.getElementById('dc-mins'),
+  s: document.getElementById('dc-secs'),
+};
+function updateDailyCountdown() {
+  if (!dcEls.h) return;
+  const now = new Date();
+  const eod = new Date(now);
+  eod.setHours(23, 59, 59, 999);
+  const diff = eod - now;
+  if (diff <= 0) {
+    dcEls.h.textContent = '00';
+    dcEls.m.textContent = '00';
+    dcEls.s.textContent = '00';
+    return;
+  }
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  dcEls.h.textContent = String(h).padStart(2, '0');
+  dcEls.m.textContent = String(m).padStart(2, '0');
+  dcEls.s.textContent = String(s).padStart(2, '0');
+}
+updateDailyCountdown();
+setInterval(updateDailyCountdown, 1000);
+
+// ============================================
 // COMBINED SCROLL HANDLER (nav + sticky WA)
 // One rAF-throttled listener instead of two passive ones.
 // ============================================
