@@ -66,6 +66,16 @@ body::before {
 
 ::selection { background: var(--yellow); color: var(--ink); }
 
+:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+a:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+}
+
 /* ====== ANNOUNCE ====== */
 .announce {
   background: var(--ink);
@@ -1287,8 +1297,8 @@ footer { background: var(--ink); color: rgba(255,255,255,0.55); padding: 0 0 1.5
 /* ====== WHATSAPP FLOAT ====== */
 .wa-float {
   position: fixed;
-  bottom: 1rem;
-  right: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  right: calc(1rem + env(safe-area-inset-right, 0px));
   z-index: 95;
   background: var(--wa);
   color: white;
@@ -1537,7 +1547,7 @@ footer { background: var(--ink); color: rgba(255,255,255,0.55); padding: 0 0 1.5
   .how-steps { flex-direction: row; flex-wrap: wrap; }
   .how-step { flex: 1 1 300px; }
   .wa-text { display: inline; }
-  .wa-float { bottom: 1.5rem; right: 1.5rem; }
+  .wa-float { bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)); right: calc(1.5rem + env(safe-area-inset-right, 0px)); }
   .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; padding: 3rem 2rem 2rem; }
   .footer-bottom { flex-direction: row; justify-content: space-between; align-items: center; padding: 1.5rem 2rem 0; }
   .footer-manifesto { padding: 4rem 2rem; }
