@@ -9,9 +9,25 @@
 const WHATSAPP_NUMBER = '573000000000';
 
 const DEFAULT_WA_MSG = '¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴';
+const PROMO_LINE = '🎁 Tengo código TRICOLOR10 (-10%)';
+
+// Append the promo code line to ANY WhatsApp message when the user
+// activated the -10% bonus from the splash AND it hasn't expired.
+// Reads sessionStorage live, so the same href compute path naturally
+// flips on/off as the promo lifecycle changes.
+function applyPromoToMsg(msg) {
+  try {
+    const promo = sessionStorage.getItem('tricolor_promo');
+    const expires = parseInt(sessionStorage.getItem('tricolor_promo_expires') || '0', 10);
+    if (promo === 'ACTIVE' && Date.now() < expires) {
+      return msg + '\n\n' + PROMO_LINE;
+    }
+  } catch (_) {}
+  return msg;
+}
 
 const buildWaUrl = (msg) =>
-  `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg || DEFAULT_WA_MSG)}`;
+  `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(applyPromoToMsg(msg || DEFAULT_WA_MSG))}`;
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -21,12 +37,20 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 // above. Keep the number in one place to avoid drift. Brand reference
 // inside the message bodies is "La Tricolor" (the way Colombians say it)
 // even though the domain + logo render as LATRICOLOR.CO.
+//
+// Factored into a function so the splash + promo-bar can re-run it
+// whenever the promo state flips (activate or expire), keeping every
+// data-wa link's href in sync with the live promo state.
 // ============================================
-document.querySelectorAll('[data-wa]').forEach((el) => {
-  el.href = buildWaUrl(el.dataset.waMsg);
-  if (!el.target) el.target = '_blank';
-  el.rel = 'noopener';
-});
+function refreshAllWaLinks() {
+  document.querySelectorAll('[data-wa]').forEach((el) => {
+    el.href = buildWaUrl(el.dataset.waMsg);
+    if (!el.target) el.target = '_blank';
+    el.rel = 'noopener';
+  });
+}
+refreshAllWaLinks();
+window.__refreshWaLinks = refreshAllWaLinks;
 
 // ============================================
 // STOCK URGENCY — randomized scarcity number per card.
@@ -1024,6 +1048,10 @@ document.querySelectorAll('.cap-option').forEach((btn) => {
       sessionStorage.removeItem('tricolor_promo_expires');
     } catch (_) {}
     document.documentElement.classList.remove('promo-active');
+    // Sync every existing data-wa href back to the promo-less message.
+    if (typeof window.__refreshWaLinks === 'function') {
+      window.__refreshWaLinks();
+    }
   }
 
   let countdownTimer = null;
@@ -1132,6 +1160,10 @@ document.querySelectorAll('.cap-option').forEach((btn) => {
       document.documentElement.classList.add('promo-active');
       if (typeof window.__activatePromoBar === 'function') {
         window.__activatePromoBar();
+      }
+      // Re-stamp every data-wa link with the promo-suffixed message.
+      if (typeof window.__refreshWaLinks === 'function') {
+        window.__refreshWaLinks();
       }
     } else {
       audioApi?.setState('muted');
