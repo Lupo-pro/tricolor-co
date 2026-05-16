@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0A">
+
+<title>Calendario Mundial 2026 Colombia · LATRICOLOR.CO</title>
+<meta name="description" content="Todos los partidos de la Selección Colombia en el Mundial 2026. Calendario, horarios Colombia, outfit recomendado · LATRICOLOR.CO">
+<link rel="canonical" href="https://latricolor.co/mundial">
+<meta property="og:site_name" content="LATRICOLOR.CO">
+<meta property="og:title" content="Calendario Mundial 2026 Colombia · LATRICOLOR.CO">
+<meta property="og:description" content="Todos los partidos de la Tricolor en el Mundial 2026. Alertas, horarios y outfit recomendado.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://latricolor.co/mundial">
+<meta property="og:image" content="https://latricolor.co/og-image.svg">
+<meta property="og:locale" content="es_CO">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Calendario Mundial 2026 Colombia · LATRICOLOR.CO">
+<meta name="twitter:description" content="Todos los partidos de la Tricolor + outfit recomendado.">
+<meta name="twitter:image" content="https://latricolor.co/og-image.svg">
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="manifest" href="/site.webmanifest">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/styles.css">
+<script defer src="/app.js"></script>
+<script defer src="/mundial.js"></script>
+
+<script>
+  try {
+    if (sessionStorage.getItem('tricolor_entered') === '1') {
+      document.documentElement.classList.add('has-entered');
+    }
+    var promo = sessionStorage.getItem('tricolor_promo');
+    var expires = parseInt(sessionStorage.getItem('tricolor_promo_expires') || '0', 10);
+    if (promo === 'ACTIVE' && Date.now() < expires) {
+      document.documentElement.classList.add('promo-active');
+    }
+    // The splash never runs on /mundial — treat the page as already entered.
+    document.documentElement.classList.add('has-entered');
+  } catch (e) {}
+</script>
+</head>
+<body>
+
+<!-- ============================================
+     PROMO STICKY BAR
+     ============================================ -->
+<div class="promo-bar" id="promoBar" role="status" aria-label="Tu descuento activo">
+  <span class="pb-icon" aria-hidden="true">🔓</span>
+  <span class="pb-label">Tu <strong>-10%</strong> activo · Código:</span>
+  <strong class="pb-code">TRICOLOR10</strong>
+  <span class="pb-expires">Expira en <span id="pbExpires">--</span></span>
+  <button class="pb-copy" id="pbCopy" type="button" aria-label="Copiar código TRICOLOR10">
+    <span class="pb-copy-default">Copiar</span>
+    <span class="pb-copy-done" aria-hidden="true">✓ Copiado</span>
+  </button>
+</div>
+
+<!-- ============================================
+     SVG SYMBOLS — minimal set used on this page
+     ============================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-wa" viewBox="0 0 24 24">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413"/>
+    </symbol>
+    <symbol id="ic-ig" viewBox="0 0 24 24">
+      <path d="M12 2.2c3.2 0 3.6 0 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.25.07 1.62.07 4.81s0 3.56-.07 4.81c-.15 3.23-1.66 4.77-4.92 4.92-1.25.06-1.62.07-4.85.07s-3.6 0-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92C2.18 15.56 2.16 15.19 2.16 12s0-3.56.07-4.81C2.38 3.96 3.89 2.42 7.15 2.27 8.4 2.21 8.78 2.2 12 2.2zm0 5.16A4.63 4.63 0 1016.63 12 4.64 4.64 0 0012 7.36zm0 7.64A3.01 3.01 0 1115.01 12 3 3 0 0112 15zm5.97-7.86a1.08 1.08 0 11-1.08-1.08 1.08 1.08 0 011.08 1.08z"/>
+    </symbol>
+    <symbol id="ic-tt" viewBox="0 0 24 24">
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005.8 20.1a6.34 6.34 0 0010.86-4.43V7.43a8.16 8.16 0 005.84 1.83v-3.5a4.74 4.74 0 01-2.92.93z"/>
+    </symbol>
+    <symbol id="ic-check" viewBox="0 0 16 16">
+      <path d="M3 8.5 6.5 12 13 4.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============================================
+     ANNOUNCE BAR
+     ============================================ -->
+<div class="announce" role="banner" aria-label="Anuncio Mundial 2026">
+  <div class="announce-track">
+    <span>🚚 ENVÍO GRATIS A TODA COLOMBIA</span><span class="sep">★</span>
+    <span>🎁 GORRA TRICOLOR GRATIS CON 2+ EDICIONES</span><span class="sep">★</span>
+    <span>💵 PAGA AL RECIBIR</span><span class="sep">★</span>
+    <span>🔥 -34% SOLO HOY</span><span class="sep">★</span>
+    <span>🇨🇴 EDICIÓN MUNDIAL 2026</span><span class="sep">★</span>
+    <span>⚠️ STOCK LIMITADO</span><span class="sep">★</span>
+    <span>🚚 ENVÍO GRATIS A TODA COLOMBIA</span><span class="sep">★</span>
+    <span>🎁 GORRA TRICOLOR GRATIS CON 2+ EDICIONES</span><span class="sep">★</span>
+    <span>💵 PAGA AL RECIBIR</span><span class="sep">★</span>
+    <span>🔥 -34% SOLO HOY</span><span class="sep">★</span>
+  </div>
+</div>
+
+<!-- ============================================
+     NAV
+     ============================================ -->
+<nav class="nav" id="nav" aria-label="Navegación principal">
+  <a href="/" class="logo" aria-label="LATRICOLOR.CO inicio">
+    <span class="logo-flag" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </span>
+    <span class="logo-word">LATRICOLOR.CO</span>
+  </a>
+
+  <div class="nav-links" role="menubar">
+    <a href="/#manifesto" role="menuitem">Manifiesto</a>
+    <a href="/#collection" role="menuitem">La Convocatoria</a>
+    <a href="/mundial" role="menuitem" class="nav-active">Mundial</a>
+    <a href="/#how" role="menuitem">Cómo Comprar</a>
+    <a href="/#tribuna" role="menuitem">La Tribuna</a>
+    <a href="/#faq" role="menuitem">FAQ</a>
+  </div>
+
+  <a href="#" class="nav-cta" data-wa data-wa-msg="¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴">
+    Pedir <span aria-hidden="true">→</span>
+  </a>
+
+  <button class="burger" id="burger" type="button" aria-label="Abrir menú" aria-controls="mobileMenu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ============================================
+     TRIBUNE BAR — live status
+     ============================================ -->
+<div class="tribune-bar" role="status" aria-label="Estado en vivo">
+  <span class="live"><span class="live-dot" aria-hidden="true"></span> EN VIVO</span>
+  <span class="tribune-stat">CALENDARIO MUNDIAL 2026</span>
+  <span class="tribune-sep" aria-hidden="true">★</span>
+  <span class="tribune-stat tribune-stat-cd">
+    EMPIEZA EN
+    <strong><span id="cd-days">--</span>D</strong>
+    <strong><span id="cd-hours">--</span>H</strong>
+    <strong><span id="cd-mins">--</span>M</strong>
+    <strong class="cd-secs"><span id="cd-secs">--</span>S</strong>
+  </span>
+</div>
+
+<!-- ============================================
+     MOBILE MENU
+     ============================================ -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Menú móvil" aria-modal="true">
+  <div class="mm-flag" aria-hidden="true">
+    <span></span><span></span><span></span>
+  </div>
+  <a href="/#manifesto">★ El Manifiesto</a>
+  <a href="/#collection">★ La Convocatoria</a>
+  <a href="/mundial">★ Mundial</a>
+  <a href="/#how">★ Cómo Comprar</a>
+  <a href="/#tribuna">★ La Tribuna</a>
+  <a href="/#faq">★ FAQ</a>
+  <a href="#" class="mm-cta" data-wa data-wa-msg="¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴">
+    Pedir por WhatsApp →
+  </a>
+  <p class="mm-foot">Sé Fuerte. Sé Fiera. <strong>Sé Tricolor.</strong></p>
+</div>
+
+<!-- ============================================
+     MUNDIAL HERO
+     ============================================ -->
+<section class="mundial-hero">
+  <div class="banderola mundial-banderola-1" aria-hidden="true">★ MUNDIAL 2026 ★</div>
+  <div class="banderola mundial-banderola-2" aria-hidden="true">¡VAMOS COLOMBIA!</div>
+
+  <div class="mundial-hero-tag">★ Calendario Oficial · Actualizado en Tiempo Real ★</div>
+
+  <h1 class="mundial-title">
+    <span class="mh-line">El Calendario</span>
+    <span class="mh-line mh-em">de <em>La Tricolor</em></span>
+  </h1>
+
+  <p class="mundial-sub">
+    Todos los partidos de Colombia en el Mundial 2026. Horarios Colombia, outfit recomendado, alertas antes de cada match.
+  </p>
+
+  <div class="mundial-next" id="mundialNext" aria-live="polite">
+    <span class="mn-label">Próximo partido en</span>
+    <span class="mn-clock">
+      <strong id="mn-days">--</strong><span>d</span>
+      <strong id="mn-hours">--</strong><span>h</span>
+      <strong id="mn-mins">--</strong><span>m</span>
+    </span>
+  </div>
+
+  <a href="#suscripcion" class="cta mundial-hero-cta">
+    Suscríbete para no perdértelo <span aria-hidden="true">→</span>
+  </a>
+</section>
+
+<!-- ============================================
+     URGENCY BANNER — appears if next Colombia match is <72h
+     Hidden by default; mundial.js unhides + populates if applicable.
+     ============================================ -->
+<aside class="mundial-urgency" id="mundialUrgency" hidden>
+  <span class="mu-icon" aria-hidden="true">🔥</span>
+  <span class="mu-text">Colombia juega <strong id="muRival">vs --</strong> en <strong id="muIn">--</strong></span>
+  <a href="/#collection" class="mu-cta">Pedir antes del partido →</a>
+</aside>
+
+<!-- ============================================
+     FORM CAPTURE — Únete a La Tribuna
+     ============================================ -->
+<section class="mundial-form-section" id="suscripcion">
+  <div class="mundial-form-card">
+    <div class="mfc-bars" aria-hidden="true"></div>
+
+    <div class="mfc-label" aria-hidden="true">★ Únete a La Tribuna ★</div>
+
+    <h2 class="mfc-title">Alertas antes de cada partido + outfit recomendado.</h2>
+    <p class="mfc-sub">Cero spam. Solo lo que necesitás para no quedarte en outside del Mundial.</p>
+
+    <form class="mundial-form" id="mundialForm" novalidate>
+      <label class="mf-field">
+        <span class="mf-field-label">Tu email</span>
+        <input
+          type="email"
+          id="mfEmail"
+          name="email"
+          placeholder="tu@email.com"
+          required
+          autocomplete="email"
+          inputmode="email"
+          aria-label="Email para alertas Mundial"
+        >
+      </label>
+      <button class="mf-submit" type="submit" id="mfSubmit">
+        Activar Alertas <span aria-hidden="true">🇨🇴</span>
+      </button>
+    </form>
+
+    <p class="mf-feedback" id="mfFeedback" data-state="idle" aria-live="polite">
+      <span class="mf-feedback-idle">Sin spam · Cancela cuando quieras · <strong>487 cafeteras</strong> ya suscritas</span>
+      <span class="mf-feedback-loading">Enviando...</span>
+      <span class="mf-feedback-success">✓ ¡Listo! Revisá tu email para confirmar tu bonus.</span>
+      <span class="mf-feedback-error">Algo salió mal. Intentá de nuevo en un momento.</span>
+      <span class="mf-feedback-invalid">Email inválido. Probá de nuevo.</span>
+    </p>
+  </div>
+</section>
+
+<!-- ============================================
+     CALENDAR — populated by mundial.js from /assets/mundial-2026.json
+     ============================================ -->
+<section class="mundial-calendar" id="mundialCalendar">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-tag">★ Calendario Mundial 2026</div>
+      <h2 class="section-title">Todos los partidos. <em>Cero</em> excusas.</h2>
+    </div>
+    <div class="section-meta">★ HORARIOS COLOMBIA ★<br>★ ACTUALIZADO EN VIVO ★</div>
+  </div>
+
+  <div class="mundial-matches" id="mundialMatches">
+    <p class="mm-loading">Cargando partidos...</p>
+  </div>
+</section>
+
+<!-- ============================================
+     POR QUÉ VESTIR TRICOLOR — outfit recommendations
+     Filled in commit 5.
+     ============================================ -->
+<section class="mundial-products" id="mundialProducts">
+  <!-- placeholder for now -->
+</section>
+
+<!-- ============================================
+     CTA FINAL
+     ============================================ -->
+<section class="mundial-cta-final">
+  <p class="mcf-tag">★ Empezá tu Mundial con estilo ★</p>
+  <h2 class="mcf-title">No mires el Mundial. <em>Vivilo</em> en Tricolor.</h2>
+
+  <a href="#" class="cta cta-wa-huge btn-wa" data-wa data-wa-msg="¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴">
+    <svg class="ic-wa-big" aria-hidden="true"><use href="#ic-wa"/></svg>
+    Pedir por WhatsApp
+  </a>
+
+  <div class="mcf-stats">
+    <span><strong>500+</strong> cafeteras</span>
+    <span class="dot" aria-hidden="true">·</span>
+    <span><strong>4.9 ★</strong></span>
+    <span class="dot" aria-hidden="true">·</span>
+    <span>Envío <strong>24-72h</strong></span>
+  </div>
+</section>
+
+<!-- ============================================
+     FOOTER MARQUEE
+     ============================================ -->
+<div class="foot-marquee" aria-hidden="true">
+  <div class="foot-track">
+    <span>★ SÉ FUERTE</span><span> ★ SÉ FIERA</span><span> ★ SÉ TRICOLOR</span>
+    <span> ★ SÉ FUERTE</span><span> ★ SÉ FIERA</span><span> ★ SÉ TRICOLOR</span>
+    <span> ★ SÉ FUERTE</span><span> ★ SÉ FIERA</span><span> ★ SÉ TRICOLOR</span>
+  </div>
+</div>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="/" class="logo">
+        <span class="logo-flag" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+        <span class="logo-word">LATRICOLOR.CO</span>
+      </a>
+      <p class="footer-mf">Nacimos amarillas, azules y rojas. <em>No es ropa, es bandera.</em></p>
+      <div class="footer-social" aria-label="Redes sociales">
+        <a href="https://instagram.com/latricolor.co" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg><use href="#ic-ig"/></svg>
+        </a>
+        <a href="https://tiktok.com/@latricolor.co" target="_blank" rel="noopener" aria-label="TikTok">
+          <svg><use href="#ic-tt"/></svg>
+        </a>
+        <a href="#" data-wa data-wa-msg="¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴" aria-label="WhatsApp">
+          <svg><use href="#ic-wa"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h5>★ La Tienda</h5>
+      <a href="/#collection">La Capitana</a>
+      <a href="/#collection">La Portera</a>
+      <a href="/#collection">Oro Negro</a>
+      <a href="/#collection">La Cafetera</a>
+      <a href="/#collection">El Once Inicial</a>
+    </div>
+    <div class="footer-col">
+      <h5>★ Ayuda</h5>
+      <a href="/#size">Guía de Tallas</a>
+      <a href="/#how">Cómo Comprar</a>
+      <a href="/#faq">FAQ</a>
+      <a href="#" data-wa data-wa-msg="¡Hola! Necesito ayuda con mi pedido 🇨🇴">Contacto</a>
+    </div>
+    <div class="footer-col">
+      <h5>★ La Hinchada</h5>
+      <a href="/#manifesto">El Manifiesto</a>
+      <a href="/mundial">Calendario Mundial</a>
+      <a href="/#tribuna">La Tribuna</a>
+      <a href="https://instagram.com/latricolor.co" target="_blank" rel="noopener">@latricolor.co</a>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>© 2026 LATRICOLOR.CO · Con orgullo cafetero 🇨🇴</span>
+    <span>Pereira · Armenia · Eje Cafetero</span>
+  </div>
+</footer>
+
+<!-- ============================================
+     AUDIO + WA FLOATS
+     ============================================ -->
+<audio id="anthem" src="/assets/audio/anthem.mp3" loop preload="metadata"></audio>
+
+<button id="audioPlayer" class="audio-float" type="button" data-state="muted"
+        aria-label="Activar música de fondo" aria-pressed="false">
+  <svg class="ap-icon ap-icon-muted" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
+    <path d="M15.5 9l6 6m0-6l-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+  </svg>
+  <span class="ap-icon ap-icon-playing" aria-hidden="true">
+    <svg viewBox="0 0 14 24">
+      <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
+    </svg>
+    <span class="ap-eq">
+      <span></span><span></span><span></span>
+    </span>
+  </span>
+  <svg class="ap-icon ap-icon-paused" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M8 5l11 7-11 7V5z" fill="currentColor"/>
+  </svg>
+  <span class="ap-tooltip" aria-hidden="true">🎵 El Ritmo Que Nos Une</span>
+</button>
+
+<a href="#" class="wa-float" id="waFloat" data-wa data-wa-msg="¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴" aria-label="Pedir por WhatsApp">
+  <svg aria-hidden="true"><use href="#ic-wa"/></svg>
+  <span>Pedir</span>
+</a>
+
+</body>
+</html>

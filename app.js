@@ -279,9 +279,11 @@ const productData = {
 };
 
 // ============================================
-// MODAL
+// MODAL — entire block guarded so /mundial and other pages without
+// the product modal in their DOM don't throw on first-paint.
 // ============================================
 const modal = document.getElementById('modal');
+if (modal) {
 const modalDialog = modal.querySelector('.modal');
 const modalClose = document.getElementById('modalClose');
 const modalVisual = document.getElementById('modalVisual');
@@ -439,6 +441,8 @@ document.querySelectorAll('.size-btn').forEach((btn) => {
     updateModalCta(modalTitle.textContent, modalPriceNow.textContent);
   });
 });
+
+}  // end if (modal)
 
 // ============================================
 // LIGHTBOX (product photo gallery — SVG placeholders for now)
