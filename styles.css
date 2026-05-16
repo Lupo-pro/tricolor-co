@@ -2663,6 +2663,32 @@ html:not(.has-entered) body {
 .cta-final-stats .sep { color: var(--yellow); font-family: 'Anton', sans-serif; font-size: 1.05em; }
 .cta-final-stats .dot { color: rgba(240,235,224,0.4); }
 
+/* Red banner above the WA button — gorra hook front-loaded right at
+   the close moment. Inclined -2deg, hard 4px black shadow. */
+.cta-final-gorra {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--red);
+  color: var(--bg);
+  border: 2px solid var(--ink);
+  padding: 0.75rem 1.4rem;
+  font-family: 'Anton', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 4px 4px 0 var(--ink);
+  transform: rotate(-2deg);
+  margin: 0 auto 1.6rem;
+  max-width: 95%;
+  text-align: center;
+  line-height: 1.2;
+}
+.cta-final-gorra strong {
+  color: var(--yellow);
+  font-weight: 400;
+}
+
 /* Daily countdown — "Oferta válida solo hoy: HH:MM:SS" */
 .cta-final-countdown {
   margin: 1.4rem auto 0;
