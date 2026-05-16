@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V5 — Hinchada Chaos · Extended</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#F0EBE0;color:#0A0A0A;font-family:'Inter',sans-serif;overflow-x:hidden;min-height:100vh;position:relative}
+
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.08;pointer-events:none;z-index:99;mix-blend-mode:multiply}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;padding:0.9rem 1.5rem;display:flex;justify-content:space-between;align-items:center;z-index:50;background:#0A0A0A;color:#F0EBE0;border-bottom:3px solid #E63946}
+.logo{font-family:'Anton';font-size:1.4rem;letter-spacing:0.04em;display:flex;align-items:center;gap:0.4rem;text-transform:uppercase}
+.logo-flag{display:inline-flex;width:24px;height:14px;border-radius:1px;overflow:hidden}
+.logo-flag span{flex:1}
+.logo-flag span:nth-child(1){background:#FFD300}
+.logo-flag span:nth-child(2){background:#0033A0}
+.logo-flag span:nth-child(3){background:#E63946}
+.nav-cta{background:#E63946;color:#F0EBE0;padding:0.5rem 1rem;font-family:'Anton';font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;border:2px solid #0A0A0A;cursor:pointer;transition:all 0.15s;box-shadow:3px 3px 0 #F0EBE0;text-decoration:none;display:inline-flex;align-items:center;gap:0.3rem}
+.nav-cta:hover{background:#FFD300;color:#0A0A0A;transform:translate(-1px,-1px);box-shadow:4px 4px 0 #F0EBE0}
+
+/* ===== TRIBUNE BAR ===== */
+.tribune-bar{position:fixed;top:54px;left:0;right:0;background:#0033A0;color:#FFD300;padding:0.4rem 1rem;font-family:'Bebas Neue';font-size:0.85rem;letter-spacing:0.15em;text-align:center;z-index:49;border-bottom:2px solid #0A0A0A;display:flex;justify-content:center;align-items:center;gap:1rem;flex-wrap:wrap}
+.tribune-bar .live{background:#E63946;color:#fff;padding:0.1rem 0.5rem;border-radius:2px;font-size:0.65rem}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:8rem 1.5rem 4rem;position:relative;background:#F0EBE0;overflow:hidden}
+.stadium-bg{position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(255,211,0,0.18) 0%,transparent 40%),radial-gradient(circle at 80% 70%,rgba(230,57,70,0.18) 0%,transparent 40%);pointer-events:none;z-index:0}
+
+.banderola{position:absolute;background:#FFD300;color:#0A0A0A;padding:0.6rem 1.5rem;font-family:'Anton';font-size:0.95rem;letter-spacing:0.1em;text-transform:uppercase;transform:rotate(-3deg);border:3px solid #0A0A0A;box-shadow:5px 5px 0 #0A0A0A;z-index:2}
+.banderola-1{top:8rem;left:-1rem;background:#E63946;color:#F0EBE0;transform:rotate(-5deg)}
+.banderola-2{top:14rem;right:-2rem;transform:rotate(4deg);background:#0033A0;color:#FFD300}
+
+.huge{font-family:'Anton';font-size:clamp(4rem,18vw,13rem);line-height:0.82;letter-spacing:0;color:#0A0A0A;text-transform:uppercase;text-align:center;margin:2rem 0;position:relative;z-index:1}
+.huge .l1{display:block;animation:vibrate 0.6s ease-in-out infinite}
+.huge .l2{display:block;color:#E63946;font-family:'Bebas Neue';font-size:1.3em;font-style:italic;animation:vibrate 0.6s ease-in-out infinite;animation-delay:0.1s;letter-spacing:-0.02em}
+.huge .l3{display:block;animation:vibrate 0.6s ease-in-out infinite;animation-delay:0.2s}
+@keyframes vibrate{0%,100%{transform:translate(0,0)}25%{transform:translate(-1px,1px)}50%{transform:translate(1px,-1px)}75%{transform:translate(-1px,-1px)}}
+
+.hero-info{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;padding-top:1.5rem;border-top:2px solid #0A0A0A;flex-wrap:wrap;gap:1rem;position:relative;z-index:1}
+.hero-stats{display:flex;gap:1.5rem;font-family:'Bebas Neue'}
+.hero-stats div{display:flex;flex-direction:column;align-items:flex-start}
+.hero-stats span{font-size:0.6rem;letter-spacing:0.2em;color:rgba(10,10,10,0.5);font-family:'Inter';font-weight:500;text-transform:uppercase;margin-bottom:0.1rem}
+.hero-stats strong{font-size:1.5rem;color:#0A0A0A;letter-spacing:0.05em}
+
+.cta{background:#E63946;color:#F0EBE0;padding:1.2rem 2.5rem;font-family:'Anton';font-size:1.1rem;letter-spacing:0.08em;text-transform:uppercase;border:3px solid #0A0A0A;cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;transition:all 0.15s;box-shadow:5px 5px 0 #0A0A0A;text-decoration:none}
+.cta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #0A0A0A;background:#FFD300;color:#0A0A0A}
+
+.confetti{position:absolute;font-size:1.8rem;z-index:1}
+.c1{top:30%;left:8%;transform:rotate(-15deg);animation:float 5s ease-in-out infinite}
+.c2{top:50%;right:6%;transform:rotate(20deg);animation:float 5s ease-in-out infinite;animation-delay:-2s}
+.c3{bottom:30%;left:15%;animation:float 5s ease-in-out infinite;animation-delay:-1s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-12px) rotate(var(--r,0deg))}}
+
+/* ===== MARQUEE ===== */
+.chant-marquee{background:#FFD300;color:#0A0A0A;padding:0.9rem 0;overflow:hidden;border-top:3px solid #0A0A0A;border-bottom:3px solid #0A0A0A;position:relative;z-index:2}
+.chant-track{white-space:nowrap;animation:scroll 22s linear infinite;font-family:'Anton';font-size:1.3rem;letter-spacing:0.05em;text-transform:uppercase;display:inline-block}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ===== MANIFESTO ===== */
+.manifesto{background:#0A0A0A;color:#F0EBE0;padding:6rem 1.5rem;position:relative;overflow:hidden}
+.manifesto::before{content:'';position:absolute;top:0;left:0;width:100%;height:6px;background:linear-gradient(90deg,#FFD300 0%,#FFD300 33.33%,#0033A0 33.33%,#0033A0 66.66%,#E63946 66.66%,#E63946 100%)}
+.manifesto::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:6px;background:linear-gradient(90deg,#FFD300 0%,#FFD300 33.33%,#0033A0 33.33%,#0033A0 66.66%,#E63946 66.66%,#E63946 100%)}
+
+.manifesto-inner{max-width:900px;margin:0 auto;position:relative}
+.manifesto-label{display:inline-block;background:#E63946;color:#F0EBE0;padding:0.4rem 1rem;font-family:'Anton';font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:2rem;transform:rotate(-2deg);border:2px solid #FFD300}
+
+.manifesto-text{font-family:'Anton';font-size:clamp(1.8rem,5vw,3.5rem);line-height:1.05;text-transform:uppercase;letter-spacing:-0.01em}
+.manifesto-text p{margin-bottom:1.2rem}
+.manifesto-text .y{color:#FFD300}
+.manifesto-text .r{color:#E63946;font-style:italic;font-family:'Bebas Neue';letter-spacing:0}
+.manifesto-text .b{color:#0033A0;background:#FFD300;padding:0 0.3rem;display:inline-block;transform:rotate(-1deg)}
+.manifesto-text .hit{background:#E63946;color:#F0EBE0;padding:0 0.4rem;display:inline-block}
+
+.manifesto-sign{margin-top:3rem;padding-top:2rem;border-top:2px solid rgba(240,235,224,0.15);display:flex;align-items:center;gap:1rem;font-family:'Bebas Neue';font-size:1.1rem;letter-spacing:0.15em;flex-wrap:wrap}
+.manifesto-sign .dot{width:8px;height:8px;background:#E63946;border-radius:50%}
+.manifesto-sign strong{color:#FFD300;font-weight:400}
+
+/* ===== COLLECTION ===== */
+.collection{padding:5rem 1.5rem;background:#F0EBE0;position:relative;overflow:hidden}
+.section-head{margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;border-bottom:3px solid #0A0A0A;padding-bottom:1.5rem;position:relative}
+.section-head::before{content:'';position:absolute;bottom:-3px;left:0;width:120px;height:3px;background:#E63946}
+.section-tag{font-family:'Bebas Neue';font-size:0.95rem;letter-spacing:0.2em;color:#0A0A0A;text-transform:uppercase;display:flex;align-items:center;gap:0.5rem}
+.section-tag::before{content:'';width:30px;height:2px;background:#E63946}
+.section-title{font-family:'Anton';font-size:clamp(2.5rem,7vw,5rem);line-height:0.9;text-transform:uppercase;letter-spacing:-0.01em;margin-top:0.5rem}
+.section-title em{font-family:'Bebas Neue';color:#E63946;font-style:italic;letter-spacing:0}
+.section-meta{font-family:'Bebas Neue';font-size:0.95rem;letter-spacing:0.15em;color:rgba(10,10,10,0.6);text-align:right}
+
+.cards-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+.player-card{position:relative;background:#0A0A0A;color:#F0EBE0;border:3px solid #0A0A0A;overflow:hidden;transition:all 0.2s;cursor:pointer}
+.player-card:hover{transform:translateY(-4px);box-shadow:8px 8px 0 #0A0A0A}
+
+.card-top{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 1rem;background:#FFD300;color:#0A0A0A;border-bottom:3px solid #0A0A0A;font-family:'Anton';font-size:0.8rem;letter-spacing:0.15em;text-transform:uppercase}
+.card-top .num{background:#0A0A0A;color:#FFD300;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:0.95rem}
+
+.card-visual{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.card-visual::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,0.04) 0px,rgba(255,255,255,0.04) 1px,transparent 1px,transparent 14px)}
+.card-visual svg{width:55%;filter:drop-shadow(0 15px 25px rgba(0,0,0,0.4));position:relative;z-index:2}
+
+.card-amarilla .card-visual{background:radial-gradient(circle at 30% 30%,#FFE552 0%,#FFD300 50%,#D9B400 100%)}
+.card-amarilla .card-visual svg{color:rgba(0,0,0,0.6)}
+.card-azul .card-visual{background:radial-gradient(circle at 30% 30%,#3B6FE0 0%,#0033A0 50%,#001D5C 100%)}
+.card-azul .card-visual svg{color:rgba(255,211,0,0.7)}
+.card-negro .card-visual{background:radial-gradient(circle at 30% 30%,#3a3a36 0%,#1A1A1A 50%,#0A0A0A 100%)}
+.card-negro .card-visual svg{color:rgba(255,211,0,0.5)}
+.card-rojo .card-visual{background:radial-gradient(circle at 30% 30%,#FF5868 0%,#E63946 50%,#A8141C 100%)}
+.card-rojo .card-visual svg{color:rgba(0,0,0,0.5)}
+
+.card-info{padding:1rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;border-top:3px solid #FFD300}
+.card-name-block .pos{font-family:'Bebas Neue';font-size:0.7rem;letter-spacing:0.2em;color:rgba(240,235,224,0.5);text-transform:uppercase}
+.card-name-block h3{font-family:'Anton';font-size:1.5rem;text-transform:uppercase;letter-spacing:0.02em;margin-top:0.1rem}
+.card-price{display:flex;flex-direction:column;align-items:flex-end}
+.card-price .now{font-family:'Anton';font-size:1.3rem;color:#FFD300}
+.card-price .old{font-size:0.75rem;color:rgba(240,235,224,0.5);text-decoration:line-through;font-family:'Bebas Neue';letter-spacing:0.1em}
+
+.card-cta{padding:0.9rem;background:#E63946;color:#F0EBE0;text-align:center;font-family:'Anton';font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;border-top:3px solid #FFD300;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:0.4rem}
+.card-cta:hover{background:#FFD300;color:#0A0A0A}
+
+/* ===== BUNDLE ===== */
+.bundle{margin-top:3rem;background:#0A0A0A;color:#F0EBE0;border:3px solid #0A0A0A;position:relative;overflow:hidden;display:grid;grid-template-columns:1fr}
+.bundle::before{content:'';position:absolute;top:0;left:0;width:100%;height:8px;background:linear-gradient(90deg,#FFD300 0%,#FFD300 33%,#0033A0 33%,#0033A0 66%,#E63946 66%,#E63946 100%)}
+
+.bundle-content{padding:2.5rem 1.5rem;position:relative}
+.bundle-badge{display:inline-block;background:#FFD300;color:#0A0A0A;padding:0.45rem 1rem;font-family:'Anton';font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;border:2px solid #0A0A0A;transform:rotate(-2deg);margin-bottom:1.5rem;box-shadow:3px 3px 0 #E63946}
+.bundle-title{font-family:'Anton';font-size:clamp(2.2rem,6vw,3.6rem);line-height:0.9;text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:1rem}
+.bundle-title em{font-family:'Bebas Neue';color:#FFD300;font-style:italic;letter-spacing:0}
+.bundle-desc{font-size:0.95rem;line-height:1.5;color:rgba(240,235,224,0.7);max-width:480px;margin-bottom:1.75rem}
+.bundle-price-row{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.bp-now{font-family:'Anton';font-size:2.5rem;color:#FFD300;letter-spacing:-0.01em}
+.bp-old{font-size:1rem;color:rgba(240,235,224,0.4);text-decoration:line-through;font-family:'Bebas Neue';letter-spacing:0.1em}
+.bp-save{background:#E63946;color:#F0EBE0;padding:0.25rem 0.7rem;font-family:'Anton';font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase}
+
+.bundle-cta{background:#FFD300;color:#0A0A0A;padding:1.2rem 2.5rem;font-family:'Anton';font-size:1.1rem;letter-spacing:0.08em;text-transform:uppercase;border:3px solid #F0EBE0;cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;transition:all 0.15s;box-shadow:5px 5px 0 #E63946;text-decoration:none}
+.bundle-cta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #E63946;background:#F0EBE0}
+
+.bundle-visual{display:grid;grid-template-columns:repeat(4,1fr);gap:0.3rem;padding:1rem 1.5rem 2rem}
+.mini{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;border:2px solid #F0EBE0;overflow:hidden;position:relative}
+.mini svg{width:65%}
+.mini-1{background:radial-gradient(circle at 30% 30%,#FFE552,#FFD300)}
+.mini-1 svg{color:rgba(0,0,0,0.55)}
+.mini-2{background:radial-gradient(circle at 30% 30%,#3B6FE0,#0033A0)}
+.mini-2 svg{color:rgba(255,211,0,0.7)}
+.mini-3{background:radial-gradient(circle at 30% 30%,#3a3a36,#0A0A0A)}
+.mini-3 svg{color:rgba(255,211,0,0.5)}
+.mini-4{background:radial-gradient(circle at 30% 30%,#FF5868,#E63946)}
+.mini-4 svg{color:rgba(0,0,0,0.5)}
+
+/* ===== FOOTER MARQUEE ===== */
+.foot-marquee{background:#E63946;color:#F0EBE0;padding:1rem 0;overflow:hidden;border-top:3px solid #0A0A0A}
+.foot-track{white-space:nowrap;animation:scroll 18s linear infinite;font-family:'Anton';font-size:1.5rem;letter-spacing:0.05em;text-transform:uppercase;display:inline-block}
+
+/* ===== STICKY WA ===== */
+.wa-float{position:fixed;bottom:1rem;right:1rem;background:#25D366;color:#fff;padding:0.85rem 1.2rem;border:2px solid #0A0A0A;font-family:'Anton';font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;box-shadow:4px 4px 0 #0A0A0A;cursor:pointer;display:flex;align-items:center;gap:0.5rem;text-decoration:none;z-index:60;transition:all 0.15s}
+.wa-float:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #0A0A0A}
+.wa-float svg{width:20px;height:20px;fill:#fff}
+
+@media (max-width:640px){
+  .banderola{font-size:0.75rem;padding:0.4rem 1rem}
+  .hero-info{justify-content:center;flex-direction:column;text-align:center}
+  .hero-stats{justify-content:center}
+  .bundle-visual{padding:0.5rem 1rem 1.5rem}
+}
+
+@media (min-width:768px){
+  .cards-grid{grid-template-columns:repeat(2,1fr);gap:1.25rem}
+  .bundle{grid-template-columns:1.4fr 1fr;align-items:center}
+  .bundle-content{padding:3rem}
+  .bundle-visual{padding:2rem 2rem 2rem 0}
+}
+@media (min-width:1024px){
+  .cards-grid{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span class="logo-flag"><span></span><span></span><span></span></span>TRICOLOR.CO</div>
+  <a href="#cta" class="nav-cta">Pedir →</a>
+</nav>
+
+<div class="tribune-bar">
+  <span class="live">● EN VIVO</span>
+  <span>47 PEDIDOS HOY · MUNDIAL EMPIEZA EN 27 DÍAS</span>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="stadium-bg"></div>
+  <div class="banderola banderola-1">★ EDICIÓN MUNDIAL 2026 ★</div>
+  <div class="banderola banderola-2">¡VAMOS LAS CAFETERAS!</div>
+
+  <h1 class="huge">
+    <span class="l1">VAMOS</span>
+    <span class="l2">tricolor</span>
+    <span class="l3">VAMOS</span>
+  </h1>
+
+  <div class="confetti c1">🇨🇴</div>
+  <div class="confetti c2">⚽</div>
+  <div class="confetti c3">★</div>
+
+  <div class="hero-info">
+    <div class="hero-stats">
+      <div><span>Ediciones</span><strong>04</strong></div>
+      <div><span>Stock</span><strong>47/200</strong></div>
+      <div><span>Envío</span><strong>24-72h</strong></div>
+    </div>
+    <a href="#cta" class="cta">Pedir el Mío →</a>
+  </div>
+</section>
+
+<!-- CHANT MARQUEE -->
+<div class="chant-marquee">
+  <div class="chant-track">OLÉ OLÉ OLÉ ★ COLOMBIA COLOMBIA ★ VAMOS VAMOS VAMOS ★ TRICOLOR ★ OLÉ OLÉ OLÉ ★ COLOMBIA COLOMBIA ★ VAMOS VAMOS VAMOS ★ TRICOLOR ★</div>
+</div>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <div class="manifesto-inner">
+    <div class="manifesto-label">★ El Manifiesto ★</div>
+    <div class="manifesto-text">
+      <p>Nacimos <span class="y">amarillas,</span> azules y rojas.</p>
+      <p>Crecimos cantando el himno con la mano en el pecho.</p>
+      <p>Lloramos cuando ganamos. <span class="r">Gritamos</span> cuando perdemos.</p>
+      <p>Somos <span class="b">tribuna,</span> somos sala, somos calle.</p>
+      <p>Este body no es ropa. <span class="hit">Es bandera.</span></p>
+    </div>
+    <div class="manifesto-sign">
+      <span class="dot"></span>
+      <span>Sé Fuerte. Sé Fiera.</span>
+      <strong>Sé Tricolor.</strong>
+    </div>
+  </div>
+</section>
+
+<!-- COLLECTION -->
+<section class="collection" id="cta">
+  <div class="section-head">
+    <div>
+      <div class="section-tag">La Convocatoria · 04 Ediciones</div>
+      <h2 class="section-title">Cuatro bodies.<br><em>Una misma</em> camiseta.</h2>
+    </div>
+    <div class="section-meta">★ MUNDIAL 26 ★<br>STOCK LIMITADO</div>
+  </div>
+
+  <div class="cards-grid">
+    <article class="player-card card-amarilla">
+      <div class="card-top"><span class="num">10</span><span>★ TITULAR</span></div>
+      <div class="card-visual"><svg viewBox="0 0 200 280" fill="currentColor"><path d="M55 25Q55 12 68 10L82 10Q86 10 88 14L94 28Q100 35 106 28L112 14Q114 10 118 10L132 10Q145 12 145 25L145 38Q152 45 158 58Q168 90 165 130Q162 175 154 210Q148 235 138 260L130 274Q126 278 120 278L110 278Q104 274 104 266L104 250Q104 244 100 244Q96 244 96 250L96 266Q96 274 90 278L80 278Q74 278 70 274L62 260Q52 235 46 210Q38 175 35 130Q32 90 42 58Q48 45 55 38Z"/></svg></div>
+      <div class="card-info">
+        <div class="card-name-block"><div class="pos">Home · Capitana</div><h3>La Capitana</h3></div>
+        <div class="card-price"><span class="now">$99K</span><span class="old">$149K</span></div>
+      </div>
+      <div class="card-cta">Pedir →</div>
+    </article>
+
+    <article class="player-card card-azul">
+      <div class="card-top"><span class="num">01</span><span>★ ARQUERA</span></div>
+      <div class="card-visual"><svg viewBox="0 0 200 280" fill="currentColor"><path d="M55 25Q55 12 68 10L82 10Q86 10 88 14L94 28Q100 35 106 28L112 14Q114 10 118 10L132 10Q145 12 145 25L145 38Q152 45 158 58Q168 90 165 130Q162 175 154 210Q148 235 138 260L130 274Q126 278 120 278L110 278Q104 274 104 266L104 250Q104 244 100 244Q96 244 96 250L96 266Q96 274 90 278L80 278Q74 278 70 274L62 260Q52 235 46 210Q38 175 35 130Q32 90 42 58Q48 45 55 38Z"/></svg></div>
+      <div class="card-info">
+        <div class="card-name-block"><div class="pos">Away · Vintage</div><h3>La Portera</h3></div>
+        <div class="card-price"><span class="now">$99K</span><span class="old">$149K</span></div>
+      </div>
+      <div class="card-cta">Pedir →</div>
+    </article>
+
+    <article class="player-card card-negro">
+      <div class="card-top"><span class="num">07</span><span>★ ESTRELLA</span></div>
+      <div class="card-visual"><svg viewBox="0 0 200 280" fill="currentColor"><path d="M55 25Q55 12 68 10L82 10Q86 10 88 14L94 28Q100 35 106 28L112 14Q114 10 118 10L132 10Q145 12 145 25L145 38Q152 45 158 58Q168 90 165 130Q162 175 154 210Q148 235 138 260L130 274Q126 278 120 278L110 278Q104 274 104 266L104 250Q104 244 100 244Q96 244 96 250L96 266Q96 274 90 278L80 278Q74 278 70 274L62 260Q52 235 46 210Q38 175 35 130Q32 90 42 58Q48 45 55 38Z"/></svg></div>
+      <div class="card-info">
+        <div class="card-name-block"><div class="pos">Premium · Nocturna</div><h3>Oro Negro</h3></div>
+        <div class="card-price"><span class="now">$99K</span><span class="old">$149K</span></div>
+      </div>
+      <div class="card-cta">Pedir →</div>
+    </article>
+
+    <article class="player-card card-rojo">
+      <div class="card-top"><span class="num">09</span><span>★ GOLEADORA</span></div>
+      <div class="card-visual"><svg viewBox="0 0 200 280" fill="currentColor"><path d="M55 25Q55 12 68 10L82 10Q86 10 88 14L94 28Q100 35 106 28L112 14Q114 10 118 10L132 10Q145 12 145 25L145 38Q152 45 158 58Q168 90 165 130Q162 175 154 210Q148 235 138 260L130 274Q126 278 120 278L110 278Q104 274 104 266L104 250Q104 244 100 244Q96 244 96 250L96 266Q96 274 90 278L80 278Q74 278 70 274L62 260Q52 235 46 210Q38 175 35 130Q32 90 42 58Q48 45 55 38Z"/></svg></div>
+      <div class="card-info">
+        <div class="card-name-block"><div class="pos">Alterna · Cafetera</div><h3>La Cafetera</h3></div>
+        <div class="card-price"><span class="now">$99K</span><span class="old">$149K</span></div>
+      </div>
+      <div class="card-cta">Pedir →</div>
+    </article>
+  </div>
+
+  <!-- BUNDLE -->
+  <div class="bundle">
+    <div class="bundle-content">
+      <div class="bundle-badge">★ EL ONCE INICIAL ★</div>
+      <h3 class="bundle-title">Lleva <em>las cuatro</em> a la cancha.</h3>
+      <p class="bundle-desc">El pack completo para vivir cada partido con una edición diferente. Stock muy limitado, solo para la hinchada más fiera del continente.</p>
+      <div class="bundle-price-row">
+        <span class="bp-now">$329.000</span>
+        <span class="bp-old">$596.000</span>
+        <span class="bp-save">Ahorras $267.000</span>
+      </div>
+      <a href="#" class="bundle-cta">Lo Quiero Completo →</a>
+    </div>
+    <div class="bundle-visual">
+      <div class="mini mini-1"><svg viewBox="0 0 200 280" fill="currentColor"><path d="M55 25Q55 12 68 10L82 10Q86 10 88 14L94 28Q100 35 106 28L112 14Q114 10 118 10L132 10Q145 12 145 25L145 38Q152 45 158 58Q168 90 165 130Q162 175 154 210Q148 235 138 260L130 274Q126 278 120 278L110 278Q104 274 104 266L104 250Q104 244 100 244Q96 244 96 250L96 266Q96 274 90 278L80 278Q74 278 70 274L62 260Q52 235 46 210Q38 175 35 130Q32 90 42 58Q48 45 55 38Z"/></svg></div>
+      <div class="mini mini-2"><svg viewBox="0 0 200 280" fill="currentColor"><path d="M55 25Q55 12 68 10L82 10Q86 10 88 14L94 28Q100 35 106 28L112 14Q114 10 118 10L132 10Q145 12 145 25L145 38Q152 45 158 58Q168 90 165 130Q162 175 154 210Q148 235 138 260L130 274Q126 278 120 278L110 278Q104 274 104 266L104 250Q104 244 100 244Q96 244 96 250L96 266Q96 274 90 278L80 278Q74 278 70 274L62 260Q52 235 46 210Q38 175 35 130Q32 90 42 58Q48 45 55 38Z"/></svg></div>
+      <div class="mini mini-3"><svg viewBox="0 0 200 280" fill="currentColor"><path d="M55 25Q55 12 68 10L82 10Q86 10 88 14L94 28Q100 35 106 28L112 14Q114 10 118 10L132 10Q145 12 145 25L145 38Q152 45 158 58Q168 90 165 130Q162 175 154 210Q148 235 138 260L130 274Q126 278 120 278L110 278Q104 274 104 266L104 250Q104 244 100 244Q96 244 96 250L96 266Q96 274 90 278L80 278Q74 278 70 274L62 260Q52 235 46 210Q38 175 35 130Q32 90 42 58Q48 45 55 38Z"/></svg></div>
+      <div class="mini mini-4"><svg viewBox="0 0 200 280" fill="currentColor"><path d="M55 25Q55 12 68 10L82 10Q86 10 88 14L94 28Q100 35 106 28L112 14Q114 10 118 10L132 10Q145 12 145 25L145 38Q152 45 158 58Q168 90 165 130Q162 175 154 210Q148 235 138 260L130 274Q126 278 120 278L110 278Q104 274 104 266L104 250Q104 244 100 244Q96 244 96 250L96 266Q96 274 90 278L80 278Q74 278 70 274L62 260Q52 235 46 210Q38 175 35 130Q32 90 42 58Q48 45 55 38Z"/></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER MARQUEE -->
+<div class="foot-marquee">
+  <div class="foot-track">★ SÉ FUERTE ★ SÉ FIERA ★ SÉ TRICOLOR ★ SÉ FUERTE ★ SÉ FIERA ★ SÉ TRICOLOR ★ SÉ FUERTE ★ SÉ FIERA ★ SÉ TRICOLOR ★</div>
+</div>
+
+<!-- STICKY WA -->
+<a href="#" class="wa-float">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413"/></svg>
+  <span>Pedir</span>
+</a>
+
+</body>
+</html>
