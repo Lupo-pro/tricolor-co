@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FAF7F2"/>
+      <stop offset="100%" stop-color="#EDE7DA"/>
+    </linearGradient>
+    <linearGradient id="card-yellow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FCD116"/>
+      <stop offset="100%" stop-color="#E8B800"/>
+    </linearGradient>
+    <pattern id="grain" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="rgba(0,0,0,0.015)"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grain)"/>
+
+  <!-- Flag stripe top -->
+  <rect x="0" y="0" width="1200" height="6" fill="#FCD116"/>
+  <rect x="400" y="0" width="400" height="6" fill="#003893"/>
+  <rect x="800" y="0" width="400" height="6" fill="#CE1126"/>
+
+  <!-- Logo mark -->
+  <g transform="translate(80, 80)">
+    <rect x="0" y="0" width="14" height="36" rx="2" fill="#FCD116"/>
+    <rect x="16" y="0" width="14" height="36" rx="2" fill="#003893"/>
+    <rect x="32" y="0" width="14" height="36" rx="2" fill="#CE1126"/>
+    <text x="60" y="28" font-family="Georgia, serif" font-size="28" font-weight="900" fill="#0A0A0A" letter-spacing="-1">TRICOLOR<tspan fill="#CE1126" font-weight="400">.CO</tspan></text>
+  </g>
+
+  <!-- Visual: bodysuit silhouette card -->
+  <g transform="translate(720, 110)">
+    <rect x="0" y="0" width="400" height="450" rx="24" fill="url(#card-yellow)"/>
+    <g transform="translate(80, 65) scale(1.2)">
+      <path d="M 55 25 Q 55 12 68 10 L 82 10 Q 86 10 88 14 L 94 28 Q 100 35 106 28 L 112 14 Q 114 10 118 10 L 132 10 Q 145 12 145 25 L 145 38 Q 152 45 158 58 Q 168 90 165 130 Q 162 175 154 210 Q 148 235 138 260 L 130 274 Q 126 278 120 278 L 110 278 Q 104 274 104 266 L 104 250 Q 104 244 100 244 Q 96 244 96 250 L 96 266 Q 96 274 90 278 L 80 278 Q 74 278 70 274 L 62 260 Q 52 235 46 210 Q 38 175 35 130 Q 32 90 42 58 Q 48 45 55 38 Z" fill="rgba(0,0,0,0.55)"/>
+    </g>
+    <text x="200" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" letter-spacing="3" fill="rgba(0,0,0,0.7)">LA CAPITANA · 01 / 04</text>
+  </g>
+
+  <!-- Big title -->
+  <g transform="translate(80, 220)">
+    <text font-family="Georgia, serif" font-size="120" font-weight="400" fill="#0A0A0A" letter-spacing="-4">
+      <tspan x="0" y="0">Sé</tspan>
+      <tspan x="0" y="120" font-weight="500">Tricolor.</tspan>
+      <tspan x="0" y="240" font-style="italic" font-weight="300" fill="#CE1126">Sé tú.</tspan>
+    </text>
+  </g>
+
+  <!-- Tagline pill -->
+  <g transform="translate(80, 540)">
+    <rect x="0" y="0" width="280" height="38" rx="19" fill="rgba(206,17,38,0.08)" stroke="rgba(206,17,38,0.2)"/>
+    <circle cx="20" cy="19" r="4" fill="#CE1126"/>
+    <text x="34" y="24" font-family="Inter, sans-serif" font-size="13" font-weight="600" letter-spacing="2" fill="#2A2A28">EDICIÓN MUNDIAL 2026</text>
+  </g>
+
+  <!-- URL -->
+  <text x="80" y="600" font-family="Inter, sans-serif" font-size="16" font-weight="600" letter-spacing="3" fill="#8A867E">TRICOLOR.CO · BODYSUITS SELECCIÓN COLOMBIA</text>
+</svg>

@@ -1,0 +1,13 @@
+{
+  "name": "TRICOLOR.CO",
+  "short_name": "Tricolor",
+  "description": "Bodysuits Selección Colombia · Edición Mundial 2026. Sé Tricolor.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#0A0A0A",
+  "lang": "es-CO",
+  "icons": [
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0A0A0A">
+<meta name="robots" content="noindex">
+<title>404 · TRICOLOR.CO</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,300&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    background:#FAF7F2;
+    color:#0A0A0A;
+    font-family:'Inter',-apple-system,sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:2rem;
+    text-align:center;
+    overflow:hidden;
+    position:relative;
+  }
+  body::before{
+    content:'';
+    position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(252,209,22,0.12), transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(206,17,38,0.12), transparent 50%);
+    pointer-events:none;
+  }
+  .wrap{position:relative;z-index:1;max-width:520px}
+  .stripe{
+    display:inline-flex;height:14px;border-radius:3px;overflow:hidden;
+    margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  }
+  .stripe span{width:18px;display:block}
+  .stripe span:nth-child(1){background:#FCD116}
+  .stripe span:nth-child(2){background:#003893}
+  .stripe span:nth-child(3){background:#CE1126}
+  .code{
+    font-family:'Fraunces',Georgia,serif;
+    font-size:clamp(5rem,18vw,9rem);
+    font-weight:400;
+    line-height:0.9;
+    letter-spacing:-0.05em;
+    margin-bottom:1rem;
+  }
+  .code em{font-style:italic;font-weight:300;color:#CE1126}
+  h1{
+    font-family:'Fraunces',Georgia,serif;
+    font-size:clamp(1.5rem,5vw,2.25rem);
+    font-weight:400;
+    letter-spacing:-0.02em;
+    margin-bottom:1rem;
+  }
+  h1 em{font-style:italic;color:#CE1126;font-weight:300}
+  p{font-size:1rem;color:#4A4A48;line-height:1.6;margin-bottom:2rem;max-width:420px;margin-left:auto;margin-right:auto}
+  .cta{
+    display:inline-flex;align-items:center;gap:0.5rem;
+    background:#0A0A0A;color:#FAF7F2;
+    padding:0.95rem 1.5rem;border-radius:999px;
+    font-size:0.9rem;font-weight:600;letter-spacing:0.02em;
+    text-decoration:none;
+    transition:background 0.3s, transform 0.3s;
+  }
+  .cta:hover{background:#CE1126;transform:translateY(-2px)}
+  .cta svg{width:14px;height:14px}
+  .sig{
+    margin-top:3rem;
+    font-family:'Fraunces',Georgia,serif;
+    font-size:0.95rem;font-style:italic;
+    color:#8A867E;
+  }
+  .sig strong{color:#FCD116;-webkit-text-stroke:0.5px #0A0A0A;font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stripe" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="code">4<em>0</em>4</div>
+  <h1>Esta página se <em>fue</em> de fiesta.</h1>
+  <p>La URL que buscas no existe en la Tribuna. Volvé al inicio y elegí tu edición.</p>
+  <a href="/" class="cta">Volver al inicio
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </a>
+  <div class="sig">Sé Fuerte. Sé Fiera. <strong>Sé Tricolor.</strong></div>
+</div>
+</body>
+</html>
