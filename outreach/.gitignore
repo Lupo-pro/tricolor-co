@@ -1,0 +1,15 @@
+# Secrets — never commit
+.env
+.env.local
+.env.*.local
+
+# Runtime
+node_modules/
+
+# Scraped + enriched data + sent log — local only, contains PII
+data/*.json
+!data/.gitkeep
+
+# Editor cruft
+.DS_Store
+*.log

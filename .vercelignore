@@ -1,0 +1,14 @@
+# Keep the outreach toolchain out of public Vercel deploys.
+# Only /api/track-*.js + /api/unsubscribe.js (in the repo's root /api/)
+# need to ship — those land automatically when /outreach/ is excluded.
+outreach/
+
+# Archived v1
+archive-v1/
+
+# Mockups + raw assets
+mockups/
+
+# Local docs that don't need to ship
+BRIEF.md
+DEPLOY.md
