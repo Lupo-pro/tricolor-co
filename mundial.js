@@ -105,6 +105,40 @@
   const NOW = () => Date.now();
   const HOUR = 3600000;
 
+  // Map the JSON's outfit_recommendation keys to (CSS-class suffix +
+  // display label). The CSS classes (.m-outfit-capitana etc.) already
+  // exist; the labels surface inside the per-match recommendation box.
+  const OUTFITS = {
+    'la-capitana': { key: 'capitana', label: 'La Capitana · Home' },
+    'la-portera':  { key: 'portera',  label: 'La Portera · Away' },
+    'la-cafetera': { key: 'cafetera', label: 'La Cafetera · Alterna' },
+    'oro-negro':   { key: 'oronegro', label: 'Oro Negro · Premium' },
+  };
+
+  // The JSON ships flat team names + separate flag fields. The renderer
+  // wants { name, flag } per team — normalize here so the rest of the
+  // file stays readable.
+  function normalizeMatch(m) {
+    const homeTeam = typeof m.team_home === 'string'
+      ? { name: m.team_home, flag: m.team_home_flag || '🏁' }
+      : m.team_home;
+    const awayTeam = typeof m.team_away === 'string'
+      ? { name: m.team_away, flag: m.team_away_flag || '🏁' }
+      : m.team_away;
+    const phaseEs = m.phase === 'Group Stage' ? 'Fase de Grupos' : m.phase;
+    const outfitEntry = m.outfit_recommendation && OUTFITS[m.outfit_recommendation];
+    const stadiumFull = m.city ? `${m.stadium} · ${m.city}` : m.stadium;
+    return {
+      ...m,
+      team_home: homeTeam,
+      team_away: awayTeam,
+      phase: phaseEs,
+      stadium: stadiumFull,
+      outfit: outfitEntry ? outfitEntry.key : m.outfit,
+      outfit_label: outfitEntry ? outfitEntry.label : m.outfit_label,
+    };
+  }
+
   function fmtDate(d) {
     return d.toLocaleDateString('es-CO', {
       timeZone: COL_TZ,
@@ -244,10 +278,11 @@
       return res.json();
     })
     .then((data) => {
-      const matches = (data && data.matches) || [];
-      // Visible set: all Colombia matches + all highlight matches.
-      // Other matches stay in JSON for future expansion but don't
-      // clutter the page.
+      const matches = ((data && data.matches) || []).map(normalizeMatch);
+      // Show every Colombia match + any explicitly highlighted match.
+      // The current data set is Colombia-only so this is effectively
+      // "show everything", but keeping the filter lets future updates
+      // include other-team matches without showing them by default.
       const visible = matches.filter((m) => m.is_colombia || m.is_highlight);
       container.innerHTML = visible.map(renderCard).join('');
       setHeroNext(matches);
