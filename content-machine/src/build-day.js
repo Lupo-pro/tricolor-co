@@ -301,6 +301,25 @@ async function main() {
   await writeFile(join(outDir, 'captions.json'), JSON.stringify(captions, null, 2));
 
   console.log(`\n✓ ${manifest.items.length} drafts → data/drafts/${date}/`);
+
+  // Variety audit — surfaces a layout-distribution histogram + warns
+  // when fewer than 3 distinct layouts are in the batch, which means
+  // the feed will look monotonous. This is informational only; the
+  // build doesn't fail on a low count.
+  const layoutCounts = {};
+  for (const it of manifest.items) {
+    const l = it.layout || 'unknown';
+    layoutCounts[l] = (layoutCounts[l] || 0) + 1;
+  }
+  const distinct = Object.keys(layoutCounts).length;
+  const top = Object.entries(layoutCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([l, n]) => `${l}×${n}`)
+    .join('  ');
+  console.log(`  variety: ${distinct} distinct layouts · ${top}`);
+  if (distinct < 3) {
+    console.log(`  ⚠ batch has <3 distinct layouts — consider adding a sequence/post variant`);
+  }
 }
 
 main().catch((err) => {

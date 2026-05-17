@@ -16,13 +16,20 @@ export function generate({ edition = 'la-capitana', stockStart = 23, stockMid1 =
     'la-cafetera': 'La Cafetera',
   }[edition] || 'La Capitana';
 
+  // Layout rotation — numbers → hook-center → numbers (with the very
+  // last stat) → hook-split (cta). The big-number layout lets the
+  // stock count itself become the headline, which carries more
+  // urgency than the original blocky urgency role.
   return [
     {
       step: 1,
       role: 'urgency',
+      layout: 'numbers',
       offsetMin: 0,
-      headline: 'STOCK BAJANDO',
-      subline: `${name} · Quedan ${stockStart} unidades`,
+      eyebrow: 'STOCK BAJANDO',
+      value: stockStart,
+      label: `UNIDADES · ${name}`,
+      subline: 'Cierra al final del día',
       bg: 'cream',
       accent: 'red',
       sticker: { type: 'countdown', endsInHours: 4, label: 'Cierra en' },
@@ -30,19 +37,24 @@ export function generate({ edition = 'la-capitana', stockStart = 23, stockMid1 =
     {
       step: 2,
       role: 'urgency',
+      layout: 'hook-center',
       offsetMin: 120,
-      headline: 'ÚLTIMA OPORTUNIDAD',
-      subline: `${name} · Quedan ${stockMid1} unidades`,
+      tag: 'ÚLTIMA OPORTUNIDAD',
+      headline: `QUEDAN ${stockMid1}`,
+      subline: `${name} · 2 horas para cerrar`,
       bg: 'red',
-      accent: 'cream',
+      accent: 'yellow',
       sticker: { type: 'countdown', endsInHours: 2, label: 'Cierra en' },
     },
     {
       step: 3,
       role: 'urgency',
+      layout: 'numbers',
       offsetMin: 180,
-      headline: 'A PUNTO DE AGOTARSE',
-      subline: `¡Quedan ${stockMid2} unidades!`,
+      eyebrow: 'A PUNTO DE AGOTARSE',
+      value: stockMid2,
+      label: 'UNIDADES',
+      subline: `${name} · cierra en 1h`,
       bg: 'red',
       accent: 'yellow',
       sticker: { type: 'countdown', endsInHours: 1, label: 'Cierra en' },
@@ -50,11 +62,13 @@ export function generate({ edition = 'la-capitana', stockStart = 23, stockMid1 =
     {
       step: 4,
       role: 'cta',
+      layout: 'hook-split',
       offsetMin: 240,
       headline: 'AGOTADO',
       subline: 'Próximo drop mañana · Activá alertas',
       bg: 'ink',
       accent: 'red',
+      cta: 'Activar Alertas',
       sticker: { type: 'link', url: 'https://latricolor.co/mundial', label: 'Activar alertas' },
     },
   ];
