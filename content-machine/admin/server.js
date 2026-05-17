@@ -193,6 +193,12 @@ app.post('/api/build-week', async (req, res) => {
     'Connection': 'keep-alive',
     'X-Accel-Buffering': 'no',
   });
+  // Defeat Nagle so each SSE write hits the wire immediately instead
+  // of waiting to coalesce — the difference between "stuck at 0/0"
+  // and "ticking forward" in the browser.
+  if (res.socket && typeof res.socket.setNoDelay === 'function') {
+    res.socket.setNoDelay(true);
+  }
   res.flushHeaders();
 
   const emit = (obj) => {
@@ -208,29 +214,39 @@ app.post('/api/build-week', async (req, res) => {
     dates.push(d.toISOString().slice(0, 10));
   }
 
+  console.log(`→ Build week started, count=${count} claude=${wantClaude}`);
   emit({ type: 'start', total: count, claude: wantClaude, dates });
 
   let totalDrafts = 0;
   let okDays = 0;
+  const batchT0 = Date.now();
 
-  for (const date of dates) {
-    emit({ type: 'day-start', date });
+  for (let i = 0; i < dates.length; i++) {
+    const date = dates[i];
+    console.log(`→ Day ${i + 1}/${count}: building ${date}...`);
+    emit({ type: 'day-start', date, index: i + 1, total: count });
     const args = [`--date=${date}`];
     if (!wantClaude) args.push('--no-claude');
+    const dayT0 = Date.now();
     try {
       const r = await runScript(join(ROOT, 'src', 'build-day.js'), args);
       const m = r.stdout.match(/✓ (\d+) drafts/);
       const items = m ? parseInt(m[1], 10) : 0;
       totalDrafts += items;
       okDays++;
-      emit({ type: 'day-ok', date, items });
+      const elapsed = Date.now() - dayT0;
+      console.log(`→ Day ${i + 1}/${count}: done in ${elapsed}ms (${items} drafts)`);
+      emit({ type: 'day-ok', date, items, elapsedMs: elapsed, index: i + 1, total: count });
     } catch (e) {
-      console.error(`✗ build-week ${date}: ${e.message}`);
-      emit({ type: 'day-error', date, error: e.message });
+      const elapsed = Date.now() - dayT0;
+      console.error(`✗ Day ${i + 1}/${count} (${date}) failed in ${elapsed}ms: ${e.message}`);
+      emit({ type: 'day-error', date, error: e.message, elapsedMs: elapsed, index: i + 1, total: count });
     }
   }
 
-  emit({ type: 'done', days: okDays, total_drafts: totalDrafts });
+  const totalElapsed = Date.now() - batchT0;
+  console.log(`→ Build week complete: ${okDays}/${count} days · ${totalDrafts} drafts · ${totalElapsed}ms`);
+  emit({ type: 'done', days: okDays, total_drafts: totalDrafts, elapsedMs: totalElapsed });
   res.end();
 });
 
