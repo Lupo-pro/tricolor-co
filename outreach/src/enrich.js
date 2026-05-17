@@ -4,7 +4,10 @@
 // by score DESC.
 //
 // Filter contract (everything below is OR-rejected):
-//   - 2_000 ≤ followers ≤ 150_000
+//   - 3_000 ≤ followers ≤ 50_000  (true micro sweet spot — above 50K
+//                                 the account usually has an agency
+//                                 or PR contact and isn't reachable
+//                                 with our DM-first cold outreach)
 //   - bio not empty
 //   - bio has none of the BLACKLIST keywords (onlyfans, agency, etc.)
 //   - bio or location has NO Brazilian signal (São Paulo / Fluminense
@@ -146,17 +149,17 @@ function scoreEngagement(er) {
 }
 
 function scoreFollowers(n) {
-  // Sweet spot 5K-30K = 25 pts.
-  // Below: linear ramp from 2K (5pts) → 5K (25pts).
-  // Above: linear decay from 30K (25pts) → 150K (3pts).
-  if (n >= 5_000 && n <= 30_000) return 25;
-  if (n >= 2_000 && n < 5_000) {
-    return Math.round(5 + (n - 2_000) * (20 / 3_000));
+  // Sweet spot 5K-25K = 25 pts (tightened from 5K-30K).
+  // Below: linear ramp from 3K (8pts) → 5K (25pts).
+  // Above: linear decay from 25K (25pts) → 50K (10pts).
+  if (n >= 5_000 && n <= 25_000) return 25;
+  if (n >= 3_000 && n < 5_000) {
+    return Math.round(8 + (n - 3_000) * (17 / 2_000));
   }
-  if (n > 30_000 && n <= 150_000) {
-    return Math.round(25 - (n - 30_000) * (22 / 120_000));
+  if (n > 25_000 && n <= 50_000) {
+    return Math.round(25 - (n - 25_000) * (15 / 25_000));
   }
-  return 0; // out of range — filter should have caught this anyway
+  return 0; // out of range — the filter in shouldKeep() will reject
 }
 
 function scoreNiche(bio) {
@@ -252,7 +255,7 @@ function hasColombianExplicit(record) {
 function shouldKeep(record) {
   if (!record.bio || record.bio.trim().length === 0) return { keep: false, reason: 'no-bio' };
   if (bioHasBlacklist(record.bio)) return { keep: false, reason: 'blacklist' };
-  if (record.followers < 2_000 || record.followers > 150_000) {
+  if (record.followers < 3_000 || record.followers > 50_000) {
     return { keep: false, reason: 'followers-out-of-range' };
   }
   // Hard-reject Brazilian content — #tricolor is heavily used by SP,
