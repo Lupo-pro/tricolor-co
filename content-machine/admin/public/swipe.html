@@ -41,10 +41,7 @@
   <div class="progress-panel">
     <div class="progress-title" id="confirmTitle">Confirm</div>
     <div class="progress-meta" id="confirmBody"></div>
-    <div style="display:flex; gap:0.5rem; margin-top:1rem; justify-content:flex-end;">
-      <button class="bar-btn alt" id="confirmCancel" type="button">Cancel</button>
-      <button class="bar-btn" id="confirmOk" type="button">Confirm</button>
-    </div>
+    <div id="confirmButtons" style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem; justify-content:flex-end;"></div>
   </div>
 </div>
 
@@ -100,8 +97,7 @@
   const $confirmOverlay = document.getElementById('confirmOverlay');
   const $confirmTitle   = document.getElementById('confirmTitle');
   const $confirmBody    = document.getElementById('confirmBody');
-  const $confirmOk      = document.getElementById('confirmOk');
-  const $confirmCancel  = document.getElementById('confirmCancel');
+  const $confirmButtons = document.getElementById('confirmButtons');
   const $useClaude     = document.getElementById('useClaude');
   const $claudeBadge   = document.getElementById('claudeBadge');
   const $progressOverlay = document.getElementById('progressOverlay');
@@ -125,22 +121,32 @@
   }
   function toastError(msg, ms = 5000) { toast(msg, ms, 'error'); }
 
-  function confirmModal(title, body) {
+  // chooseModal — N-option picker. Returns the `value` of the picked
+  // option, or null on cancel/Esc. options: [{ label, value, primary? }]
+  function chooseModal(title, body, options) {
     $confirmTitle.textContent = title;
     $confirmBody.textContent = body;
-    $confirmOverlay.hidden = false;
+    $confirmButtons.innerHTML = '';
     return new Promise((resolve) => {
-      const cleanup = (ans) => {
-        $confirmOverlay.hidden = true;
-        $confirmOk.removeEventListener('click', ok);
-        $confirmCancel.removeEventListener('click', cancel);
-        resolve(ans);
-      };
-      const ok = () => cleanup(true);
-      const cancel = () => cleanup(false);
-      $confirmOk.addEventListener('click', ok);
-      $confirmCancel.addEventListener('click', cancel);
+      const cleanup = (v) => { $confirmOverlay.hidden = true; resolve(v); };
+      for (const opt of options) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'bar-btn' + (opt.primary ? '' : ' alt');
+        btn.textContent = opt.label;
+        btn.addEventListener('click', () => cleanup(opt.value));
+        $confirmButtons.appendChild(btn);
+      }
+      $confirmOverlay.hidden = false;
     });
+  }
+
+  // Legacy yes/no confirm — still used by some buttons (Build month).
+  function confirmModal(title, body) {
+    return chooseModal(title, body, [
+      { label: 'Cancel',  value: false },
+      { label: 'Confirm', value: true, primary: true },
+    ]);
   }
 
   function setClaudeBadge(on) {
@@ -207,7 +213,7 @@
     const $tabs = document.getElementById('dayTabs');
     if (!$tabs) return;
     if (state.days.length <= 1) { $tabs.innerHTML = ''; return; }
-    $tabs.innerHTML = state.days.map((day) => {
+    const dayHtml = state.days.map((day) => {
       const active = day.date === state.date;
       const complete = day.pending === 0 && day.total > 0;
       const cls = 'day-tab' + (active ? ' active' : '') + (!active && complete ? ' complete' : '');
@@ -218,8 +224,28 @@
         <span class="count">${done}/${total}</span>
       </button>`;
     }).join('');
-    for (const btn of $tabs.querySelectorAll('.day-tab')) {
+    // Trailing "→ Semana próxima" tab — triggers a Build batch
+    // starting the day after the last built day. Visually distinct
+    // (red bg) so it doesn't read like a regular day tab.
+    const nextHtml = `<button class="day-tab next-week" id="tabNextWeek" type="button">
+      → Semana próxima
+    </button>`;
+    $tabs.innerHTML = dayHtml + nextHtml;
+    for (const btn of $tabs.querySelectorAll('.day-tab[data-date]')) {
       btn.addEventListener('click', () => switchDay(btn.dataset.date));
+    }
+    const $next = document.getElementById('tabNextWeek');
+    if ($next) {
+      $next.addEventListener('click', async () => {
+        const claude = !!$useClaude.checked;
+        const startDate = nextWeekStart();
+        if (claude) {
+          const ok = await confirmModal('Build próxima semana · with Claude',
+            `7 days × ~12 items = ~84 Claude calls. Estimated cost ≈ $0.08. Start ${startDate}. Proceed?`);
+          if (!ok) return;
+        }
+        runBuildBatch(7, claude, { startDate, titleSuffix: ' · próxima semana' });
+      });
     }
   }
 
@@ -540,8 +566,9 @@
   // Active fetch controller — exposed so the Cancel button can abort.
   let _activeBuild = null;
 
-  async function runBuildBatch(days, claude) {
-    openProgress(`Building ${days} day${days > 1 ? 's' : ''}${claude ? ' · with Claude' : ''}`);
+  async function runBuildBatch(days, claude, opts = {}) {
+    const { startDate, skipExisting = true, titleSuffix = '' } = opts;
+    openProgress(`Building ${days} day${days > 1 ? 's' : ''}${claude ? ' · with Claude' : ''}${titleSuffix}`);
     // Cancel is visible from the very first frame so the operator
     // never gets locked out, even if the fetch hangs.
     $progressCancel.hidden = false;
@@ -551,8 +578,11 @@
     setProgress(0, total);
     progressLine(`Starting batch · ${days} day${days > 1 ? 's' : ''}${claude ? ' · Claude' : ''}`, 'info');
 
-    const url = `/api/build-week?count=${days}&claude=${claude ? 1 : 0}`;
-    console.log(`→ Clicked Build (${days} days, claude=${claude})`);
+    const params = new URLSearchParams({ count: String(days), claude: claude ? '1' : '0' });
+    if (startDate) params.set('startDate', startDate);
+    if (skipExisting === false) params.set('skipExisting', '0');
+    const url = `/api/build-week?${params.toString()}`;
+    console.log(`→ Clicked Build (${days} days, claude=${claude}, startDate=${startDate || 'today'}, skipExisting=${skipExisting})`);
     console.log(`→ Opening fetch ${url}`);
 
     const ac = new AbortController();
@@ -607,9 +637,16 @@
           if (data.type === 'start') {
             setProgress(done, total);
             progressLine(`Queued ${data.total} day${data.total > 1 ? 's' : ''}: ${data.dates.join(' · ')}`, 'info');
+            if (data.skipExisting === false) {
+              progressLine(`(skipExisting OFF — every day will be rebuilt)`, 'info');
+            }
           } else if (data.type === 'day-start') {
             const idx = data.index || (done + 1);
             progressLine(`▶ Day ${idx}/${total} · ${data.date} · building...`, 'info');
+            setProgress(done, total);
+          } else if (data.type === 'day-skipped') {
+            done++;
+            progressLine(`⊘ Day ${data.index || done}/${total} · ${data.date} · already built (skipped)`, 'info');
             setProgress(done, total);
           } else if (data.type === 'day-ok') {
             done++;
@@ -621,13 +658,15 @@
             setProgress(done, total);
           } else if (data.type === 'done') {
             const elapsed = data.elapsedMs ? ` in ${(data.elapsedMs/1000).toFixed(1)}s` : '';
-            progressLine(`\nDone${elapsed} · ${data.total_drafts} drafts across ${data.days} days.`, 'ok');
+            const builtPart = `${data.total_drafts} drafts across ${data.days} day${data.days === 1 ? '' : 's'}`;
+            const skippedPart = data.skipped > 0 ? ` · ${data.skipped} skipped (already built)` : '';
+            progressLine(`\nDone${elapsed} · ${builtPart}${skippedPart}.`, 'ok');
           } else if (data.type === 'fatal') {
             progressLine(`✗ FATAL · ${data.error}`, 'err');
           }
         }
       }
-      toast(`✓ ${done} days generated`);
+      toast(`✓ ${done} days processed`);
       await load();
     } catch (e) {
       if (e.name === 'AbortError') {
@@ -666,14 +705,64 @@
     else if (!$confirmOverlay.hidden) $confirmOverlay.hidden = true;
   });
 
+  function addDaysISO(dateStr, n) {
+    const d = new Date(dateStr + 'T00:00:00Z');
+    d.setUTCDate(d.getUTCDate() + n);
+    return d.toISOString().slice(0, 10);
+  }
+
+  // Resolve "next week" start: day after the latest already-built day.
+  function nextWeekStart() {
+    if (!state.days || state.days.length === 0) {
+      return new Date().toISOString().slice(0, 10);
+    }
+    const lastBuilt = state.days[state.days.length - 1].date;
+    return addDaysISO(lastBuilt, 1);
+  }
+
+  // How many of the next 7 days starting at `startDate` already have
+  // a built manifest? Used to decide whether to show the choice modal.
+  function alreadyBuiltCount(startDate, count = 7) {
+    if (!state.days || state.days.length === 0) return 0;
+    const built = new Set(state.days.map((d) => d.date));
+    let n = 0;
+    for (let i = 0; i < count; i++) {
+      if (built.has(addDaysISO(startDate, i))) n++;
+    }
+    return n;
+  }
+
   $btnBuildWeek.addEventListener('click', async () => {
     const claude = !!$useClaude.checked;
+    const today = new Date().toISOString().slice(0, 10);
+    const builtInWindow = alreadyBuiltCount(today, 7);
+
+    let startDate = today;
+    let titleSuffix = '';
+    if (builtInWindow > 0) {
+      // User has overlap — let them pick.
+      const choice = await chooseModal(
+        'Build week',
+        `Tienes ${builtInWindow} día${builtInWindow > 1 ? 's' : ''} ya construido${builtInWindow > 1 ? 's' : ''} esta semana. ¿Qué hago?`,
+        [
+          { label: 'Cancel',                    value: 'cancel' },
+          { label: '📅 Esta semana (skip)',      value: 'this',   primary: false },
+          { label: '📅+ Semana próxima',         value: 'next',   primary: true  },
+        ],
+      );
+      if (!choice || choice === 'cancel') return;
+      if (choice === 'next') {
+        startDate = nextWeekStart();
+        titleSuffix = ' · próxima semana';
+      }
+    }
+
     if (claude) {
       const ok = await confirmModal('Build week · with Claude',
-        '7 days × ~12 items = ~84 Claude calls. Estimated cost ≈ $0.08. Proceed?');
+        `7 days × ~12 items = ~84 Claude calls. Estimated cost ≈ $0.08. Start ${startDate}. Proceed?`);
       if (!ok) return;
     }
-    runBuildBatch(7, claude);
+    runBuildBatch(7, claude, { startDate, titleSuffix });
   });
 
   $btnBuildMonth.addEventListener('click', async () => {

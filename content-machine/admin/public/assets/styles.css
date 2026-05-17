@@ -491,3 +491,12 @@ main.stage {
   letter-spacing: 0.12em;
   opacity: 0.85;
 }
+
+/* "→ Semana próxima" trailing tab in the day strip */
+.day-tab.next-week {
+  background: var(--red);
+  color: var(--bg);
+  border-color: var(--ink);
+  letter-spacing: 0.1em;
+}
+.day-tab.next-week:hover { box-shadow: 3px 3px 0 var(--ink); }

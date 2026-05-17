@@ -198,6 +198,16 @@ app.get('/api/status', async (_req, res) => {
 async function buildWeekHandler(req, res) {
   const count = Math.max(1, Math.min(60, parseInt(req.query.count, 10) || 7));
   const wantClaude = req.query.claude === '1' || req.query.claude === 'true';
+  // `startDate` lets the client target "next week" without recomputing
+  // here; defaults to today. `skipExisting` (default ON) makes
+  // already-built days emit a `day-skipped` event instead of being
+  // rebuilt — without this, hitting Build week on a fully-built week
+  // would silently rebuild everything and look indistinguishable from
+  // a hang.
+  const startDate = req.query.startDate && isValidDateKey(req.query.startDate)
+    ? req.query.startDate
+    : todayKey();
+  const skipExisting = req.query.skipExisting !== '0' && req.query.skipExisting !== 'false';
 
   if (wantClaude && !claudeConfigured()) {
     return res.status(400).json({
@@ -245,24 +255,38 @@ async function buildWeekHandler(req, res) {
   // helper bubbles up as a `fatal` event and a stack trace in the
   // server console — instead of a silent hang.
   try {
-    const today = new Date(todayKey());
+    const start = new Date(startDate);
     const dates = [];
     for (let i = 0; i < count; i++) {
-      const d = new Date(today);
+      const d = new Date(start);
       d.setUTCDate(d.getUTCDate() + i);
       dates.push(d.toISOString().slice(0, 10));
     }
 
-    console.log(`→ Build week started, count=${count} claude=${wantClaude}`);
-    emit({ type: 'start', total: count, claude: wantClaude, dates });
+    console.log(`→ Build week started, count=${count} start=${startDate} skipExisting=${skipExisting} claude=${wantClaude}`);
+    emit({ type: 'start', total: count, claude: wantClaude, dates, startDate, skipExisting });
 
     let totalDrafts = 0;
     let okDays = 0;
+    let skippedDays = 0;
     const batchT0 = Date.now();
 
     for (let i = 0; i < dates.length; i++) {
       if (aborted) break;
       const date = dates[i];
+
+      // Already built? Skip if requested. The skipped event keeps the
+      // SSE stream flowing so the client never sees "no response".
+      if (skipExisting) {
+        const manifestPath = join(DATA_DIR, 'drafts', date, 'manifest.json');
+        if (await exists(manifestPath)) {
+          skippedDays++;
+          console.log(`→ Day ${i + 1}/${count}: ${date} already built, skipping`);
+          emit({ type: 'day-skipped', date, index: i + 1, total: count });
+          continue;
+        }
+      }
+
       console.log(`→ Day ${i + 1}/${count}: building ${date}...`);
       emit({ type: 'day-start', date, index: i + 1, total: count });
       const args = [`--date=${date}`];
@@ -293,8 +317,8 @@ async function buildWeekHandler(req, res) {
     }
 
     const totalElapsed = Date.now() - batchT0;
-    console.log(`→ Build week complete: ${okDays}/${count} days · ${totalDrafts} drafts · ${totalElapsed}ms (aborted=${aborted})`);
-    emit({ type: 'done', days: okDays, total_drafts: totalDrafts, elapsedMs: totalElapsed, aborted });
+    console.log(`→ Build week complete: ${okDays}/${count} built · ${skippedDays} skipped · ${totalDrafts} drafts · ${totalElapsed}ms (aborted=${aborted})`);
+    emit({ type: 'done', days: okDays, skipped: skippedDays, total_drafts: totalDrafts, elapsedMs: totalElapsed, aborted });
     res.end();
   } catch (e) {
     console.error('✗ Build week handler crashed:', e);
