@@ -569,32 +569,95 @@ html.promo-active .promo-bar { display: flex; }
   box-shadow: 0 6px 0 rgba(230,57,70,0.0);
 }
 
-.logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-family: 'Anton', sans-serif;
-  font-size: 1.35rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--bg);
+/* ============================================================
+   LOGO — TRICOLOR · 3 syllables, each in a flag color
+   .logo-tricolor scales via font-size; --logo-stroke and
+   --logo-shadow are derived inside size-specific wrappers so the
+   contour + offset shadow track the type size.
+   ============================================================ */
+.logo-link {
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
   transition: transform 0.2s;
 }
-.logo:hover { transform: translateY(-1px); }
-.logo-flag {
-  display: inline-flex;
-  width: 28px;
-  height: 16px;
-  border: 1.5px solid var(--bg);
-  overflow: hidden;
-  transition: transform 0.25s cubic-bezier(.22,.61,.36,1);
+.logo-link:hover { transform: translateY(-1px); }
+.logo-link:focus-visible { outline: 3px solid var(--yellow); outline-offset: 4px; }
+
+.logo-tricolor {
+  display: inline-block;
+  font-family: 'Anton', sans-serif;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  line-height: 0.9;
+  white-space: nowrap;
+  /* Defaults — overridden per-context. */
+  --logo-stroke: 1.5px;
+  --logo-shadow: 2px;
+  --logo-stroke-color: var(--ink);
+  --logo-shadow-color: var(--ink);
 }
-.logo-flag span { flex: 1; transition: transform 0.4s cubic-bezier(.22,.61,.36,1); }
-.logo-flag span:nth-child(1) { background: var(--yellow); }
-.logo-flag span:nth-child(2) { background: var(--blue); }
-.logo-flag span:nth-child(3) { background: var(--red); }
-.logo:hover .logo-flag span:nth-child(1) { transform: translateY(-3px); }
-.logo:hover .logo-flag span:nth-child(3) { transform: translateY(3px); }
+.logo-tricolor > span {
+  -webkit-text-stroke: var(--logo-stroke) var(--logo-stroke-color);
+  paint-order: stroke fill;
+  text-shadow: var(--logo-shadow) var(--logo-shadow) 0 var(--logo-shadow-color);
+}
+.logo-tricolor .tri { color: var(--yellow); }
+.logo-tricolor .co  { color: var(--blue); }
+.logo-tricolor .lor { color: var(--red); }
+
+/* On dark surfaces (nav, footer, manifesto bg) the contour + shadow
+   flip to cream so the syllables pop off the black instead of melting
+   into it. */
+.on-dark .logo-tricolor,
+.logo-tricolor.on-dark {
+  --logo-stroke-color: var(--bg);
+  --logo-shadow-color: rgba(0, 0, 0, 0.55);
+}
+
+/* Per-context sizing. Wrap the logo in .logo-link and apply the size
+   class to .logo-link itself so font-size cascades into the syllables. */
+.logo-link.size-nav .logo-tricolor {
+  font-size: 1.5rem;
+  --logo-stroke: 1px;
+  --logo-shadow: 2px;
+}
+.logo-link.size-footer .logo-tricolor {
+  font-size: 2rem;
+  --logo-stroke: 1.5px;
+  --logo-shadow: 3px;
+}
+.logo-link.size-hero .logo-tricolor {
+  font-size: clamp(3.5rem, 11vw, 7rem);
+  --logo-stroke: 2.5px;
+  --logo-shadow: 5px;
+}
+
+/* Full lockup with the eyebrow "★ La ★" — used by the splash. */
+.logo-tricolor-full {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  line-height: 1;
+}
+.logo-tricolor-full .la {
+  display: block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.34em;
+  letter-spacing: 0.4em;
+  margin-bottom: 0.2em;
+  color: currentColor;
+}
+.on-dark .logo-tricolor-full .la { color: var(--bg); }
+
+@media (max-width: 640px) {
+  .logo-link.size-nav .logo-tricolor {
+    font-size: 1.25rem;
+    --logo-stroke: 0.85px;
+    --logo-shadow: 1.5px;
+  }
+}
 
 .nav-links {
   display: none;
