@@ -28,6 +28,9 @@ import { render as renderNumbers }            from './story-numbers.js';
 import { render as renderQuestion }           from './story-question.js';
 import { render as renderBts }                from './story-bts.js';
 import { render as renderMatchScore }         from './story-match-score.js';
+import { render as renderConfession }          from './story-confession.js';
+import { render as renderPov }                 from './story-pov.js';
+import { render as renderQuestionDeep }        from './story-question-deep.js';
 
 const WIDTH = 1080;
 const HEIGHT = 1920;
@@ -41,6 +44,9 @@ const LAYOUTS = {
   'question':            renderQuestion,
   'bts':                 renderBts,
   'match-score':         renderMatchScore,
+  'confession':          renderConfession,
+  'pov':                 renderPov,
+  'question-deep':       renderQuestionDeep,
 };
 
 function pickInkOnBg(bg) {

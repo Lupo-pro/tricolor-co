@@ -26,6 +26,8 @@ import { renderSlide as renderGuide }        from './carousel-guide.js';
 import { renderSlide as renderMood }         from './carousel-mood.js';
 import { renderSlide as renderStorytelling } from './carousel-storytelling.js';
 import { renderSlide as renderComparison }   from './carousel-comparison.js';
+import { renderSlide as renderStoryArc }     from './carousel-story-arc.js';
+import { renderSlide as renderListicle }     from './carousel-listicle.js';
 
 const SIZE = 1080;
 
@@ -157,6 +159,8 @@ const LAYOUT_RENDERERS = {
   'mood':         renderMood,
   'storytelling': renderStorytelling,
   'comparison':   renderComparison,
+  'story-arc':    renderStoryArc,
+  'listicle':     renderListicle,
 };
 
 export async function renderCarousel(descriptor) {

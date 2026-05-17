@@ -28,6 +28,7 @@ import { render as renderQuoteFullbg }     from './post-quote-fullbg.js';
 import { render as renderQuoteCrema }      from './post-quote-crema.js';
 import { render as renderNumbers }         from './post-numbers.js';
 import { render as renderComparison }      from './post-comparison.js';
+import { render as renderQuoteAttributed } from './post-quote-attributed.js';
 
 const SIZE = 1080;
 
@@ -40,6 +41,7 @@ const LAYOUTS = {
   'quote-crema':       renderQuoteCrema,
   'numbers':           renderNumbers,
   'comparison':        renderComparison,
+  'quote-attributed':  renderQuoteAttributed,
 };
 
 export async function renderPost(descriptor) {

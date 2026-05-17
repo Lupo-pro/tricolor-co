@@ -15,6 +15,7 @@ data/layout-tests/**
 data/edu-test/**
 data/seq-test/**
 data/silhouette-test/**
+data/storytell-test/**
 data/daily-packs/**
 data/published.json
 data/failed.json
