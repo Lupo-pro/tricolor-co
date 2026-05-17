@@ -13,6 +13,7 @@ data/approved/**
 !data/approved/.gitkeep
 data/layout-tests/**
 data/edu-test/**
+data/seq-test/**
 data/daily-packs/**
 data/published.json
 data/failed.json
