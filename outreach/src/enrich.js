@@ -23,13 +23,15 @@
 //   - no signal but not Brazilian → -20 score penalty (kept in the
 //     dataset, sorted to the bottom for manual swipe review)
 //
-// Scoring (raw out of 110, capped at [0, 100]):
+// Scoring (raw out of 120, capped at [0, 100]):
 //   40  engagement rate         (4%+ = full; 0% = 20 fallback)
 //   25  follower sweet spot     (5K-30K = full; degraded outside)
 //   15  niche bio keywords      (5 pts/match, capped)
 //   10  email present in bio
 //   10  multi-platform (IG + TikTok)
 //   10  activity bonus          (≥200 posts = 10, ≥50 = 5)
+//   10  target persona signal   (model / fit / dance / lifestyle /
+//                                hincha / student keywords in bio)
 //   +5  Colombia-explicit modifier
 //  -20  Colombia-soft modifier
 // ============================================
@@ -85,6 +87,27 @@ const NICHE_KEYWORDS = [
   'fútbol', 'futbol', 'tricolor', 'colombia', 'moda', 'estilo',
   'fitness', 'paisa', 'cafetera', 'bogotá', 'bogota', 'medellín',
   'medellin', 'cali', 'pereira', 'mundial', 'selección', 'seleccion',
+];
+
+// Target persona signals — bios that mention any of these get a +10
+// score boost. Designed to surface the actual target audience
+// (Colombian women 20-35, lifestyle / fitness / dance / fashion /
+// student) above the broader Colombia-explicit pool.
+const TARGET_SIGNALS = [
+  // Creator identity
+  'modelo', 'influencer', 'creator', 'creadora', 'content creator',
+  // Fitness / wellness
+  'fit', 'fitness', 'gym', 'training', 'entrenadora', 'crossfit',
+  'yoga', 'pilates',
+  // Dance / nightlife
+  'baile', 'bailarina', 'dancer', 'salsa', 'rumba', 'reggaeton',
+  // Lifestyle / fashion
+  'lifestyle', 'ootd', 'estilo', 'fashion', 'streetwear',
+  // Football connection (very on-brand for Tricolor)
+  'amante del fútbol', 'amante del futbol', 'futbolera', 'hincha',
+  'futbol femenino', 'fútbol femenino',
+  // Student / young
+  'estudiante', 'universidad', 'universitaria', 'uni ',
 ];
 
 // Cities, departments, and unambiguous Colombian-Spanish words. Used
@@ -161,6 +184,18 @@ function scoreActivity(posts) {
   return 0;
 }
 
+function hasTargetSignal(bio) {
+  if (!bio) return false;
+  const lower = String(bio).toLowerCase();
+  return TARGET_SIGNALS.some((kw) => lower.includes(kw));
+}
+
+function targetMatches(bio) {
+  if (!bio) return [];
+  const lower = String(bio).toLowerCase();
+  return TARGET_SIGNALS.filter((kw) => lower.includes(kw));
+}
+
 function scoreOverall(record) {
   const sER       = scoreEngagement(record.engagement_rate);
   const sFollow   = scoreFollowers(record.followers);
@@ -168,6 +203,7 @@ function scoreOverall(record) {
   const sEmail    = record.email ? 10 : 0;
   const sMulti    = record.platforms.length > 1 ? 10 : 0;
   const sActivity = scoreActivity(record.posts_count);
+  const sTarget   = record.target_match ? 10 : 0;
 
   // Colombia confidence modifiers — set during filtering.
   //   colombia_explicit: +5  (bio/location names a Colombian city,
@@ -179,7 +215,7 @@ function scoreOverall(record) {
   if (record.colombia_explicit) mods += 5;
   if (record.colombia_soft)     mods -= 20;
 
-  return Math.max(0, Math.min(100, sER + sFollow + sNiche + sEmail + sMulti + sActivity + mods));
+  return Math.max(0, Math.min(100, sER + sFollow + sNiche + sEmail + sMulti + sActivity + sTarget + mods));
 }
 
 // ============================================
@@ -246,6 +282,8 @@ function shouldKeep(record) {
     record.colombia_explicit = false;
     record.colombia_soft = true;
   }
+  // Target persona signal — +10 score bonus in scoreOverall().
+  record.target_match = hasTargetSignal(record.bio);
   return { keep: true };
 }
 
@@ -339,6 +377,7 @@ async function main() {
       continue;
     }
     r.niches = nicheMatches(r.bio);
+    r.target_signals = targetMatches(r.bio);
     r.score = scoreOverall(r);
     kept.push(r);
   }
@@ -351,6 +390,7 @@ async function main() {
   const dmOnly = kept.length - withEmail;
   const explicitCO = kept.filter((k) => k.colombia_explicit).length;
   const softCO = kept.filter((k) => k.colombia_soft).length;
+  const targetHits = kept.filter((k) => k.target_match).length;
   console.log('\n══════════════════════════════════════');
   console.log(`✓ Enriched ${kept.length} profiles → data/enriched.json`);
   console.log(`  With email:        ${withEmail}`);
@@ -358,6 +398,7 @@ async function main() {
   console.log(`  Multi-platform:    ${kept.filter((k) => k.platforms.length > 1).length}`);
   console.log(`  Colombia explicit: ${explicitCO}  (+5 score bonus)`);
   console.log(`  Colombia soft:     ${softCO}  (-20 score penalty, sorted to bottom)`);
+  console.log(`  Target signals:    ${targetHits}  (+10 score bonus — model/fit/dance/student/etc.)`);
   console.log('\nRejected breakdown:');
   for (const [reason, n] of Object.entries(rejected)) {
     if (n > 0) console.log(`  ${reason.padEnd(24)} ${n}`);
