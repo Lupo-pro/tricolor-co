@@ -29,6 +29,7 @@ import { generateCaption } from './ai/claude.js';
 import { PROMPTS } from './ai/prompts.js';
 import { getEducationalDeck, EDUCATIONAL_THEME_KEYS } from './strategy/educational.js';
 import { pickHook, pickHookWeighted, categoryForContentType } from './strategy/hooks.js';
+import { anglesForDay, suggestAngleFor } from './strategy/angles.js';
 import { flaggedSet } from './strategy/preferences.js';
 import { POST_LAYOUTS } from './templater/post.js';
 
@@ -172,17 +173,18 @@ function maybeSwapPostLayout(plan, flagged) {
   return { ...plan, post: { ...plan.post, layout: replacement } };
 }
 
-async function maybeCaption({ promptName, promptArgs }, options, seed) {
+async function maybeCaption({ promptName, promptArgs, angle }, options, seed) {
   if (options.noClaude) {
-    return `[caption — generar después · ${promptName}]`;
+    return `[caption — generar después · ${promptName}${angle ? ' · ' + angle : ''}]`;
   }
   try {
     const promptFn = PROMPTS[promptName];
     if (!promptFn) return `[no prompt mapped for ${promptName}]`;
     // seed (dateKey) lets prompts pick a stable hook per day from
-    // strategy/hooks.js. Falls through harmlessly if the prompt
-    // doesn't read `seed`.
-    const prompt = promptFn({ ...(promptArgs || {}), seed });
+    // strategy/hooks.js. `angle` carries the narrative lens the prompt
+    // should adopt (rebellion, confession, comedy, …). Both fall
+    // through harmlessly if the prompt doesn't read them.
+    const prompt = promptFn({ ...(promptArgs || {}), seed, angle });
     return await generateCaption(prompt);
   } catch (err) {
     console.warn(`  ⚠ Claude failed for ${promptName}: ${err.message}`);
@@ -219,7 +221,24 @@ async function main() {
     console.log(`  prefs:    ${flaggedSummary} flagged patterns will be skipped`);
   }
 
-  const manifest = { date, theme: plan.theme, edition_focus: plan.edition_focus, special: plan.special, items: [] };
+  // Pick 4 distinct narrative angles for this day. Each item rotates
+  // through them so the batch reads as varied perspectives on the
+  // same theme, not three copies of the same voice. Deterministic
+  // per date — same date → same angle order → same caption seeds.
+  const dayAngles = anglesForDay(date, 4);
+  console.log(`  angles:   ${dayAngles.map((a) => a.id).join(' · ')}`);
+  let angleIdx = 0;
+  const nextAngle = () => {
+    const a = dayAngles[angleIdx % dayAngles.length];
+    angleIdx++;
+    return a.id;
+  };
+
+  const manifest = {
+    date, theme: plan.theme, edition_focus: plan.edition_focus, special: plan.special,
+    angles: dayAngles.map((a) => a.id),
+    items: [],
+  };
   const captions = {};
 
   // ─── Stories per sequence ───
@@ -239,20 +258,21 @@ async function main() {
       await writeFile(join(outDir, filename), png);
       const promptName = seq.name === 'match-day' ? 'matchDay' : seq.name.replace(/-(\w)/g, (_, c) => c.toUpperCase());
       const seed = `${date}:${seq.name}:${story.step}`;
+      const angle = nextAngle();
       const { hook, hookCategory } = resolveHook({ promptName, seed, flagged });
-      const caption = await maybeCaption({ promptName, promptArgs: seq.args }, options, seed);
+      const caption = await maybeCaption({ promptName, promptArgs: seq.args, angle }, options, seed);
       captions[id] = caption;
       // Fall back to the role-based renderer if no explicit layout —
       // the manifest records what was actually rendered for prefs.
       const layout = story.layout || `role-${story.role}`;
       manifest.items.push({
         id, kind: 'story', sequence: seq.name, step: story.step, role: story.role,
-        layout, hook, hookCategory,
+        layout, hook, hookCategory, angle,
         offsetMin: story.offsetMin, headline: story.headline, subline: story.subline,
         bg: story.bg, accent: story.accent, sticker: story.sticker || null,
         file: filename, caption_key: id,
       });
-      console.log(`  ✓ ${id} (${(png.length / 1024).toFixed(0)} KB)`);
+      console.log(`  ✓ ${id} (${(png.length / 1024).toFixed(0)} KB · ${angle})`);
     }
   }
 
@@ -261,18 +281,21 @@ async function main() {
     const rawPlan = postPlan(postKey, plan);
     const p = maybeSwapPostLayout(rawPlan, flagged);
     const id = `post-${postKey}`;
-    const png = await renderPost(p.post);
+    // Pass the picked angle into the renderer so a composition seed
+    // and the prompt see the same lens.
+    const angle = nextAngle();
+    const png = await renderPost({ ...p.post, compositionSeed: `${id}:${angle}` });
     const filename = `${id}.png`;
     await writeFile(join(outDir, filename), png);
     const seed = `${date}:post:${postKey}`;
     const { hook, hookCategory } = resolveHook({ promptName: p.promptName, seed, flagged });
-    const caption = await maybeCaption({ promptName: p.promptName, promptArgs: p.promptArgs }, options, seed);
+    const caption = await maybeCaption({ promptName: p.promptName, promptArgs: p.promptArgs, angle }, options, seed);
     captions[id] = caption;
     manifest.items.push({
-      id, kind: 'post', key: postKey, hook, hookCategory, ...p.post,
+      id, kind: 'post', key: postKey, hook, hookCategory, angle, ...p.post,
       file: filename, caption_key: id,
     });
-    console.log(`  ✓ ${id} (${(png.length / 1024).toFixed(0)} KB)`);
+    console.log(`  ✓ ${id} (${(png.length / 1024).toFixed(0)} KB · ${angle})`);
   }
 
   // ─── Carousel ───
@@ -287,14 +310,15 @@ async function main() {
       fileNames.push(fn);
     }
     const seed = `${date}:carousel:${plan.carousel}`;
+    const angle = nextAngle();
     const { hook, hookCategory } = resolveHook({ promptName: 'carousel', carouselTheme: plan.carousel, seed, flagged });
-    const caption = await maybeCaption({ promptName: 'carousel', promptArgs: { type: plan.carousel } }, options, seed);
+    const caption = await maybeCaption({ promptName: 'carousel', promptArgs: { type: plan.carousel }, angle }, options, seed);
     captions[id] = caption;
     manifest.items.push({
-      id, kind: 'carousel', theme: plan.carousel, layout, hook, hookCategory,
+      id, kind: 'carousel', theme: plan.carousel, layout, hook, hookCategory, angle,
       slideCount: buffers.length, files: fileNames, caption_key: id,
     });
-    console.log(`  ✓ ${id} (${buffers.length} slides)`);
+    console.log(`  ✓ ${id} (${buffers.length} slides · ${angle})`);
   }
 
   await writeFile(join(outDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
