@@ -47,25 +47,10 @@ function renderWelcomeEmail({ email } = {}) {
           </td>
         </tr>
 
-        <!-- Brand line -->
+        <!-- Brand line · TRICOLOR 3-color logo -->
         <tr>
-          <td align="center" style="padding:24px 24px 8px;">
-            <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-              <tr>
-                <td style="font-size:0;line-height:0;padding-right:8px;">
-                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="36" style="border:1.5px solid #0A0A0A;">
-                    <tr>
-                      <td bgcolor="#FFD300" width="12" height="20" style="height:20px;background:#FFD300;">&nbsp;</td>
-                      <td bgcolor="#0033A0" width="12" height="20" style="height:20px;background:#0033A0;">&nbsp;</td>
-                      <td bgcolor="#E63946" width="12" height="20" style="height:20px;background:#E63946;">&nbsp;</td>
-                    </tr>
-                  </table>
-                </td>
-                <td style="font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:900;letter-spacing:1px;color:#0A0A0A;">
-                  LATRICOLOR<span style="color:#E63946;">.CO</span>
-                </td>
-              </tr>
-            </table>
+          <td align="center" style="padding:24px 24px 8px;font-family:Georgia,'Times New Roman',serif;font-size:30px;font-weight:900;letter-spacing:-1px;line-height:1;text-transform:uppercase;">
+            <span style="color:#FFD300;text-shadow:2px 2px 0 #0A0A0A;">Tri</span><span style="color:#0033A0;text-shadow:2px 2px 0 #0A0A0A;">co</span><span style="color:#E63946;text-shadow:2px 2px 0 #0A0A0A;">lor</span>
           </td>
         </tr>
 
