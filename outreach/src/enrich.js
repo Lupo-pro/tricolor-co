@@ -4,18 +4,24 @@
 // by score DESC.
 //
 // Filter contract (everything below is OR-rejected):
-//   - 3_000 ≤ followers ≤ 100_000
-//   - engagement_rate ≥ 2%
+//   - 2_000 ≤ followers ≤ 150_000  (relaxed from 3K-100K)
 //   - bio not empty
 //   - bio has none of the BLACKLIST keywords (onlyfans, agency, etc.)
 //   - recent activity: last_post_date within 30d (IG) / 14d (TikTok)
 //
-// Scoring (out of 100):
-//   40  engagement rate         (4%+ = full; linear below)
+// Engagement is NO LONGER a hard filter: the TikTok actor doesn't
+// expose ER, so every TikTok-only profile reported ER=0 and was
+// rejected wholesale. ER still factors into scoring; the final
+// triage happens in the swipe admin UI.
+//
+// Scoring (out of 110, capped at 100):
+//   40  engagement rate         (4%+ = full; 0% = 20 fallback; linear in between)
 //   25  follower sweet spot     (5K-30K = full; degraded outside)
 //   15  niche bio keywords      (5 pts/match, capped)
 //   10  email present in bio
 //   10  multi-platform (IG + TikTok)
+//   10  activity bonus          (≥200 posts = 10, ≥50 = 5 — tie-breaker
+//                                when ER is unknown)
 // ============================================
 
 import { readFile, writeFile } from 'node:fs/promises';
@@ -49,22 +55,28 @@ const EMAIL_RE = /[\w.+-]+@[\w-]+\.[\w.-]+/;
 // Scoring
 // ============================================
 function scoreEngagement(er) {
-  // ER ≥ 4% → 40; ER 2-4% → linear ramp 0..40
+  // ER ≥ 4% → 40; ER 2-4% → linear ramp 0..40.
+  // When er is 0 (TikTok scraper doesn't compute ER), give a neutral
+  // baseline of 20 so TikTok-only profiles don't get systematically
+  // demoted vs Instagram profiles where we DO have the metric.
+  if (!Number.isFinite(er) || er === 0) return 20;
   if (er >= 4) return 40;
   if (er >= 2) return Math.round((er - 2) * 20); // 2 → 0, 4 → 40
-  return 0;
+  // Low but non-zero ER (0 < er < 2) — keep it small so a real low-
+  // engagement signal still scores below an unknown one.
+  return Math.max(0, Math.round(er * 5));
 }
 
 function scoreFollowers(n) {
   // Sweet spot 5K-30K = 25 pts.
-  // Below: linear ramp from 3K (10pts) → 5K (25pts).
-  // Above: linear decay from 30K (25pts) → 100K (5pts).
+  // Below: linear ramp from 2K (5pts) → 5K (25pts).
+  // Above: linear decay from 30K (25pts) → 150K (3pts).
   if (n >= 5_000 && n <= 30_000) return 25;
-  if (n >= 3_000 && n < 5_000) {
-    return Math.round(10 + (n - 3_000) * (15 / 2_000));
+  if (n >= 2_000 && n < 5_000) {
+    return Math.round(5 + (n - 2_000) * (20 / 3_000));
   }
-  if (n > 30_000 && n <= 100_000) {
-    return Math.round(25 - (n - 30_000) * (20 / 70_000));
+  if (n > 30_000 && n <= 150_000) {
+    return Math.round(25 - (n - 30_000) * (22 / 120_000));
   }
   return 0; // out of range — filter should have caught this anyway
 }
@@ -85,13 +97,23 @@ function nicheMatches(bio) {
   return NICHE_KEYWORDS.filter((kw) => lower.includes(kw));
 }
 
+// Activity bonus — used as a tie-breaker when engagement is unknown
+// (TikTok). Up to +10 if the account is clearly active.
+function scoreActivity(posts) {
+  const n = Number(posts) || 0;
+  if (n >= 200) return 10;
+  if (n >= 50)  return 5;
+  return 0;
+}
+
 function scoreOverall(record) {
   const sER       = scoreEngagement(record.engagement_rate);
   const sFollow   = scoreFollowers(record.followers);
   const sNiche    = scoreNiche(record.bio);
   const sEmail    = record.email ? 10 : 0;
   const sMulti    = record.platforms.length > 1 ? 10 : 0;
-  return Math.min(100, sER + sFollow + sNiche + sEmail + sMulti);
+  const sActivity = scoreActivity(record.posts_count);
+  return Math.min(100, sER + sFollow + sNiche + sEmail + sMulti + sActivity);
 }
 
 // ============================================
@@ -119,12 +141,16 @@ function looksColombian(record) {
 function shouldKeep(record) {
   if (!record.bio || record.bio.trim().length === 0) return { keep: false, reason: 'no-bio' };
   if (bioHasBlacklist(record.bio)) return { keep: false, reason: 'blacklist' };
-  if (record.followers < 3_000 || record.followers > 100_000) {
+  if (record.followers < 2_000 || record.followers > 150_000) {
     return { keep: false, reason: 'followers-out-of-range' };
   }
-  if (record.engagement_rate < 2) {
-    return { keep: false, reason: 'low-engagement' };
-  }
+  // Engagement-rate gate removed: the TikTok actor doesn't compute ER
+  // so every TikTok profile reports 0 and was being rejected wholesale.
+  // ER still feeds scoring; final triage happens in the swipe admin UI.
+  //
+  // if (record.engagement_rate < 2) {
+  //   return { keep: false, reason: 'low-engagement' };
+  // }
   const recencyDays = record.platforms.includes('instagram') ? 30 : 14;
   if (!withinRecentWindow(record.last_post_date, recencyDays)) {
     return { keep: false, reason: 'stale' };
@@ -158,6 +184,7 @@ function mergeProfiles(igRaw, ttRaw) {
           platforms: [platform],
           followers: r.followers || 0,
           engagement_rate: r.engagement_rate || 0,
+          posts_count: r.posts_count || 0,
           bio: r.bio || '',
           email: r.email_from_bio || null,
           dm_only: !r.email_from_bio,
@@ -171,6 +198,7 @@ function mergeProfiles(igRaw, ttRaw) {
         if (!existing.platforms.includes(platform)) existing.platforms.push(platform);
         existing.followers = Math.max(existing.followers, r.followers || 0);
         existing.engagement_rate = Math.max(existing.engagement_rate, r.engagement_rate || 0);
+        existing.posts_count = Math.max(existing.posts_count || 0, r.posts_count || 0);
         if (!existing.bio && r.bio) existing.bio = r.bio;
         if (!existing.email && r.email_from_bio) {
           existing.email = r.email_from_bio;
@@ -214,7 +242,7 @@ async function main() {
   console.log(`  after dedup: ${merged.length}`);
 
   const rejected = { 'no-bio': 0, blacklist: 0, 'followers-out-of-range': 0,
-                     'low-engagement': 0, stale: 0, 'not-colombia': 0 };
+                     stale: 0, 'not-colombia': 0 };
   const kept = [];
 
   for (const r of merged) {
