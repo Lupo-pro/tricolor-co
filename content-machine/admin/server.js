@@ -175,7 +175,14 @@ app.get('/api/status', async (_req, res) => {
 // progress panel. Days run sequentially so a slow Claude doesn't pile
 // up parallel calls; the SSE stream keeps the connection alive so the
 // browser doesn't hit any default timeout.
-app.post('/api/build-week', async (req, res) => {
+//
+// Registered on BOTH GET and POST so:
+//   - The browser fetch() with method:'POST' still works as before.
+//   - `curl -N "http://localhost:3002/api/build-week?..."` (which
+//     defaults to GET) also works for quick endpoint verification.
+//   - A future EventSource client would also work (EventSource is
+//     GET-only).
+async function buildWeekHandler(req, res) {
   const count = Math.max(1, Math.min(60, parseInt(req.query.count, 10) || 7));
   const wantClaude = req.query.claude === '1' || req.query.claude === 'true';
 
@@ -193,62 +200,81 @@ app.post('/api/build-week', async (req, res) => {
     'Connection': 'keep-alive',
     'X-Accel-Buffering': 'no',
   });
-  // Defeat Nagle so each SSE write hits the wire immediately instead
-  // of waiting to coalesce — the difference between "stuck at 0/0"
-  // and "ticking forward" in the browser.
   if (res.socket && typeof res.socket.setNoDelay === 'function') {
     res.socket.setNoDelay(true);
   }
   res.flushHeaders();
 
   const emit = (obj) => {
-    res.write(`data: ${JSON.stringify(obj)}\n\n`);
+    try { res.write(`data: ${JSON.stringify(obj)}\n\n`); }
+    catch (e) { console.error('✗ SSE write failed:', e.message); }
   };
 
-  // Build the date list starting from today
-  const today = new Date(todayKey());
-  const dates = [];
-  for (let i = 0; i < count; i++) {
-    const d = new Date(today);
-    d.setUTCDate(d.getUTCDate() + i);
-    dates.push(d.toISOString().slice(0, 10));
-  }
-
-  console.log(`→ Build week started, count=${count} claude=${wantClaude}`);
-  emit({ type: 'start', total: count, claude: wantClaude, dates });
-
-  let totalDrafts = 0;
-  let okDays = 0;
-  const batchT0 = Date.now();
-
-  for (let i = 0; i < dates.length; i++) {
-    const date = dates[i];
-    console.log(`→ Day ${i + 1}/${count}: building ${date}...`);
-    emit({ type: 'day-start', date, index: i + 1, total: count });
-    const args = [`--date=${date}`];
-    if (!wantClaude) args.push('--no-claude');
-    const dayT0 = Date.now();
-    try {
-      const r = await runScript(join(ROOT, 'src', 'build-day.js'), args);
-      const m = r.stdout.match(/✓ (\d+) drafts/);
-      const items = m ? parseInt(m[1], 10) : 0;
-      totalDrafts += items;
-      okDays++;
-      const elapsed = Date.now() - dayT0;
-      console.log(`→ Day ${i + 1}/${count}: done in ${elapsed}ms (${items} drafts)`);
-      emit({ type: 'day-ok', date, items, elapsedMs: elapsed, index: i + 1, total: count });
-    } catch (e) {
-      const elapsed = Date.now() - dayT0;
-      console.error(`✗ Day ${i + 1}/${count} (${date}) failed in ${elapsed}ms: ${e.message}`);
-      emit({ type: 'day-error', date, error: e.message, elapsedMs: elapsed, index: i + 1, total: count });
+  // Detect a client that walked away mid-stream so we stop spending
+  // CPU on builds for a dead connection.
+  let aborted = false;
+  req.on('close', () => {
+    if (!res.writableEnded) {
+      aborted = true;
+      console.warn('⚠ Client disconnected mid-stream — aborting batch.');
     }
-  }
+  });
 
-  const totalElapsed = Date.now() - batchT0;
-  console.log(`→ Build week complete: ${okDays}/${count} days · ${totalDrafts} drafts · ${totalElapsed}ms`);
-  emit({ type: 'done', days: okDays, total_drafts: totalDrafts, elapsedMs: totalElapsed });
-  res.end();
-});
+  // Wrap the whole sequence in a try/catch so a thrown exception in a
+  // helper bubbles up as a `fatal` event and a stack trace in the
+  // server console — instead of a silent hang.
+  try {
+    const today = new Date(todayKey());
+    const dates = [];
+    for (let i = 0; i < count; i++) {
+      const d = new Date(today);
+      d.setUTCDate(d.getUTCDate() + i);
+      dates.push(d.toISOString().slice(0, 10));
+    }
+
+    console.log(`→ Build week started, count=${count} claude=${wantClaude}`);
+    emit({ type: 'start', total: count, claude: wantClaude, dates });
+
+    let totalDrafts = 0;
+    let okDays = 0;
+    const batchT0 = Date.now();
+
+    for (let i = 0; i < dates.length; i++) {
+      if (aborted) break;
+      const date = dates[i];
+      console.log(`→ Day ${i + 1}/${count}: building ${date}...`);
+      emit({ type: 'day-start', date, index: i + 1, total: count });
+      const args = [`--date=${date}`];
+      if (!wantClaude) args.push('--no-claude');
+      const dayT0 = Date.now();
+      try {
+        const r = await runScript(join(ROOT, 'src', 'build-day.js'), args);
+        const m = r.stdout.match(/✓ (\d+) drafts/);
+        const items = m ? parseInt(m[1], 10) : 0;
+        totalDrafts += items;
+        okDays++;
+        const elapsed = Date.now() - dayT0;
+        console.log(`→ Day ${i + 1}/${count}: done in ${elapsed}ms (${items} drafts)`);
+        emit({ type: 'day-ok', date, items, elapsedMs: elapsed, index: i + 1, total: count });
+      } catch (e) {
+        const elapsed = Date.now() - dayT0;
+        console.error(`✗ Day ${i + 1}/${count} (${date}) failed in ${elapsed}ms: ${e.message}`);
+        emit({ type: 'day-error', date, error: e.message, elapsedMs: elapsed, index: i + 1, total: count });
+      }
+    }
+
+    const totalElapsed = Date.now() - batchT0;
+    console.log(`→ Build week complete: ${okDays}/${count} days · ${totalDrafts} drafts · ${totalElapsed}ms (aborted=${aborted})`);
+    emit({ type: 'done', days: okDays, total_drafts: totalDrafts, elapsedMs: totalElapsed, aborted });
+    res.end();
+  } catch (e) {
+    console.error('✗ Build week handler crashed:', e);
+    try { emit({ type: 'fatal', error: e.message }); res.end(); } catch {}
+  }
+}
+
+app.get ('/api/build-week', buildWeekHandler);
+app.post('/api/build-week', buildWeekHandler);
 
 app.post('/api/build-day', async (req, res) => {
   const date = (req.body && req.body.date) || todayKey();
