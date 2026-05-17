@@ -94,6 +94,35 @@ app.get('/api/today', async (_req, res) => {
   await respondWithDay(res, date);
 });
 
+// /api/days — list every date that has built drafts (looks at
+// data/drafts/*) plus a per-day count of pending/approved/rejected so
+// the day-tab strip in /swipe can render without N round-trips.
+app.get('/api/days', async (_req, res) => {
+  try {
+    const { readdir } = await import('node:fs/promises');
+    let entries = [];
+    try {
+      entries = await readdir(join(DATA_DIR, 'drafts'));
+    } catch { /* drafts dir may not exist yet */ }
+    const days = [];
+    for (const name of entries.sort()) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(name)) continue;
+      const manifest = await readJson(join(DATA_DIR, 'drafts', name, 'manifest.json'), null);
+      if (!manifest) continue;
+      const approvedManifest = await readJson(join(DATA_DIR, 'approved', name, 'manifest.json'), { items: [] });
+      const approvedIds = new Set(approvedManifest.items.map((i) => i.id));
+      const total = manifest.items.length;
+      const approved = manifest.items.filter((i) => approvedIds.has(i.id)).length;
+      const rejected = manifest.items.filter((i) => i.rejected_at).length;
+      const pending = total - approved - rejected;
+      days.push({ date: name, total, approved, rejected, pending, theme: manifest.theme });
+    }
+    res.json({ ok: true, days });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
 app.get('/api/day/:date', async (req, res) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(req.params.date)) return res.status(400).json({ ok: false, error: 'bad date' });
   await respondWithDay(res, req.params.date);

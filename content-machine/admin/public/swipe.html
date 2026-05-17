@@ -67,6 +67,8 @@
     </span>
   </div>
 
+  <div class="day-tabs" id="dayTabs"></div>
+
   <div class="queue" id="queue">
     <div class="empty" id="empty">
       <strong>Cargando drafts...</strong>
@@ -106,7 +108,9 @@
   const $progressLog   = document.getElementById('progressLog');
   const $progressClose = document.getElementById('progressClose');
 
-  let state = { date: null, manifest: null, captions: {}, approvedIds: new Set(), claudeConfigured: false };
+  // state.days lists every date that has built drafts, used by the
+  // day-tab strip. state.date is the day currently being swiped.
+  let state = { date: null, manifest: null, captions: {}, approvedIds: new Set(), days: [], claudeConfigured: false };
 
   function toast(msg, ms = 1800, kind = 'info') {
     $toast.textContent = msg;
@@ -164,6 +168,61 @@
     $cApproved.textContent = approved;
     $cRejected.textContent = rejected;
     $cPending.textContent = Math.max(0, total - approved - rejected);
+    // Keep the day-tabs counter in sync without a round-trip.
+    const dayCell = state.days.find((d) => d.date === state.date);
+    if (dayCell) {
+      dayCell.total = total;
+      dayCell.approved = approved;
+      dayCell.rejected = rejected;
+      dayCell.pending = total - approved - rejected;
+      renderDayTabs();
+    }
+  }
+
+  function dayTabLabel(dateStr) {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const d = new Date(dateStr + 'T00:00:00');
+    const diff = Math.round((d - today) / 86400000);
+    if (diff === 0)  return 'Hoy';
+    if (diff === 1)  return 'Mañana';
+    if (diff === -1) return 'Ayer';
+    const dow = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][d.getDay()];
+    return `${dow} ${d.getDate()}`;
+  }
+
+  async function loadDays() {
+    try {
+      const r = await fetch('/api/days');
+      const d = await r.json();
+      state.days = (d.ok ? d.days : []);
+      renderDayTabs();
+    } catch (_) { /* silent */ }
+  }
+
+  function renderDayTabs() {
+    const $tabs = document.getElementById('dayTabs');
+    if (!$tabs) return;
+    if (state.days.length <= 1) { $tabs.innerHTML = ''; return; }
+    $tabs.innerHTML = state.days.map((day) => {
+      const active = day.date === state.date;
+      const complete = day.pending === 0 && day.total > 0;
+      const cls = 'day-tab' + (active ? ' active' : '') + (!active && complete ? ' complete' : '');
+      const total = day.total;
+      const done = day.approved + day.rejected;
+      return `<button class="${cls}" data-date="${day.date}" type="button">
+        ${dayTabLabel(day.date)}
+        <span class="count">${done}/${total}</span>
+      </button>`;
+    }).join('');
+    for (const btn of $tabs.querySelectorAll('.day-tab')) {
+      btn.addEventListener('click', () => switchDay(btn.dataset.date));
+    }
+  }
+
+  async function switchDay(date) {
+    state.date = date;
+    await loadDay(date);
+    renderDayTabs();
   }
 
   function escapeHtml(s) {
@@ -410,9 +469,9 @@
     }
   }
 
-  async function load() {
+  async function loadDay(date) {
     try {
-      const r = await fetch('/api/today');
+      const r = await fetch(`/api/day/${date}`);
       const data = await r.json();
       if (!data.ok) throw new Error(data.error || 'load failed');
       state.date = data.date;
@@ -424,10 +483,10 @@
         $dayTheme.textContent = '— sin drafts —';
         $dayEdition.textContent = '—';
         $empty.innerHTML = `<strong>No hay drafts para ${state.date}</strong>
-          Hacé click en <code>↻ Build day</code> arriba para generarlos. <br>
-          Si el botón falla, corré <code>npm run generate -- --type=sequence --sequence=daily-drop</code> en terminal.`;
+          Hacé click en <code>↻ Build day</code> arriba para generarlos.`;
         $queue.innerHTML = '';
         $queue.appendChild($empty);
+        setCounts();
         return;
       }
       $dayDate.textContent = state.date;
@@ -435,8 +494,21 @@
       $dayEdition.textContent = state.manifest.edition_focus || '—';
       render();
     } catch (e) {
-      toast('Error · ' + e.message);
+      toastError('Load failed: ' + e.message);
     }
+  }
+
+  async function load() {
+    await loadDays();
+    // Pick a default day: today if it has drafts, else newest with
+    // pending items, else just the newest available.
+    const today = new Date().toISOString().slice(0, 10);
+    let target = state.days.find((d) => d.date === today);
+    if (!target) target = state.days.find((d) => d.pending > 0);
+    if (!target) target = state.days[state.days.length - 1];
+    state.date = target ? target.date : today;
+    await loadDay(state.date);
+    renderDayTabs();
   }
 
   // ───── Build week (SSE streaming) ─────
