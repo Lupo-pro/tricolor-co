@@ -286,6 +286,89 @@ export function arrowIcon({ size = 16, color = PALETTE.ink } = {}) {
 }
 
 // ───────────────────────────────────────────
+// Composition variations — small descriptor of how a layout should
+// shift its visual rhythm. Used to break the "every post looks the
+// same" feeling without forking each layout file four ways.
+//
+// Returned shape (all axes deterministic given the same seed):
+//   titleAlign:   'left' | 'center' | 'right'
+//   titlePos:     'top'  | 'center' | 'bottom'
+//   logoCorner:   'bottom-center' | 'bottom-left' | 'bottom-right' | 'top-right'
+//   bgStyle:      'solid' | 'gradient-diag' | 'gradient-vert' | 'tri-band'
+//
+// Layouts that accept variation read descriptor.composition and shift
+// their primitives accordingly. Layouts that don't read it just look
+// the same as before — opt-in, never breaks anything.
+// ───────────────────────────────────────────
+function djb2(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+const COMP_TITLE_ALIGN = ['left', 'center', 'right'];
+const COMP_TITLE_POS   = ['top', 'center', 'bottom'];
+const COMP_LOGO_CORNER = ['bottom-center', 'bottom-left', 'bottom-right', 'top-right'];
+const COMP_BG_STYLE    = ['solid', 'solid', 'solid', 'gradient-diag', 'gradient-vert', 'tri-band'];
+
+export function pickComposition(seed = '') {
+  if (!seed) {
+    return {
+      titleAlign: 'left',
+      titlePos:   'center',
+      logoCorner: 'bottom-center',
+      bgStyle:    'solid',
+    };
+  }
+  return {
+    titleAlign: COMP_TITLE_ALIGN[djb2(seed + ':align') % COMP_TITLE_ALIGN.length],
+    titlePos:   COMP_TITLE_POS  [djb2(seed + ':pos')   % COMP_TITLE_POS.length],
+    logoCorner: COMP_LOGO_CORNER[djb2(seed + ':logo')  % COMP_LOGO_CORNER.length],
+    bgStyle:    COMP_BG_STYLE   [djb2(seed + ':bg')    % COMP_BG_STYLE.length],
+  };
+}
+
+// gradientOverlay — full-bleed linear gradient. Rendered as an
+// absolutely-positioned div sitting under the content. Use the
+// `direction` axis: 'diag' = top-left to bottom-right; 'vert' = top to
+// bottom. Colors are the two PALETTE keys to blend.
+export function gradientOverlay({
+  from = PALETTE.bg,
+  to   = PALETTE.bgWarm,
+  direction = 'diag',
+  opacity = 0.5,
+} = {}) {
+  const angle = direction === 'vert' ? '180deg' : '135deg';
+  return el('div', {
+    style: {
+      display: 'flex',
+      position: 'absolute',
+      top: 0, left: 0, right: 0, bottom: 0,
+      backgroundImage: `linear-gradient(${angle}, ${from} 0%, ${to} 100%)`,
+      opacity,
+      pointerEvents: 'none',
+    },
+  });
+}
+
+// triBand — wide tricolor band that runs across one edge. `edge` is
+// 'left' | 'right' | 'top' | 'bottom'. Used by the 'tri-band' bgStyle.
+export function triBand({ edge = 'left', thickness = 56 } = {}) {
+  const isVertical = edge === 'left' || edge === 'right';
+  const colors = [PALETTE.yellow, PALETTE.blue, PALETTE.red];
+  const wrapStyle = isVertical
+    ? { display: 'flex', flexDirection: 'column', position: 'absolute',
+        top: 0, bottom: 0, [edge]: 0, width: thickness }
+    : { display: 'flex', flexDirection: 'row', position: 'absolute',
+        left: 0, right: 0, [edge]: 0, height: thickness };
+  return el('div', { style: wrapStyle },
+    ...colors.map((c) => el('div', {
+      style: { display: 'flex', flex: 1, backgroundColor: c },
+    })),
+  );
+}
+
+// ───────────────────────────────────────────
 // getShadowColor — picks a text-shadow color that contrasts with the
 // text. The shadow color must NEVER match the text color, otherwise
 // the shadow vanishes and the headline reads as flat type with no

@@ -18,7 +18,7 @@
 
 import satori from 'satori';
 import sharp from 'sharp';
-import { loadFonts } from './brand.js';
+import { loadFonts, pickComposition } from './brand.js';
 
 import { render as renderTypoPure }        from './post-typo-pure.js';
 import { render as renderTypoSilhouette }  from './post-typo-silhouette.js';
@@ -48,7 +48,13 @@ export async function renderPost(descriptor) {
   const fonts = await loadFonts();
   const layoutName = descriptor.layout || 'typo-pure';
   const layoutFn = LAYOUTS[layoutName] || LAYOUTS['typo-pure'];
-  const node = layoutFn(descriptor, { size: SIZE });
+  // Inject a deterministic composition variation if the caller didn't
+  // provide one. Layouts that read descriptor.composition (typo-pure
+  // and friends) will pick it up; layouts that don't will simply
+  // ignore the extra field.
+  const composition = descriptor.composition
+    || pickComposition(descriptor.compositionSeed || descriptor.key || descriptor.layout || '');
+  const node = layoutFn({ ...descriptor, composition }, { size: SIZE });
   const svg = await satori(node, { width: SIZE, height: SIZE, fonts });
   return await sharp(Buffer.from(svg)).png({ compressionLevel: 9 }).toBuffer();
 }
