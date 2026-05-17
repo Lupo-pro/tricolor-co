@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validación · LATRICOLOR.CO Outreach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #F0EBE0;
+  --ink:     #0A0A0A;
+  --ink-soft:#2A2A28;
+  --ink-mid: #4A4A48;
+  --muted:   #8A867E;
+  --yellow:  #FFD300;
+  --blue:    #0033A0;
+  --red:     #E63946;
+  --green:   #2D5016;
+  --line:    rgba(10,10,10,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ===== Header sticky ===== */
+header.bar{
+  position:sticky;top:0;z-index:20;
+  background:var(--ink);
+  color:var(--bg);
+  padding:0.85rem 1.2rem;
+  display:flex;
+  align-items:center;
+  gap:1.2rem;
+  border-bottom:3px solid var(--yellow);
+  flex-wrap:wrap;
+}
+.brand{
+  font-family:'Anton',sans-serif;
+  font-size:1rem;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+}
+.brand span{color:var(--yellow);}
+.progress{
+  flex:1;
+  min-width:160px;
+  display:flex;
+  align-items:center;
+  gap:0.7rem;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.85rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+}
+.progress-bar{
+  flex:1;
+  height:8px;
+  background:rgba(240,235,224,0.18);
+  position:relative;
+  overflow:hidden;
+}
+.progress-fill{
+  position:absolute;left:0;top:0;bottom:0;
+  background:var(--yellow);
+  width:0;
+  transition:width 0.2s;
+}
+.counts{
+  display:flex;
+  gap:0.7rem;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.85rem;
+  letter-spacing:0.1em;
+}
+.counts strong{font-family:'Anton',sans-serif;font-weight:400;margin-right:0.2em;}
+.counts .approved strong{color:var(--green);}
+.counts .premium strong{color:var(--yellow);}
+.counts .skipped strong{color:var(--red);}
+.save-btn{
+  background:var(--yellow);
+  color:var(--ink);
+  border:2px solid var(--ink);
+  padding:0.4rem 0.9rem;
+  font-family:'Anton',sans-serif;
+  font-size:0.8rem;
+  letter-spacing:0.13em;
+  text-transform:uppercase;
+  cursor:pointer;
+  box-shadow:3px 3px 0 var(--red);
+  transition:transform 0.12s,box-shadow 0.12s;
+}
+.save-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--red);}
+.save-btn.dirty::after{content:" •";color:var(--red);}
+
+/* ===== Stage ===== */
+main.stage{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:2rem 1rem 1.5rem;
+  position:relative;
+}
+
+.card{
+  width:400px;
+  max-width:100%;
+  background:#fff;
+  border:3px solid var(--ink);
+  box-shadow:8px 8px 0 var(--ink);
+  position:relative;
+  overflow:hidden;
+  transition:transform 0.25s cubic-bezier(.5,0,.1,1.2),
+             box-shadow 0.25s,
+             opacity 0.25s;
+}
+.card.gone-left   { transform:translateX(-150%) rotate(-12deg); opacity:0; }
+.card.gone-right  { transform:translateX(150%) rotate(12deg); opacity:0; }
+.card.gone-up     { transform:translateY(-150%) scale(0.85); opacity:0; }
+
+.card-top{
+  display:flex;
+  align-items:flex-end;
+  gap:0.8rem;
+  padding:1rem 1rem 0.8rem;
+  border-bottom:2px dashed var(--line);
+}
+.avatar{
+  width:84px;height:84px;
+  background:var(--ink);
+  border:2px solid var(--ink);
+  background-size:cover;
+  background-position:center;
+  flex-shrink:0;
+}
+.avatar.no-img{
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Anton',sans-serif;
+  font-size:2rem;
+  color:var(--yellow);
+}
+.who{flex:1;min-width:0;}
+.handle{
+  font-family:'Anton',sans-serif;
+  font-size:1.3rem;
+  letter-spacing:0.02em;
+  text-transform:lowercase;
+  word-break:break-all;
+}
+.handle::before{content:"@";color:var(--red);margin-right:0.05em;}
+.platforms{
+  display:flex;gap:0.3rem;margin-top:0.25rem;
+}
+.platform{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.65rem;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  padding:0.12rem 0.45rem;
+  border:1.5px solid var(--ink);
+  background:var(--bg);
+}
+.score{
+  font-family:'Anton',sans-serif;
+  font-size:1.5rem;
+  padding:0.3rem 0.7rem;
+  letter-spacing:0.02em;
+  border:2px solid var(--ink);
+  flex-shrink:0;
+  text-align:center;
+  min-width:62px;
+  box-shadow:3px 3px 0 var(--ink);
+}
+.score.hi  { background:var(--green); color:var(--yellow); }
+.score.mid { background:var(--yellow); color:var(--ink); }
+.score.lo  { background:var(--red);   color:var(--bg); }
+
+.stats-row{
+  display:flex;
+  border-bottom:2px dashed var(--line);
+  font-family:'Bebas Neue',sans-serif;
+}
+.stat{
+  flex:1;
+  padding:0.6rem 0.8rem;
+  border-right:1px solid var(--line);
+  display:flex;
+  flex-direction:column;
+  gap:0.1rem;
+}
+.stat:last-child{border-right:0;}
+.stat-label{
+  font-size:0.62rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.stat-value{
+  font-family:'Anton',sans-serif;
+  font-size:1.25rem;
+  color:var(--ink);
+  letter-spacing:0.02em;
+}
+
+.bio{
+  padding:0.9rem 1rem 0.8rem;
+  font-size:0.9rem;
+  line-height:1.5;
+  color:var(--ink-soft);
+  border-bottom:2px dashed var(--line);
+  white-space:pre-wrap;
+  max-height:8em;
+  overflow:auto;
+}
+.bio:empty::before{content:"(sin bio)";color:var(--muted);font-style:italic;}
+
+.contact{
+  padding:0.7rem 1rem;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.85rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  gap:0.4rem;
+}
+.contact.has-email{color:var(--green);}
+.contact.dm-only{color:var(--red);}
+.contact a{color:inherit;text-decoration:underline;}
+.niches{
+  padding:0 1rem 0.8rem;
+  display:flex;flex-wrap:wrap;gap:0.3rem;
+}
+.niches span{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.65rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  background:rgba(255,211,0,0.18);
+  border:1px solid rgba(255,211,0,0.55);
+  padding:0.1rem 0.4rem;
+  color:var(--ink);
+}
+.profile-links{
+  padding:0 1rem 1rem;
+  display:flex;
+  gap:0.5rem;
+}
+.profile-links a{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.72rem;
+  letter-spacing:0.13em;
+  text-transform:uppercase;
+  background:var(--ink);
+  color:var(--yellow);
+  padding:0.3rem 0.6rem;
+  text-decoration:none;
+  border:1.5px solid var(--ink);
+}
+.profile-links a:hover{background:var(--yellow);color:var(--ink);}
+
+.actions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:0.5rem;
+  padding:0.7rem;
+  background:var(--bg);
+  border-top:2px solid var(--ink);
+}
+.act{
+  font-family:'Anton',sans-serif;
+  font-size:0.95rem;
+  letter-spacing:0.13em;
+  text-transform:uppercase;
+  padding:0.85rem 0;
+  border:2px solid var(--ink);
+  cursor:pointer;
+  transition:transform 0.12s,box-shadow 0.12s,background 0.15s;
+  box-shadow:3px 3px 0 var(--ink);
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.act:hover, .act:focus-visible{
+  transform:translate(-1px,-1px);
+  box-shadow:4px 4px 0 var(--ink);
+}
+.act-skip{background:var(--red);color:var(--bg);}
+.act-approve{background:var(--green);color:var(--yellow);}
+.act-premium{background:var(--yellow);color:var(--ink);}
+
+.help{
+  position:fixed;
+  bottom:1rem;left:50%;
+  transform:translateX(-50%);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.72rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  background:rgba(240,235,224,0.85);
+  padding:0.35rem 0.8rem;
+  border:1px solid var(--line);
+  z-index:5;
+}
+.help kbd{
+  font-family:'Anton',sans-serif;
+  background:var(--ink);
+  color:var(--yellow);
+  padding:0.08rem 0.35rem;
+  margin:0 0.1em;
+  font-size:0.78em;
+  letter-spacing:0;
+}
+
+.empty{
+  text-align:center;
+  font-family:'Bebas Neue',sans-serif;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--ink-mid);
+  padding:2rem;
+}
+.empty strong{
+  display:block;
+  font-family:'Anton',sans-serif;
+  font-size:2rem;
+  color:var(--ink);
+  margin-bottom:0.5rem;
+}
+
+.toast{
+  position:fixed;
+  top:80px;left:50%;
+  transform:translate(-50%,-20px);
+  background:var(--ink);
+  color:var(--yellow);
+  padding:0.6rem 1rem;
+  font-family:'Anton',sans-serif;
+  font-size:0.85rem;
+  letter-spacing:0.13em;
+  text-transform:uppercase;
+  border:2px solid var(--yellow);
+  box-shadow:4px 4px 0 var(--red);
+  opacity:0;
+  transition:transform 0.2s,opacity 0.2s;
+  z-index:50;
+  pointer-events:none;
+}
+.toast.show{opacity:1;transform:translate(-50%,0);}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <span class="brand">LATRICOLOR <span>· Outreach</span></span>
+  <div class="progress">
+    <span id="pCount">0 / 0</span>
+    <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+  </div>
+  <div class="counts">
+    <span class="approved">✅ <strong id="cApproved">0</strong> aprob.</span>
+    <span class="premium">💎 <strong id="cPremium">0</strong> premium</span>
+    <span class="skipped">❌ <strong id="cSkipped">0</strong> skip</span>
+  </div>
+  <button class="save-btn" id="saveBtn" type="button">Save &amp; Quit</button>
+</header>
+
+<main class="stage" id="stage">
+  <div class="empty" id="emptyState">
+    <strong>Cargando perfiles...</strong>
+    Si no aparece nada, corré <code>npm run enrich</code> primero.
+  </div>
+</main>
+
+<div class="help">
+  <kbd>←</kbd> Skip
+  <kbd>→</kbd> Aprobar
+  <kbd>↑</kbd> Premium
+  <kbd>↓</kbd> Undo
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(async function init() {
+  const stage = document.getElementById('stage');
+  const emptyState = document.getElementById('emptyState');
+  const pCount = document.getElementById('pCount');
+  const pFill = document.getElementById('pFill');
+  const cApproved = document.getElementById('cApproved');
+  const cPremium  = document.getElementById('cPremium');
+  const cSkipped  = document.getElementById('cSkipped');
+  const saveBtn   = document.getElementById('saveBtn');
+  const toastEl   = document.getElementById('toast');
+
+  let profiles = [];
+  let index = 0;
+  const decisions = { approved: [], premium: [], skipped: [] };
+  const history = []; // for undo: { profileKey, bucket }
+  let busy = false;
+  let dirty = false;
+
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    setTimeout(() => toastEl.classList.remove('show'), 1600);
+  }
+
+  function fmtCount(n) {
+    if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+    if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return String(n);
+  }
+
+  function scoreClass(s) {
+    if (s >= 70) return 'hi';
+    if (s >= 50) return 'mid';
+    return 'lo';
+  }
+
+  function render() {
+    pCount.textContent = `${Math.min(index + 1, profiles.length)} / ${profiles.length}`;
+    pFill.style.width = `${(index / profiles.length) * 100}%`;
+    cApproved.textContent = decisions.approved.length;
+    cPremium.textContent  = decisions.premium.length;
+    cSkipped.textContent  = decisions.skipped.length;
+    saveBtn.classList.toggle('dirty', dirty);
+
+    const cur = profiles[index];
+    if (!cur) {
+      stage.innerHTML = '';
+      const done = document.createElement('div');
+      done.className = 'empty';
+      done.innerHTML = `<strong>¡Listo! ${decisions.approved.length + decisions.premium.length} aprobadas</strong>
+        Presioná <em>Save &amp; Quit</em> arriba para guardar la lista.`;
+      stage.appendChild(done);
+      pCount.textContent = `${profiles.length} / ${profiles.length}`;
+      pFill.style.width = '100%';
+      return;
+    }
+
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.id = 'currentCard';
+    const initial = (cur.username || '?')[0].toUpperCase();
+    const platforms = cur.platforms.map((p) =>
+      `<span class="platform">${p}</span>`).join('');
+    const niches = (cur.niches || []).slice(0, 5)
+      .map((n) => `<span>${n}</span>`).join('');
+    const contact = cur.email
+      ? `<span class="contact has-email">📧 <a href="mailto:${cur.email}">${cur.email}</a></span>`
+      : `<span class="contact dm-only">⚠ DM Only · sin email</span>`;
+    const links = [];
+    if (cur.profile_urls?.ig) links.push(`<a target="_blank" rel="noopener" href="${cur.profile_urls.ig}">Instagram ↗</a>`);
+    if (cur.profile_urls?.tt) links.push(`<a target="_blank" rel="noopener" href="${cur.profile_urls.tt}">TikTok ↗</a>`);
+
+    card.innerHTML = `
+      <div class="card-top">
+        ${cur.avatar_url
+          ? `<div class="avatar" style="background-image:url('${cur.avatar_url}')"></div>`
+          : `<div class="avatar no-img">${initial}</div>`}
+        <div class="who">
+          <div class="handle">${cur.username}</div>
+          <div class="platforms">${platforms}</div>
+        </div>
+        <div class="score ${scoreClass(cur.score)}">${cur.score}</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-label">Followers</span>
+          <span class="stat-value">${fmtCount(cur.followers)}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Engagement</span>
+          <span class="stat-value">${cur.engagement_rate}%</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Location</span>
+          <span class="stat-value" style="font-size:0.95rem;font-family:'Bebas Neue',sans-serif;letter-spacing:0.08em;">${cur.location || '—'}</span>
+        </div>
+      </div>
+      <div class="bio">${(cur.bio || '').slice(0, 360)}</div>
+      ${contact}
+      ${niches ? `<div class="niches">${niches}</div>` : ''}
+      ${links.length ? `<div class="profile-links">${links.join('')}</div>` : ''}
+      <div class="actions">
+        <button class="act act-skip"    data-action="skip">❌ Skip</button>
+        <button class="act act-approve" data-action="approve">✅ Aprobar</button>
+        <button class="act act-premium" data-action="premium">💎 Premium</button>
+      </div>
+    `;
+    stage.innerHTML = '';
+    stage.appendChild(card);
+    card.querySelectorAll('.act').forEach((b) => {
+      b.addEventListener('click', () => act(b.dataset.action));
+    });
+  }
+
+  function act(kind) {
+    if (busy) return;
+    const cur = profiles[index];
+    if (!cur) return;
+    busy = true;
+    dirty = true;
+
+    const card = document.getElementById('currentCard');
+    if (card) {
+      const direction = kind === 'skip' ? 'gone-left'
+                       : kind === 'approve' ? 'gone-right'
+                       : 'gone-up';
+      card.classList.add(direction);
+    }
+
+    const bucket = kind === 'skip' ? 'skipped' : kind === 'approve' ? 'approved' : 'premium';
+    decisions[bucket].push(cur);
+    history.push({ profile: cur, bucket });
+
+    setTimeout(() => {
+      index += 1;
+      busy = false;
+      render();
+    }, 220);
+  }
+
+  function undo() {
+    if (busy) return;
+    const last = history.pop();
+    if (!last) { toast('Nada que deshacer'); return; }
+    const arr = decisions[last.bucket];
+    const idx = arr.lastIndexOf(last.profile);
+    if (idx >= 0) arr.splice(idx, 1);
+    index = Math.max(0, index - 1);
+    render();
+    toast(`Deshecho · ${last.bucket}`);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); act('skip'); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); act('approve'); }
+    if (e.key === 'ArrowUp')    { e.preventDefault(); act('premium'); }
+    if (e.key === 'ArrowDown')  { e.preventDefault(); undo(); }
+  });
+
+  saveBtn.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Guardando...';
+    try {
+      const r = await fetch('/api/save-validation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          approved: decisions.approved,
+          premium:  decisions.premium,
+          skipped:  decisions.skipped,
+        }),
+      });
+      const data = await r.json();
+      if (data.ok) {
+        toast(`✓ Guardado · ${data.approved} ok, ${data.premium} premium`);
+        dirty = false;
+      } else {
+        toast('Error al guardar');
+      }
+    } catch (e) {
+      toast('Error de red');
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save & Quit';
+      render();
+    }
+  });
+
+  window.addEventListener('beforeunload', (e) => {
+    if (dirty) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  // Load enriched profiles
+  try {
+    const r = await fetch('/api/enriched');
+    const data = await r.json();
+    profiles = data.profiles || [];
+    if (!profiles.length) {
+      emptyState.innerHTML = `<strong>0 perfiles enriquecidos</strong>
+        Corré <code>npm run scrape</code> luego <code>npm run enrich</code>.`;
+      return;
+    }
+    render();
+  } catch (e) {
+    emptyState.innerHTML = `<strong>Error</strong>${e.message}`;
+  }
+})();
+</script>
+</body>
+</html>
