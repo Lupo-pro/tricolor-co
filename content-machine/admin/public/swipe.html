@@ -32,8 +32,19 @@
     <span>Claude <span id="claudeBadge" class="badge">…</span></span>
   </label>
   <button class="bar-btn alt" id="btnBuildDay" type="button" title="Generate drafts for today">↻ Build day</button>
+  <button class="bar-btn alt" id="btnBuildWeek" type="button" title="Generate drafts for the next 7 days">📅 Build week</button>
   <button class="bar-btn" id="btnPack" type="button">📦 Build pack</button>
 </header>
+
+<div id="progressOverlay" class="progress-overlay" hidden>
+  <div class="progress-panel">
+    <div class="progress-title" id="progressTitle">Generating...</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-meta" id="progressMeta">0 / 0</div>
+    <div class="progress-log" id="progressLog"></div>
+    <button class="bar-btn alt" id="progressClose" type="button" hidden>Close</button>
+  </div>
+</div>
 
 <main class="stage">
   <div class="row" id="dayHeader">
@@ -65,10 +76,17 @@
   const $cPending  = document.getElementById('cPending');
   const $cApproved = document.getElementById('cApproved');
   const $cRejected = document.getElementById('cRejected');
-  const $btnBuildDay = document.getElementById('btnBuildDay');
-  const $btnPack     = document.getElementById('btnPack');
-  const $useClaude   = document.getElementById('useClaude');
-  const $claudeBadge = document.getElementById('claudeBadge');
+  const $btnBuildDay   = document.getElementById('btnBuildDay');
+  const $btnBuildWeek  = document.getElementById('btnBuildWeek');
+  const $btnPack       = document.getElementById('btnPack');
+  const $useClaude     = document.getElementById('useClaude');
+  const $claudeBadge   = document.getElementById('claudeBadge');
+  const $progressOverlay = document.getElementById('progressOverlay');
+  const $progressTitle = document.getElementById('progressTitle');
+  const $progressFill  = document.getElementById('progressFill');
+  const $progressMeta  = document.getElementById('progressMeta');
+  const $progressLog   = document.getElementById('progressLog');
+  const $progressClose = document.getElementById('progressClose');
 
   let state = { date: null, manifest: null, captions: {}, approvedIds: new Set(), claudeConfigured: false };
 
@@ -384,6 +402,71 @@
       toast('Error · ' + e.message);
     }
   }
+
+  // ───── Build week (SSE streaming) ─────
+  function openProgress(title) {
+    $progressTitle.textContent = title;
+    $progressFill.style.width = '0%';
+    $progressMeta.textContent = '0 / 0';
+    $progressLog.innerHTML = '';
+    $progressClose.hidden = true;
+    $progressOverlay.hidden = false;
+  }
+  function progressLine(text, cls = 'info') {
+    const div = document.createElement('div');
+    div.className = cls;
+    div.textContent = text;
+    $progressLog.appendChild(div);
+    $progressLog.scrollTop = $progressLog.scrollHeight;
+  }
+  function setProgress(done, total) {
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    $progressFill.style.width = pct + '%';
+    $progressMeta.textContent = `${done} / ${total} · ${pct}%`;
+  }
+
+  async function runBuildBatch(days, claude) {
+    openProgress(`Building ${days} day${days > 1 ? 's' : ''}${claude ? ' · with Claude' : ''}`);
+    let total = days, done = 0;
+    try {
+      const r = await fetch(`/api/build-week?count=${days}&claude=${claude ? 1 : 0}`, { method: 'POST' });
+      if (!r.body) throw new Error('streaming not supported by this browser');
+      const reader = r.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+      while (true) {
+        const { done: streamDone, value } = await reader.read();
+        if (streamDone) break;
+        buf += decoder.decode(value, { stream: true });
+        const events = buf.split('\n\n');
+        buf = events.pop() || '';
+        for (const ev of events) {
+          const line = ev.split('\n').find((l) => l.startsWith('data:'));
+          if (!line) continue;
+          let data; try { data = JSON.parse(line.slice(5).trim()); } catch { continue; }
+          if (data.total) total = data.total;
+          if (data.type === 'day-start')      progressLine(`▶ ${data.date}`, 'info');
+          else if (data.type === 'day-ok')    { done++; progressLine(`✓ ${data.date} · ${data.items} drafts`, 'ok'); setProgress(done, total); }
+          else if (data.type === 'day-error') progressLine(`✗ ${data.date} · ${data.error}`, 'err');
+          else if (data.type === 'done')      progressLine(`\nDone. ${data.total_drafts} drafts across ${data.days} days.`, 'ok');
+          else if (data.type === 'fatal')     progressLine(`✗ FATAL · ${data.error}`, 'err');
+        }
+      }
+      toast(`✓ ${done} days generated`);
+      await load();
+    } catch (e) {
+      progressLine(`✗ ${e.message}`, 'err');
+      toastError('Build failed:\n' + e.message);
+    } finally {
+      $progressClose.hidden = false;
+    }
+  }
+
+  $btnBuildWeek.addEventListener('click', () => {
+    runBuildBatch(7, !!$useClaude.checked);
+  });
+
+  $progressClose.addEventListener('click', () => { $progressOverlay.hidden = true; });
 
   $btnBuildDay.addEventListener('click', async () => {
     $btnBuildDay.disabled = true;

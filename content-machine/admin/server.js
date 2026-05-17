@@ -141,6 +141,70 @@ app.get('/api/status', async (_req, res) => {
   });
 });
 
+// SSE streaming batch builder — used by Build week (7) and Build
+// month (30). Each line emits a JSON event the client renders into a
+// progress panel. Days run sequentially so a slow Claude doesn't pile
+// up parallel calls; the SSE stream keeps the connection alive so the
+// browser doesn't hit any default timeout.
+app.post('/api/build-week', async (req, res) => {
+  const count = Math.max(1, Math.min(60, parseInt(req.query.count, 10) || 7));
+  const wantClaude = req.query.claude === '1' || req.query.claude === 'true';
+
+  if (wantClaude && !claudeConfigured()) {
+    return res.status(400).json({
+      ok: false,
+      error: 'ANTHROPIC_API_KEY is missing or placeholder. Untoggle "Use Claude" or fill content-machine/.env.',
+      code: 'no-claude-key',
+    });
+  }
+
+  res.set({
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache, no-transform',
+    'Connection': 'keep-alive',
+    'X-Accel-Buffering': 'no',
+  });
+  res.flushHeaders();
+
+  const emit = (obj) => {
+    res.write(`data: ${JSON.stringify(obj)}\n\n`);
+  };
+
+  // Build the date list starting from today
+  const today = new Date(todayKey());
+  const dates = [];
+  for (let i = 0; i < count; i++) {
+    const d = new Date(today);
+    d.setUTCDate(d.getUTCDate() + i);
+    dates.push(d.toISOString().slice(0, 10));
+  }
+
+  emit({ type: 'start', total: count, claude: wantClaude, dates });
+
+  let totalDrafts = 0;
+  let okDays = 0;
+
+  for (const date of dates) {
+    emit({ type: 'day-start', date });
+    const args = [`--date=${date}`];
+    if (!wantClaude) args.push('--no-claude');
+    try {
+      const r = await runScript(join(ROOT, 'src', 'build-day.js'), args);
+      const m = r.stdout.match(/✓ (\d+) drafts/);
+      const items = m ? parseInt(m[1], 10) : 0;
+      totalDrafts += items;
+      okDays++;
+      emit({ type: 'day-ok', date, items });
+    } catch (e) {
+      console.error(`✗ build-week ${date}: ${e.message}`);
+      emit({ type: 'day-error', date, error: e.message });
+    }
+  }
+
+  emit({ type: 'done', days: okDays, total_drafts: totalDrafts });
+  res.end();
+});
+
 app.post('/api/build-day', async (req, res) => {
   const date = (req.body && req.body.date) || todayKey();
   const wantClaude = !!(req.body && req.body.claude);
