@@ -33,8 +33,20 @@
   </label>
   <button class="bar-btn alt" id="btnBuildDay" type="button" title="Generate drafts for today">↻ Build day</button>
   <button class="bar-btn alt" id="btnBuildWeek" type="button" title="Generate drafts for the next 7 days">📅 Build week</button>
+  <button class="bar-btn alt" id="btnBuildMonth" type="button" title="Generate drafts for the next 30 days (asks confirmation)">📅📅 Build month</button>
   <button class="bar-btn" id="btnPack" type="button">📦 Build pack</button>
 </header>
+
+<div id="confirmOverlay" class="progress-overlay" hidden>
+  <div class="progress-panel">
+    <div class="progress-title" id="confirmTitle">Confirm</div>
+    <div class="progress-meta" id="confirmBody"></div>
+    <div style="display:flex; gap:0.5rem; margin-top:1rem; justify-content:flex-end;">
+      <button class="bar-btn alt" id="confirmCancel" type="button">Cancel</button>
+      <button class="bar-btn" id="confirmOk" type="button">Confirm</button>
+    </div>
+  </div>
+</div>
 
 <div id="progressOverlay" class="progress-overlay" hidden>
   <div class="progress-panel">
@@ -78,7 +90,13 @@
   const $cRejected = document.getElementById('cRejected');
   const $btnBuildDay   = document.getElementById('btnBuildDay');
   const $btnBuildWeek  = document.getElementById('btnBuildWeek');
+  const $btnBuildMonth = document.getElementById('btnBuildMonth');
   const $btnPack       = document.getElementById('btnPack');
+  const $confirmOverlay = document.getElementById('confirmOverlay');
+  const $confirmTitle   = document.getElementById('confirmTitle');
+  const $confirmBody    = document.getElementById('confirmBody');
+  const $confirmOk      = document.getElementById('confirmOk');
+  const $confirmCancel  = document.getElementById('confirmCancel');
   const $useClaude     = document.getElementById('useClaude');
   const $claudeBadge   = document.getElementById('claudeBadge');
   const $progressOverlay = document.getElementById('progressOverlay');
@@ -98,6 +116,24 @@
     setTimeout(() => $toast.classList.remove('show'), ms);
   }
   function toastError(msg, ms = 5000) { toast(msg, ms, 'error'); }
+
+  function confirmModal(title, body) {
+    $confirmTitle.textContent = title;
+    $confirmBody.textContent = body;
+    $confirmOverlay.hidden = false;
+    return new Promise((resolve) => {
+      const cleanup = (ans) => {
+        $confirmOverlay.hidden = true;
+        $confirmOk.removeEventListener('click', ok);
+        $confirmCancel.removeEventListener('click', cancel);
+        resolve(ans);
+      };
+      const ok = () => cleanup(true);
+      const cancel = () => cleanup(false);
+      $confirmOk.addEventListener('click', ok);
+      $confirmCancel.addEventListener('click', cancel);
+    });
+  }
 
   function setClaudeBadge(on) {
     $claudeBadge.textContent = on ? 'ON' : 'OFF';
@@ -462,8 +498,24 @@
     }
   }
 
-  $btnBuildWeek.addEventListener('click', () => {
-    runBuildBatch(7, !!$useClaude.checked);
+  $btnBuildWeek.addEventListener('click', async () => {
+    const claude = !!$useClaude.checked;
+    if (claude) {
+      const ok = await confirmModal('Build week · with Claude',
+        '7 days × ~12 items = ~84 Claude calls. Estimated cost ≈ $0.08. Proceed?');
+      if (!ok) return;
+    }
+    runBuildBatch(7, claude);
+  });
+
+  $btnBuildMonth.addEventListener('click', async () => {
+    const claude = !!$useClaude.checked;
+    const ok = await confirmModal('Build month · 30 days',
+      claude
+        ? '30 days × ~12 items = ~360 Claude calls. Estimated cost ≈ $0.36. This takes 5-10 minutes. Proceed?'
+        : '30 days × ~12 items = ~360 drafts (no Claude, no API cost). Takes ~3 minutes. Proceed?');
+    if (!ok) return;
+    runBuildBatch(30, claude);
   });
 
   $progressClose.addEventListener('click', () => { $progressOverlay.hidden = true; });
