@@ -1,0 +1,26 @@
+{
+  "name": "latricolor-content-machine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Automated content generation + scheduling for LATRICOLOR.CO — visual templater (satori), Claude caption AI, PostEverywhere publisher.",
+  "type": "module",
+  "scripts": {
+    "generate": "node src/generate.js",
+    "admin": "node admin/server.js",
+    "test:story": "node src/generate.js --type=sequence --sequence=daily-drop --edition=la-capitana --out=test"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.65.0",
+    "@fontsource/anton": "^5.0.18",
+    "@fontsource/archivo-black": "^5.0.18",
+    "@fontsource/bebas-neue": "^5.0.18",
+    "@fontsource/inter": "^5.0.18",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "satori": "^0.10.13",
+    "sharp": "^0.33.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

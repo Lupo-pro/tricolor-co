@@ -1,0 +1,19 @@
+# Secrets — never commit
+.env
+.env.local
+.env.*.local
+
+# Node
+node_modules/
+
+# Generated content — local only
+data/drafts/**
+!data/drafts/.gitkeep
+data/approved/**
+!data/approved/.gitkeep
+data/published.json
+data/failed.json
+
+# Misc
+.DS_Store
+*.log
