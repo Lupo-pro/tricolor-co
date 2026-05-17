@@ -219,6 +219,49 @@ html:not(.has-entered) body {
   margin-top: -0.4rem;
 }
 
+/* Splash brand logo — La · Tricolor with 3-syllable slide-in.
+   Sits above the bandera in the offer modal. */
+.splash-logo {
+  margin-bottom: 0.4rem;
+  animation: splashFadeIn 0.4s ease-out both;
+  animation-delay: 0.15s;
+}
+.splash-logo .la {
+  color: var(--ink-mid);
+  animation: splashFadeIn 0.4s ease-out 0.05s both;
+}
+.splash-logo-word {
+  font-size: clamp(2.2rem, 7vw, 3.4rem);
+  --logo-stroke: 1.8px;
+  --logo-shadow: 3px;
+}
+/* Stagger the 3 syllables on entry. Each rides in from a different
+   vector so the eye gets 3 distinct beats. */
+.splash-logo-word .tri {
+  display: inline-block;
+  animation: splashSyllableDown 0.5s cubic-bezier(.22,.61,.36,1) 0.2s both;
+}
+.splash-logo-word .co {
+  display: inline-block;
+  animation: splashSyllableLeft 0.5s cubic-bezier(.22,.61,.36,1) 0.32s both;
+}
+.splash-logo-word .lor {
+  display: inline-block;
+  animation: splashSyllableUp 0.5s cubic-bezier(.22,.61,.36,1) 0.44s both;
+}
+@keyframes splashSyllableDown {
+  0%   { opacity: 0; transform: translateY(-40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes splashSyllableLeft {
+  0%   { opacity: 0; transform: translateX(-30px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes splashSyllableUp {
+  0%   { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
 /* Title: DESBLOQUEA / -10% */
 .splash-title {
   font-family: 'Anton', sans-serif;
@@ -409,6 +452,11 @@ html:not(.has-entered) body {
 
 /* Reduced motion — collapse the slide / vibrate / pulse to plain fades */
 @media (prefers-reduced-motion: reduce) {
+  .splash-logo-word .tri,
+  .splash-logo-word .co,
+  .splash-logo-word .lor {
+    animation: splashFadeIn 0.3s ease-out both !important;
+  }
   .splash-unlock, .splash-discount {
     animation: splashFadeIn 0.3s ease-out both !important;
   }
