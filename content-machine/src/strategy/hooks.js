@@ -132,6 +132,23 @@ export function pickHooks(category, n, { seed = '' } = {}) {
 }
 
 /**
+ * Preference-aware variant of pickHook. Drops any hook flagged in
+ * `flagged` (a Set of hook texts to exclude) before applying the
+ * deterministic seed pick. Falls back to the unfiltered bucket if
+ * every option got flagged.
+ */
+export function pickHookWeighted(category, { seed = '', flagged } = {}) {
+  const bucket = HOOKS[category];
+  if (!bucket || bucket.length === 0) return '';
+  const filtered = flagged && flagged.size > 0
+    ? bucket.filter((h) => !flagged.has(h))
+    : bucket;
+  const pool = filtered.length > 0 ? filtered : bucket;
+  if (!seed) return pool[Math.floor(Math.random() * pool.length)];
+  return pool[hash(seed + ':' + category) % pool.length];
+}
+
+/**
  * Suggest a hook category for a given content type. The matching is
  * intentionally loose so callers can override.
  */

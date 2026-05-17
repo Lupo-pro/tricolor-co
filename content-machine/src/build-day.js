@@ -27,7 +27,10 @@ import { renderPost } from './templater/post.js';
 import { renderCarousel } from './templater/carousel.js';
 import { generateCaption } from './ai/claude.js';
 import { PROMPTS } from './ai/prompts.js';
-import { getEducationalDeck } from './strategy/educational.js';
+import { getEducationalDeck, EDUCATIONAL_THEME_KEYS } from './strategy/educational.js';
+import { pickHook, pickHookWeighted, categoryForContentType } from './strategy/hooks.js';
+import { flaggedSet } from './strategy/preferences.js';
+import { POST_LAYOUTS } from './templater/post.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -132,6 +135,43 @@ function carouselPlan(theme, day) {
   return { slides, layout: 'default' };
 }
 
+// Map a content surface (prompt name + theme) to the hook category
+// strategy/hooks.js exposes. Mirrors the routing inside prompts.js so
+// the manifest record matches what Claude actually saw.
+function hookCategoryFor({ promptName, carouselTheme }) {
+  if (promptName === 'carousel') {
+    return EDUCATIONAL_THEME_KEYS.includes(carouselTheme) ? 'valeur' : 'interrogatifs';
+  }
+  const promptToType = {
+    drop: 'daily-drop', manifesto: 'manifesto', matchDay: 'match-day',
+    review: 'review', bundle: 'carousel', fomo: 'fomo', ugc: 'review',
+    bts: 'bts', countdown: 'countdown', poll: 'poll', qa: 'educational',
+  };
+  return categoryForContentType(promptToType[promptName] || promptName);
+}
+
+function resolveHook({ promptName, carouselTheme, seed, flagged }) {
+  const category = hookCategoryFor({ promptName, carouselTheme });
+  const text = flagged
+    ? pickHookWeighted(category, { seed, flagged: flagged.hooks_text })
+    : pickHook(category, { seed });
+  return { hook: text, hookCategory: category };
+}
+
+// If the post layout originally picked by postPlan is flagged, swap it
+// for the first non-flagged sibling. We keep the rest of the post
+// descriptor (bg, accent, eyebrow, headline, ...) intact — only the
+// visual template changes. Falls through if nothing's flagged.
+function maybeSwapPostLayout(plan, flagged) {
+  if (!flagged || !plan?.post?.layout) return plan;
+  const originalLayout = plan.post.layout;
+  if (!flagged.layouts.post.has(originalLayout)) return plan;
+  const replacement = POST_LAYOUTS.find((l) => !flagged.layouts.post.has(l));
+  if (!replacement || replacement === originalLayout) return plan;
+  console.log(`  ↺ swapping post layout: ${originalLayout} → ${replacement} (preferences)`);
+  return { ...plan, post: { ...plan.post, layout: replacement } };
+}
+
 async function maybeCaption({ promptName, promptArgs }, options, seed) {
   if (options.noClaude) {
     return `[caption — generar después · ${promptName}]`;
@@ -168,6 +208,17 @@ async function main() {
   const outDir = join(DATA_DIR, 'drafts', date);
   await mkdir(outDir, { recursive: true });
 
+  // Pull the current flagged set so the generator can avoid hooks /
+  // layouts that have been rejected enough times to count as signal.
+  const flagged = await flaggedSet();
+  const flaggedSummary = [
+    flagged.layouts.post.size, flagged.layouts.story.size, flagged.layouts.carousel.size,
+    flagged.hooks_text.size, flagged.hooks_category.size,
+  ].reduce((a, b) => a + b, 0);
+  if (flaggedSummary > 0) {
+    console.log(`  prefs:    ${flaggedSummary} flagged patterns will be skipped`);
+  }
+
   const manifest = { date, theme: plan.theme, edition_focus: plan.edition_focus, special: plan.special, items: [] };
   const captions = {};
 
@@ -186,14 +237,17 @@ async function main() {
       const png = await renderStory(story);
       const filename = `${id}.png`;
       await writeFile(join(outDir, filename), png);
-      const caption = await maybeCaption(
-        { promptName: seq.name === 'match-day' ? 'matchDay' : seq.name.replace(/-(\w)/g, (_, c) => c.toUpperCase()), promptArgs: seq.args },
-        options,
-        `${date}:${seq.name}:${story.step}`
-      );
+      const promptName = seq.name === 'match-day' ? 'matchDay' : seq.name.replace(/-(\w)/g, (_, c) => c.toUpperCase());
+      const seed = `${date}:${seq.name}:${story.step}`;
+      const { hook, hookCategory } = resolveHook({ promptName, seed, flagged });
+      const caption = await maybeCaption({ promptName, promptArgs: seq.args }, options, seed);
       captions[id] = caption;
+      // Fall back to the role-based renderer if no explicit layout —
+      // the manifest records what was actually rendered for prefs.
+      const layout = story.layout || `role-${story.role}`;
       manifest.items.push({
         id, kind: 'story', sequence: seq.name, step: story.step, role: story.role,
+        layout, hook, hookCategory,
         offsetMin: story.offsetMin, headline: story.headline, subline: story.subline,
         bg: story.bg, accent: story.accent, sticker: story.sticker || null,
         file: filename, caption_key: id,
@@ -204,15 +258,19 @@ async function main() {
 
   // ─── Feed posts ───
   for (const postKey of plan.posts) {
-    const p = postPlan(postKey, plan);
+    const rawPlan = postPlan(postKey, plan);
+    const p = maybeSwapPostLayout(rawPlan, flagged);
     const id = `post-${postKey}`;
     const png = await renderPost(p.post);
     const filename = `${id}.png`;
     await writeFile(join(outDir, filename), png);
-    const caption = await maybeCaption({ promptName: p.promptName, promptArgs: p.promptArgs }, options, `${date}:post:${postKey}`);
+    const seed = `${date}:post:${postKey}`;
+    const { hook, hookCategory } = resolveHook({ promptName: p.promptName, seed, flagged });
+    const caption = await maybeCaption({ promptName: p.promptName, promptArgs: p.promptArgs }, options, seed);
     captions[id] = caption;
     manifest.items.push({
-      id, kind: 'post', key: postKey, ...p.post, file: filename, caption_key: id,
+      id, kind: 'post', key: postKey, hook, hookCategory, ...p.post,
+      file: filename, caption_key: id,
     });
     console.log(`  ✓ ${id} (${(png.length / 1024).toFixed(0)} KB)`);
   }
@@ -228,10 +286,13 @@ async function main() {
       await writeFile(join(outDir, fn), buffers[i]);
       fileNames.push(fn);
     }
-    const caption = await maybeCaption({ promptName: 'carousel', promptArgs: { type: plan.carousel } }, options, `${date}:carousel:${plan.carousel}`);
+    const seed = `${date}:carousel:${plan.carousel}`;
+    const { hook, hookCategory } = resolveHook({ promptName: 'carousel', carouselTheme: plan.carousel, seed, flagged });
+    const caption = await maybeCaption({ promptName: 'carousel', promptArgs: { type: plan.carousel } }, options, seed);
     captions[id] = caption;
     manifest.items.push({
-      id, kind: 'carousel', theme: plan.carousel, slideCount: buffers.length, files: fileNames, caption_key: id,
+      id, kind: 'carousel', theme: plan.carousel, layout, hook, hookCategory,
+      slideCount: buffers.length, files: fileNames, caption_key: id,
     });
     console.log(`  ✓ ${id} (${buffers.length} slides)`);
   }

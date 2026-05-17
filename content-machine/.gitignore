@@ -18,6 +18,7 @@ data/silhouette-test/**
 data/daily-packs/**
 data/published.json
 data/failed.json
+data/preferences.json
 
 # Secret backups
 .env.save

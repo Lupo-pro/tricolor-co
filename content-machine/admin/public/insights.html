@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insights · LATRICOLOR.CO Content</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/styles.css">
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: #fff;
+    border: 3px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    padding: 1rem 1.1rem;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .card h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin: 0.6rem 0 0.2rem;
+  }
+  .ranked { list-style: none; padding: 0; margin: 0; }
+  .ranked li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.3rem 0;
+    border-bottom: 1px dashed var(--bg-warm);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+  }
+  .ranked li:last-child { border-bottom: none; }
+  .ranked .label {
+    font-family: 'Anton', sans-serif;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ranked .pct {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.05rem;
+    color: var(--ink);
+    background: var(--yellow);
+    padding: 0.1rem 0.5rem;
+    border: 2px solid var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .ranked .pct.low { background: var(--red); color: var(--bg); }
+  .ranked .samples {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+  }
+  .empty-cell {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    text-transform: uppercase;
+    text-align: center;
+    padding: 1rem 0;
+  }
+
+  .flagged {
+    margin-top: 1.5rem;
+    background: var(--red);
+    color: var(--bg);
+    border: 3px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+    padding: 1rem 1.2rem;
+  }
+  .flagged h2 {
+    font-family: 'Anton', sans-serif;
+    margin: 0 0 0.6rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .flagged ul { list-style: none; padding: 0; margin: 0; }
+  .flagged li {
+    padding: 0.4rem 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.25);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+  }
+  .flagged li:last-child { border-bottom: none; }
+  .flagged .key { font-family: 'Anton', sans-serif; letter-spacing: 0.05em; }
+
+  .suggestions {
+    margin-top: 1.2rem;
+    background: var(--yellow);
+    border: 3px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    padding: 1rem 1.2rem;
+  }
+  .suggestions h2 {
+    font-family: 'Anton', sans-serif;
+    margin: 0 0 0.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .suggestions ol { margin: 0; padding-left: 1.2rem; }
+  .suggestions li { padding: 0.2rem 0; font-family: 'Inter', sans-serif; font-size: 0.95rem; }
+
+  .kw-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.2rem;
+  }
+  @media (max-width: 700px) { .kw-wrap { grid-template-columns: 1fr; } }
+  .kw {
+    background: #fff;
+    border: 3px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    padding: 1rem 1.1rem;
+  }
+  .kw.app { box-shadow: 5px 5px 0 var(--green, #2D5016); }
+  .kw.rej { box-shadow: 5px 5px 0 var(--red); }
+  .kw h2 {
+    font-family: 'Anton', sans-serif;
+    margin: 0 0 0.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .tag {
+    display: inline-block;
+    padding: 0.18rem 0.55rem;
+    margin: 0.15rem 0.2rem 0.15rem 0;
+    font-family: 'Anton', sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--bg-warm);
+    border: 2px solid var(--ink);
+  }
+
+  .summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+  }
+  .stat-pill {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.16em;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 0.35rem 0.7rem;
+    text-transform: uppercase;
+  }
+  .stat-pill strong {
+    font-family: 'Anton', sans-serif;
+    color: var(--yellow);
+    margin-right: 0.4rem;
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">
+    <span class="tri">Tri</span><span class="co">co</span><span class="lor">lor</span>
+    <span class="brand-tag">· Insights</span>
+  </div>
+  <nav class="tabs">
+    <a href="/swipe">Swipe</a>
+    <a href="/calendar">Calendar</a>
+    <a href="/insights" class="active">Insights</a>
+  </nav>
+  <div class="bar-spacer"></div>
+  <button class="bar-btn alt" id="btnRefresh" type="button">↻ Refresh</button>
+</header>
+
+<main class="stage">
+  <div class="row">
+    <span style="font-family:'Bebas Neue',sans-serif;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-mid);">
+      Aprendizaje del swipe — qué <strong style="color:var(--ink);font-family:'Anton',sans-serif;font-weight:400;">gusta</strong> · qué <strong style="color:var(--ink);font-family:'Anton',sans-serif;font-weight:400;">se rechaza</strong> · y los ajustes automáticos
+    </span>
+  </div>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="grid" id="grid"></div>
+
+  <section class="flagged" id="flagged" hidden>
+    <h2>⚠ Patrones rechazados sistemáticamente</h2>
+    <ul id="flaggedList"></ul>
+  </section>
+
+  <section class="suggestions" id="suggestions" hidden>
+    <h2>Ajustes automáticos</h2>
+    <ol id="suggList"></ol>
+  </section>
+
+  <div class="kw-wrap">
+    <div class="kw app">
+      <h2>Palabras que gustan</h2>
+      <div id="kwApp"></div>
+    </div>
+    <div class="kw rej">
+      <h2>Palabras que se rechazan</h2>
+      <div id="kwRej"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+function pctClass(p) { return p < 0.3 ? 'low' : ''; }
+function pct(x)      { return Math.round(x * 100) + '%'; }
+
+function rankedList(rows) {
+  if (!rows || rows.length === 0) {
+    return '<div class="empty-cell">Sin datos suficientes todavía</div>';
+  }
+  return '<ul class="ranked">' + rows.map(([key, cell, rate]) => {
+    const total = (cell.approved || 0) + (cell.rejected || 0);
+    return `<li>
+      <span class="label" title="${key}">${key}</span>
+      <span>
+        <span class="pct ${pctClass(rate)}">${pct(rate)}</span>
+        <span class="samples">${total}×</span>
+      </span>
+    </li>`;
+  }).join('') + '</ul>';
+}
+
+function card(title, sections) {
+  const inner = sections.map(([h, rows]) => `<h3>${h}</h3>${rankedList(rows)}`).join('');
+  return `<div class="card"><h2>${title}</h2>${inner}</div>`;
+}
+
+async function loadInsights() {
+  const r = await fetch('/api/insights');
+  const data = await r.json();
+  if (!data.ok) { document.body.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>'; return; }
+  render(data);
+}
+
+function render(data) {
+  // Summary
+  const meta = data._meta || {};
+  document.getElementById('summary').innerHTML = `
+    <span class="stat-pill"><strong>${meta.total_events || 0}</strong>eventos</span>
+    <span class="stat-pill"><strong>${data.flagged.length}</strong>flagged</span>
+    <span class="stat-pill"><strong>${data.engagement_count}</strong>engagement</span>
+    <span class="stat-pill">Última actualización ${meta.last_updated ? new Date(meta.last_updated).toLocaleString() : '—'}</span>
+  `;
+
+  // Top 3 cards
+  document.getElementById('grid').innerHTML = [
+    card('Top 3 Layouts', [
+      ['Post',     data.layouts.post],
+      ['Story',    data.layouts.story],
+      ['Carousel', data.layouts.carousel],
+    ]),
+    card('Top 3 Hooks', [
+      ['Por texto',     data.hooks.by_text],
+      ['Por categoría', data.hooks.by_category],
+    ]),
+    card('Top 3 Temas', [
+      ['Carrusel',  data.themes.carousel],
+      ['Secuencia', data.themes.sequence],
+      ['Post key',  data.themes.post_key],
+    ]),
+  ].join('');
+
+  // Flagged
+  const flaggedEl = document.getElementById('flagged');
+  const flaggedListEl = document.getElementById('flaggedList');
+  if (data.flagged.length > 0) {
+    flaggedEl.hidden = false;
+    flaggedListEl.innerHTML = data.flagged.map(({ bucket, key, cell, rate }) => {
+      const total = (cell.approved || 0) + (cell.rejected || 0);
+      return `<li>
+        <span class="key">${key}</span>
+        — ${pct(rate)} (${cell.rejected || 0} / ${total} rechazos)
+        <span style="font-family:'Bebas Neue',sans-serif;letter-spacing:0.18em;opacity:0.8;">· ${bucket}</span>
+      </li>`;
+    }).join('');
+  } else {
+    flaggedEl.hidden = true;
+  }
+
+  // Suggestions
+  const suggEl = document.getElementById('suggestions');
+  const suggListEl = document.getElementById('suggList');
+  if (data.suggestions.length > 0) {
+    suggEl.hidden = false;
+    suggListEl.innerHTML = data.suggestions.map((s) => `<li>${s}</li>`).join('');
+  } else {
+    suggEl.hidden = true;
+  }
+
+  // Keywords
+  const kw = (rows) => rows.map(([w, n]) => `<span class="tag">${w} · ${n}</span>`).join('') || '<em>sin datos</em>';
+  document.getElementById('kwApp').innerHTML = kw(data.keywords.approved);
+  document.getElementById('kwRej').innerHTML = kw(data.keywords.rejected);
+}
+
+document.getElementById('btnRefresh').addEventListener('click', loadInsights);
+loadInsights();
+</script>
+</body>
+</html>

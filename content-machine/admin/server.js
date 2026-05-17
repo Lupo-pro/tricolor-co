@@ -26,6 +26,8 @@ import { readFile, writeFile, copyFile, mkdir, access } from 'node:fs/promises';
 import { dirname, join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { recordEvent, getInsights } from '../src/strategy/preferences.js';
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const DATA_DIR = join(ROOT, 'data');
@@ -71,6 +73,7 @@ function runScript(scriptPath, args = []) {
 app.get('/', (_req, res) => res.redirect('/swipe'));
 app.get('/swipe',    (_req, res) => res.sendFile(join(__dirname, 'public', 'swipe.html')));
 app.get('/calendar', (_req, res) => res.sendFile(join(__dirname, 'public', 'calendar.html')));
+app.get('/insights', (_req, res) => res.sendFile(join(__dirname, 'public', 'insights.html')));
 
 // Serve draft PNGs through a controlled route so the dashboard can
 // embed them without exposing the whole filesystem.
@@ -157,6 +160,10 @@ app.post('/api/approve', async (req, res) => {
   if (!date || !id) return res.status(400).json({ ok: false, error: 'date + id required' });
   try {
     const approved = await copyApproved(date, id);
+    // Record preference event — failure here must not fail the
+    // approve action, only log.
+    try { await recordEvent(approved, 'approved', approved.caption || ''); }
+    catch (e) { console.warn(`  ⚠ recordEvent (approve): ${e.message}`); }
     res.json({ ok: true, approved });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
@@ -171,7 +178,12 @@ app.post('/api/approve-sequence', async (req, res) => {
     const manifest = await readJson(join(draftDir, 'manifest.json'));
     const items = manifest.items.filter((i) => i.kind === 'story' && i.sequence === sequence);
     const approved = [];
-    for (const it of items) approved.push(await copyApproved(date, it.id));
+    for (const it of items) {
+      const enriched = await copyApproved(date, it.id);
+      approved.push(enriched);
+      try { await recordEvent(enriched, 'approved', enriched.caption || ''); }
+      catch (e) { console.warn(`  ⚠ recordEvent (approve-sequence): ${e.message}`); }
+    }
     res.json({ ok: true, count: approved.length, approved });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
@@ -185,9 +197,17 @@ app.post('/api/reject', async (req, res) => {
     const draftDir = join(DATA_DIR, 'drafts', date);
     const manifest = await readJson(join(draftDir, 'manifest.json'));
     const idx = manifest.items.findIndex((i) => i.id === id);
+    let rejectedItem = null;
     if (idx >= 0) {
       manifest.items[idx].rejected_at = new Date().toISOString();
+      rejectedItem = manifest.items[idx];
       await writeJson(join(draftDir, 'manifest.json'), manifest);
+    }
+    if (rejectedItem) {
+      const captions = await readJson(join(draftDir, 'captions.json'), {});
+      const caption = captions[rejectedItem.caption_key] || '';
+      try { await recordEvent(rejectedItem, 'rejected', caption); }
+      catch (e) { console.warn(`  ⚠ recordEvent (reject): ${e.message}`); }
     }
     res.json({ ok: true });
   } catch (e) {
@@ -206,6 +226,15 @@ app.post('/api/edit-caption', async (req, res) => {
     captions[id] = caption;
     await writeJson(join(draftDir, 'captions.json'), captions);
     res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+app.get('/api/insights', async (_req, res) => {
+  try {
+    const data = await getInsights();
+    res.json({ ok: true, ...data });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
   }
