@@ -119,14 +119,17 @@ function carouselPlan(theme, day) {
   return slidesByTheme[theme] || slidesByTheme['las-4-ediciones'];
 }
 
-async function maybeCaption({ promptName, promptArgs }, options) {
+async function maybeCaption({ promptName, promptArgs }, options, seed) {
   if (options.noClaude) {
     return `[caption — generar después · ${promptName}]`;
   }
   try {
     const promptFn = PROMPTS[promptName];
     if (!promptFn) return `[no prompt mapped for ${promptName}]`;
-    const prompt = promptFn(promptArgs || {});
+    // seed (dateKey) lets prompts pick a stable hook per day from
+    // strategy/hooks.js. Falls through harmlessly if the prompt
+    // doesn't read `seed`.
+    const prompt = promptFn({ ...(promptArgs || {}), seed });
     return await generateCaption(prompt);
   } catch (err) {
     console.warn(`  ⚠ Claude failed for ${promptName}: ${err.message}`);
@@ -172,7 +175,8 @@ async function main() {
       await writeFile(join(outDir, filename), png);
       const caption = await maybeCaption(
         { promptName: seq.name === 'match-day' ? 'matchDay' : seq.name.replace(/-(\w)/g, (_, c) => c.toUpperCase()), promptArgs: seq.args },
-        options
+        options,
+        `${date}:${seq.name}:${story.step}`
       );
       captions[id] = caption;
       manifest.items.push({
@@ -192,7 +196,7 @@ async function main() {
     const png = await renderPost(p.post);
     const filename = `${id}.png`;
     await writeFile(join(outDir, filename), png);
-    const caption = await maybeCaption({ promptName: p.promptName, promptArgs: p.promptArgs }, options);
+    const caption = await maybeCaption({ promptName: p.promptName, promptArgs: p.promptArgs }, options, `${date}:post:${postKey}`);
     captions[id] = caption;
     manifest.items.push({
       id, kind: 'post', key: postKey, ...p.post, file: filename, caption_key: id,
@@ -211,7 +215,7 @@ async function main() {
       await writeFile(join(outDir, fn), buffers[i]);
       fileNames.push(fn);
     }
-    const caption = await maybeCaption({ promptName: 'carousel', promptArgs: { type: plan.carousel } }, options);
+    const caption = await maybeCaption({ promptName: 'carousel', promptArgs: { type: plan.carousel } }, options, `${date}:carousel:${plan.carousel}`);
     captions[id] = caption;
     manifest.items.push({
       id, kind: 'carousel', theme: plan.carousel, slideCount: buffers.length, files: fileNames, caption_key: id,
