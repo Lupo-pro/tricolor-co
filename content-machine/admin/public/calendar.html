@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendar · LATRICOLOR.CO Content</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/styles.css">
+<style>
+  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.6rem; margin-top: 1rem; }
+  .day { background: #fff; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); padding: 0.7rem; min-height: 180px; display: flex; flex-direction: column; gap: 0.35rem; }
+  .day.today { box-shadow: 5px 5px 0 var(--yellow); border-color: var(--yellow); }
+  .day.match { box-shadow: 5px 5px 0 var(--red); border-color: var(--red); }
+  .day .date { font-family: 'Anton', sans-serif; font-size: 1rem; letter-spacing: 0.05em; }
+  .day .dow  { font-family: 'Bebas Neue', sans-serif; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
+  .day .theme { font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 0.08em; color: var(--ink-soft); text-transform: uppercase; margin-top: 0.2rem; }
+  .day .edition { font-family: 'Anton', sans-serif; font-size: 0.78rem; letter-spacing: 0.08em; padding: 0.12rem 0.4rem; background: var(--bg-warm); align-self: flex-start; text-transform: uppercase; }
+  .day .edition.la-capitana { background: var(--yellow); color: var(--ink); }
+  .day .edition.la-portera  { background: var(--blue);   color: var(--yellow); }
+  .day .edition.oro-negro   { background: var(--ink);    color: var(--yellow); }
+  .day .edition.la-cafetera { background: var(--red);    color: var(--bg); }
+  .day .match-tag { font-family: 'Anton', sans-serif; font-size: 0.78rem; letter-spacing: 0.08em; background: var(--red); color: var(--bg); padding: 0.15rem 0.4rem; align-self: flex-start; text-transform: uppercase; }
+  .day .seq { font-family: 'Bebas Neue', sans-serif; font-size: 0.72rem; letter-spacing: 0.1em; color: var(--ink-mid); text-transform: uppercase; }
+  @media (max-width: 900px) { .week { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">
+    <span class="tri">Tri</span><span class="co">co</span><span class="lor">lor</span>
+    <span class="brand-tag">· Content</span>
+  </div>
+  <nav class="tabs">
+    <a href="/swipe">Swipe</a>
+    <a href="/calendar" class="active">Calendar</a>
+  </nav>
+  <div class="bar-spacer"></div>
+  <button class="bar-btn alt" id="prevBtn" type="button">← Anterior</button>
+  <button class="bar-btn alt" id="nextBtn" type="button">Siguiente →</button>
+</header>
+
+<main class="stage">
+  <div class="row">
+    <span style="font-family:'Bebas Neue',sans-serif;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-mid);">
+      Semana de <strong id="weekStart" style="color:var(--ink);font-family:'Anton',sans-serif;font-weight:400;">—</strong>
+    </span>
+  </div>
+  <div class="week" id="week"></div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(async function init() {
+  const $week = document.getElementById('week');
+  const $weekStart = document.getElementById('weekStart');
+  const $prev = document.getElementById('prevBtn');
+  const $next = document.getElementById('nextBtn');
+
+  function addDays(date, n) { const d = new Date(date); d.setDate(d.getDate() + n); return d; }
+  function isoKey(date) { return date.toISOString().slice(0, 10); }
+  function dowEs(date) { return ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][date.getDay()]; }
+
+  let weekStart = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); // back to Monday
+    return d;
+  })();
+
+  async function loadWeek() {
+    $week.innerHTML = '';
+    $weekStart.textContent = isoKey(weekStart);
+    for (let i = 0; i < 7; i++) {
+      const date = addDays(weekStart, i);
+      const key = isoKey(date);
+      try {
+        const r = await fetch(`/api/day/${key}`);
+        const data = await r.json();
+        const cell = document.createElement('article');
+        cell.className = 'day';
+        if (key === new Date().toISOString().slice(0, 10)) cell.classList.add('today');
+        if (data.ok && data.manifest && /MATCH-DAY/i.test(data.manifest.theme || '')) cell.classList.add('match');
+
+        cell.innerHTML = `
+          <div class="dow">${dowEs(date)}</div>
+          <div class="date">${date.getDate()}/${date.getMonth() + 1}</div>
+          ${data.ok && data.manifest ? `
+            <div class="theme">${data.manifest.theme || '—'}</div>
+            ${data.manifest.edition_focus ? `<div class="edition ${data.manifest.edition_focus}">${data.manifest.edition_focus}</div>` : ''}
+            ${data.manifest.special && /vs-|MATCH/i.test(data.manifest.special) ? `<div class="match-tag">★ ${data.manifest.special}</div>` : ''}
+          ` : '<div class="theme">—</div>'}
+        `;
+        $week.appendChild(cell);
+      } catch (_) {
+        // ignore individual day errors
+      }
+    }
+  }
+
+  $prev.addEventListener('click', () => { weekStart = addDays(weekStart, -7); loadWeek(); });
+  $next.addEventListener('click', () => { weekStart = addDays(weekStart, 7);  loadWeek(); });
+
+  await loadWeek();
+})();
+</script>
+</body>
+</html>

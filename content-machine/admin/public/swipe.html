@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Swipe · LATRICOLOR.CO Content</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">
+    <span class="tri">Tri</span><span class="co">co</span><span class="lor">lor</span>
+    <span class="brand-tag">· Content</span>
+  </div>
+  <nav class="tabs">
+    <a href="/swipe" class="active">Swipe</a>
+    <a href="/calendar">Calendar</a>
+  </nav>
+  <div class="bar-spacer"></div>
+  <span class="counts">
+    <span class="pending">⏱ <strong id="cPending">0</strong> pendientes</span>
+    <span class="approved">✓ <strong id="cApproved">0</strong> aprobados</span>
+    <span class="rejected">✗ <strong id="cRejected">0</strong> rechazados</span>
+  </span>
+  <button class="bar-btn alt" id="btnBuildDay" type="button" title="Régénérer les drafts pour aujourd'hui">↻ Build day</button>
+  <button class="bar-btn" id="btnPack" type="button">📦 Build pack</button>
+</header>
+
+<main class="stage">
+  <div class="row" id="dayHeader">
+    <span style="font-family:'Bebas Neue',sans-serif;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-mid);">
+      Día <strong id="dayDate" style="color:var(--ink);font-family:'Anton',sans-serif;font-weight:400;">—</strong>
+      · Tema <strong id="dayTheme" style="color:var(--ink);font-family:'Anton',sans-serif;font-weight:400;">—</strong>
+      · Edition <strong id="dayEdition" style="color:var(--ink);font-family:'Anton',sans-serif;font-weight:400;">—</strong>
+    </span>
+  </div>
+
+  <div class="queue" id="queue">
+    <div class="empty" id="empty">
+      <strong>Cargando drafts...</strong>
+      Si está vacío, haz click en <code>↻ Build day</code> para generar los visuales del día.
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(async function init() {
+  const $queue   = document.getElementById('queue');
+  const $empty   = document.getElementById('empty');
+  const $toast   = document.getElementById('toast');
+  const $dayDate = document.getElementById('dayDate');
+  const $dayTheme = document.getElementById('dayTheme');
+  const $dayEdition = document.getElementById('dayEdition');
+  const $cPending  = document.getElementById('cPending');
+  const $cApproved = document.getElementById('cApproved');
+  const $cRejected = document.getElementById('cRejected');
+  const $btnBuildDay = document.getElementById('btnBuildDay');
+  const $btnPack     = document.getElementById('btnPack');
+
+  let state = { date: null, manifest: null, captions: {}, approvedIds: new Set() };
+
+  function toast(msg, ms = 1800) {
+    $toast.textContent = msg;
+    $toast.classList.add('show');
+    setTimeout(() => $toast.classList.remove('show'), ms);
+  }
+
+  function setCounts() {
+    if (!state.manifest) return;
+    const total = state.manifest.items.length;
+    const approved = state.approvedIds.size;
+    const rejected = state.manifest.items.filter((i) => i.rejected_at).length;
+    $cApproved.textContent = approved;
+    $cRejected.textContent = rejected;
+    $cPending.textContent = Math.max(0, total - approved - rejected);
+  }
+
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  }
+
+  function renderItem(item) {
+    if (state.approvedIds.has(item.id)) return null;
+    if (item.rejected_at) return null;
+
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.dataset.id = item.id;
+
+    // Preview pane
+    const preview = document.createElement('div');
+    preview.className = 'card-preview';
+    if (item.kind === 'carousel') {
+      preview.classList.add('carousel-preview');
+      const strip = document.createElement('div');
+      strip.className = 'carousel-strip';
+      for (const f of item.files) {
+        const img = document.createElement('img');
+        img.src = `/assets/png/${state.date}/${f}`;
+        img.alt = f;
+        strip.appendChild(img);
+      }
+      preview.appendChild(strip);
+      const big = document.createElement('img');
+      big.src = `/assets/png/${state.date}/${item.files[0]}`;
+      big.alt = 'cover';
+      preview.appendChild(big);
+    } else {
+      const img = document.createElement('img');
+      img.src = `/assets/png/${state.date}/${item.file}`;
+      img.alt = item.id;
+      preview.appendChild(img);
+    }
+    card.appendChild(preview);
+
+    // Body pane
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
+    const pill = document.createElement('span');
+    pill.className = `kind-pill ${item.kind}`;
+    pill.textContent = item.kind === 'story'
+      ? `Story · ${item.sequence} · #${item.step} ${item.role}`
+      : item.kind === 'carousel'
+        ? `Carousel · ${item.theme} (${item.slideCount} slides)`
+        : `Feed Post · ${item.key || ''}`;
+    body.appendChild(pill);
+
+    const meta = document.createElement('div');
+    meta.className = 'card-meta';
+    if (item.kind === 'story') {
+      meta.innerHTML = `<span>Offset <strong>${item.offsetMin}min</strong></span>
+                       <span>Bg <strong>${item.bg}</strong></span>
+                       <span>Accent <strong>${item.accent}</strong></span>`;
+    } else if (item.kind === 'post') {
+      meta.innerHTML = `<span>Bg <strong>${item.bg || '—'}</strong></span>
+                       <span>Accent <strong>${item.accent || '—'}</strong></span>`;
+    } else {
+      meta.innerHTML = `<span>Slides <strong>${item.slideCount}</strong></span>
+                       <span>Theme <strong>${item.theme}</strong></span>`;
+    }
+    body.appendChild(meta);
+
+    if (item.headline) {
+      const h = document.createElement('div');
+      h.className = 'card-headline';
+      h.textContent = item.headline;
+      body.appendChild(h);
+    }
+    if (item.subline) {
+      const s = document.createElement('div');
+      s.className = 'card-subline';
+      s.textContent = item.subline;
+      body.appendChild(s);
+    }
+
+    // Caption (editable)
+    const captionBlock = document.createElement('div');
+    captionBlock.className = 'caption-block';
+    const captionText = state.captions[item.caption_key] || '(sin caption)';
+    captionBlock.textContent = captionText;
+    captionBlock.addEventListener('click', () => toggleEdit(captionBlock, item.id, captionText));
+    body.appendChild(captionBlock);
+
+    // Actions
+    const actions = document.createElement('div');
+    actions.className = 'actions';
+    actions.innerHTML = `
+      <button class="act act-reject"  data-action="reject">✗ Reject</button>
+      <button class="act act-edit"    data-action="edit">✎ Edit</button>
+      <button class="act act-approve" data-action="approve">✓ Approve</button>
+      <button class="act act-skip"    data-action="skip">⏭ Skip</button>
+    `;
+    actions.querySelectorAll('.act').forEach((btn) => {
+      btn.addEventListener('click', () => act(btn.dataset.action, item, card, captionBlock));
+    });
+    body.appendChild(actions);
+
+    card.appendChild(body);
+    return card;
+  }
+
+  function toggleEdit(block, id, current) {
+    if (block.classList.contains('editing')) return;
+    block.classList.add('editing');
+    const ta = document.createElement('textarea');
+    ta.className = 'caption-edit-area';
+    ta.value = current;
+    block.textContent = '';
+    block.appendChild(ta);
+    const tip = document.createElement('div');
+    tip.style.cssText = 'font-family:Bebas Neue;font-size:0.7rem;letter-spacing:0.12em;color:var(--muted);margin-top:0.4rem;text-transform:uppercase;';
+    tip.textContent = 'Ctrl+Enter para guardar · Esc para cancelar';
+    block.appendChild(tip);
+    ta.focus();
+    ta.select();
+
+    const close = (save) => {
+      block.classList.remove('editing');
+      if (save) {
+        const newCaption = ta.value;
+        state.captions[id] = newCaption;
+        block.textContent = newCaption || '(sin caption)';
+        fetch('/api/edit-caption', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: state.date, id, caption: newCaption }) })
+          .then(() => toast('✓ Caption guardada'))
+          .catch(() => toast('Error al guardar'));
+      } else {
+        block.textContent = state.captions[id] || '(sin caption)';
+      }
+    };
+    ta.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); close(true); }
+      if (e.key === 'Escape') { e.preventDefault(); close(false); }
+    });
+    ta.addEventListener('blur', () => close(true));
+  }
+
+  async function act(action, item, card, captionBlock) {
+    if (action === 'edit') {
+      const captionText = state.captions[item.caption_key] || '';
+      toggleEdit(captionBlock, item.id, captionText);
+      return;
+    }
+    if (action === 'skip') {
+      card.classList.add('gone-up');
+      setTimeout(() => card.remove(), 220);
+      toast('Skipped (queda para mañana)');
+      return;
+    }
+    if (action === 'reject') {
+      card.classList.add('gone-left');
+      try {
+        await fetch('/api/reject', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: state.date, id: item.id }) });
+        toast('✗ Rejected');
+      } catch (_) { toast('Error al rechazar'); }
+      const local = state.manifest.items.find((i) => i.id === item.id);
+      if (local) local.rejected_at = new Date().toISOString();
+      setCounts();
+      setTimeout(() => card.remove(), 250);
+      return;
+    }
+    if (action === 'approve') {
+      card.classList.add('gone-right');
+      try {
+        await fetch('/api/approve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: state.date, id: item.id }) });
+        state.approvedIds.add(item.id);
+        setCounts();
+        toast('✓ Approved');
+      } catch (e) { toast('Error · ' + e.message); }
+      setTimeout(() => card.remove(), 250);
+      return;
+    }
+  }
+
+  function renderSequenceBar(sequence) {
+    const items = state.manifest.items.filter((i) => i.kind === 'story' && i.sequence === sequence);
+    if (!items.length) return null;
+    const allApproved = items.every((i) => state.approvedIds.has(i.id));
+    if (allApproved) return null;
+
+    const bar = document.createElement('section');
+    bar.className = 'sequence-bar';
+    bar.dataset.sequence = sequence;
+    bar.innerHTML = `
+      <header>
+        <div class="title">📖 Sequence · ${sequence} · ${items.length} stories</div>
+        <button class="approve-all">✓ Approve all</button>
+      </header>
+      <div class="thumbs">
+        ${items.map((it) => `<img src="/assets/png/${state.date}/${it.file}" alt="${it.id}" />`).join('')}
+      </div>
+    `;
+    bar.querySelector('.approve-all').addEventListener('click', async () => {
+      try {
+        const r = await fetch('/api/approve-sequence', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: state.date, sequence }) });
+        const data = await r.json();
+        if (data.ok) {
+          for (const a of data.approved) state.approvedIds.add(a.id);
+          setCounts();
+          toast(`✓ ${data.count} stories approved`);
+          render();
+        } else {
+          toast('Error · ' + (data.error || 'unknown'));
+        }
+      } catch (e) { toast('Error · ' + e.message); }
+    });
+    return bar;
+  }
+
+  function render() {
+    $queue.innerHTML = '';
+    if (!state.manifest) {
+      $queue.appendChild($empty);
+      return;
+    }
+    setCounts();
+
+    // Sequence bars first (so the operator can approve a whole batch
+    // before drilling into individual stories).
+    const seenSequences = new Set();
+    for (const it of state.manifest.items) {
+      if (it.kind !== 'story') continue;
+      if (seenSequences.has(it.sequence)) continue;
+      seenSequences.add(it.sequence);
+      const bar = renderSequenceBar(it.sequence);
+      if (bar) $queue.appendChild(bar);
+    }
+
+    // Then per-item cards (any non-approved, non-rejected).
+    let cards = 0;
+    for (const it of state.manifest.items) {
+      const card = renderItem(it);
+      if (card) { $queue.appendChild(card); cards += 1; }
+    }
+    if (cards === 0 && seenSequences.size === 0) {
+      $empty.innerHTML = `<strong>Todo aprobado · ${state.approvedIds.size}</strong>
+        Hacé click en <code>📦 Build pack</code> para preparar el ZIP del día.`;
+      $queue.appendChild($empty);
+    }
+  }
+
+  async function load() {
+    try {
+      const r = await fetch('/api/today');
+      const data = await r.json();
+      if (!data.ok) throw new Error(data.error || 'load failed');
+      state.date = data.date;
+      state.manifest = data.manifest;
+      state.captions = data.captions || {};
+      state.approvedIds = new Set(data.approvedIds || []);
+      if (!state.manifest) {
+        $dayDate.textContent = state.date;
+        $dayTheme.textContent = '— sin drafts —';
+        $dayEdition.textContent = '—';
+        $empty.innerHTML = `<strong>No hay drafts para ${state.date}</strong>
+          Hacé click en <code>↻ Build day</code> arriba para generarlos. <br>
+          Si el botón falla, corré <code>npm run generate -- --type=sequence --sequence=daily-drop</code> en terminal.`;
+        $queue.innerHTML = '';
+        $queue.appendChild($empty);
+        return;
+      }
+      $dayDate.textContent = state.date;
+      $dayTheme.textContent = state.manifest.theme || '—';
+      $dayEdition.textContent = state.manifest.edition_focus || '—';
+      render();
+    } catch (e) {
+      toast('Error · ' + e.message);
+    }
+  }
+
+  $btnBuildDay.addEventListener('click', async () => {
+    $btnBuildDay.disabled = true;
+    $btnBuildDay.textContent = '⏳ Building...';
+    try {
+      const r = await fetch('/api/build-day', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ noClaude: true }) });
+      const data = await r.json();
+      if (data.ok) { toast('✓ Drafts generated'); await load(); }
+      else toast('Error · ' + (data.error || 'unknown'));
+    } catch (e) { toast('Error · ' + e.message); }
+    finally { $btnBuildDay.disabled = false; $btnBuildDay.textContent = '↻ Build day'; }
+  });
+
+  $btnPack.addEventListener('click', async () => {
+    $btnPack.disabled = true;
+    $btnPack.textContent = '⏳ Packing...';
+    try {
+      const r = await fetch('/api/build-pack', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
+      const data = await r.json();
+      if (data.ok) {
+        toast('✓ Pack ready · descargando');
+        window.location.href = data.zipUrl;
+      } else {
+        toast('Error · ' + (data.error || 'unknown'));
+      }
+    } catch (e) { toast('Error · ' + e.message); }
+    finally { $btnPack.disabled = false; $btnPack.textContent = '📦 Build pack'; }
+  });
+
+  await load();
+})();
+</script>
+</body>
+</html>

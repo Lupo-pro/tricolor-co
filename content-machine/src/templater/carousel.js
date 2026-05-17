@@ -38,6 +38,7 @@ function nodeForSlide(slide, slideIndex, totalSlides) {
     const active = i === slideIndex;
     return el('div', {
       style: {
+        display: 'flex',
         width: 14, height: 14,
         marginLeft: 8,
         borderRadius: 7,
@@ -75,7 +76,7 @@ function nodeForSlide(slide, slideIndex, totalSlides) {
     },
       slide.eyebrow
         ? starLabel(slide.eyebrow, { color: accent, size: 24 })
-        : el('div', {}, ''),
+        : el('div', { style: { display: 'flex' } }, ''),
       el('div', { style: { display: 'flex' } }, ...dots),
     ),
 
