@@ -135,9 +135,14 @@ async function copyApproved(date, itemId) {
     await copyFile(join(draftDir, f), join(approvedDir, f));
   }
 
-  // Append/replace into approved manifest.
+  // Append/replace into approved manifest. First time around, copy the
+  // day-level metadata (theme / edition_focus / special) from the
+  // drafts manifest so the daily-pack README has it.
   const approvedManifest = await readJson(join(approvedDir, 'manifest.json'), { date, items: [] });
   approvedManifest.date = date;
+  approvedManifest.theme = approvedManifest.theme || manifest.theme;
+  approvedManifest.edition_focus = approvedManifest.edition_focus || manifest.edition_focus;
+  approvedManifest.special = approvedManifest.special || manifest.special;
   const exIdx = approvedManifest.items.findIndex((i) => i.id === itemId);
   const enriched = { ...item, caption: captions[item.caption_key] || '', approved_at: new Date().toISOString() };
   if (exIdx >= 0) approvedManifest.items[exIdx] = enriched;
