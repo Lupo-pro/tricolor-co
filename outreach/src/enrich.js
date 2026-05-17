@@ -41,9 +41,30 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, '..', 'data');
 
+// Bio blacklist — reject anyone whose bio screams "wrong persona":
+// B2B sellers, journalists / media, political accounts, agencies.
+// Target = individual women in lifestyle / fitness / dance / fashion,
+// not businesses or institutional voices.
 const BLACKLIST = [
+  // Adult / OF / agency
   'onlyfans', 'only fans', 'agency', 'agencia', 'marketing manager',
   'press@', 'collab@', 'manager', 'representante', 'premium content',
+
+  // B2B / wholesale / resellers
+  'mayorista', 'mayoreo', 'mayoristas', 'distribuidor', 'distribuidora',
+  'distribuidores', 'ventas al por mayor', 'wholesale',
+  'envíos al por mayor', 'envios al por mayor', 'compras al por mayor',
+
+  // Media / journalism
+  'periodista', 'reportera', 'reportero', 'redactora', 'redactor',
+  'comunicadora social', 'comunicador social', 'noticias', 'noticiero',
+  'medios', 'media outlet',
+
+  // Politics / civic
+  'política', 'político', 'politica', 'politico', 'concejal', 'concejala',
+  'candidata', 'candidato', 'partido político', 'partido politico',
+  'gobierno', 'ministerio', 'alcaldía', 'alcaldia', 'gobernación',
+  'gobernacion',
 ];
 
 // Brazilian content — hashtags like #tricolor pick up São Paulo FC,
