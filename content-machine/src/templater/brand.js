@@ -1,0 +1,275 @@
+// ============================================
+// brand.js — V5 visual primitives shared by every template.
+//
+// Single source of truth for:
+//   - palette (mirror of /styles.css :root vars)
+//   - font buffers (loaded from @fontsource/* once, reused everywhere)
+//   - grain overlay (SVG data-URI baked in to avoid filesystem reads)
+//   - tricolor flag strip
+//   - the TRICOLOR 3-syllable logo as a satori JSX node
+//
+// All builders below return satori-friendly objects ({type, props})
+// so templater files don't need a JSX transformer.
+// ============================================
+
+import { readFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+
+// ───────────────────────────────────────────
+// Palette — mirror of styles.css :root
+// ───────────────────────────────────────────
+export const PALETTE = {
+  bg:        '#F0EBE0',  // crema
+  bgWarm:    '#E8E0CF',
+  ink:       '#0A0A0A',
+  inkSoft:   '#2A2A28',
+  muted:     '#8A867E',
+  yellow:    '#FFD300',
+  yellowDeep:'#D9B400',
+  blue:      '#0033A0',
+  red:       '#E63946',
+  green:     '#2D5016',
+  cream:     '#F0EBE0',
+};
+
+// ───────────────────────────────────────────
+// Font loader
+// Each font is loaded once and memoized. Satori requires raw buffers,
+// not URLs.
+// ───────────────────────────────────────────
+const FONT_PATHS = {
+  anton: '@fontsource/anton/files/anton-latin-400-normal.woff',
+  bebas: '@fontsource/bebas-neue/files/bebas-neue-latin-400-normal.woff',
+  inter400: '@fontsource/inter/files/inter-latin-400-normal.woff',
+  inter600: '@fontsource/inter/files/inter-latin-600-normal.woff',
+  inter700: '@fontsource/inter/files/inter-latin-700-normal.woff',
+  archivoBlack: '@fontsource/archivo-black/files/archivo-black-latin-400-normal.woff',
+};
+
+const fontCache = new Map();
+
+async function readFontBuffer(pkgPath) {
+  if (fontCache.has(pkgPath)) return fontCache.get(pkgPath);
+  // resolve through require so we get the absolute path inside node_modules
+  const abs = require.resolve(pkgPath);
+  const buf = await readFile(abs);
+  fontCache.set(pkgPath, buf);
+  return buf;
+}
+
+export async function loadFonts() {
+  const [anton, bebas, inter400, inter600, inter700, archivoBlack] = await Promise.all([
+    readFontBuffer(FONT_PATHS.anton),
+    readFontBuffer(FONT_PATHS.bebas),
+    readFontBuffer(FONT_PATHS.inter400),
+    readFontBuffer(FONT_PATHS.inter600),
+    readFontBuffer(FONT_PATHS.inter700),
+    readFontBuffer(FONT_PATHS.archivoBlack),
+  ]);
+  return [
+    { name: 'Anton',         data: anton,        weight: 400, style: 'normal' },
+    { name: 'Bebas Neue',    data: bebas,        weight: 400, style: 'normal' },
+    { name: 'Inter',         data: inter400,     weight: 400, style: 'normal' },
+    { name: 'Inter',         data: inter600,     weight: 600, style: 'normal' },
+    { name: 'Inter',         data: inter700,     weight: 700, style: 'normal' },
+    { name: 'Archivo Black', data: archivoBlack, weight: 900, style: 'normal' },
+  ];
+}
+
+// ───────────────────────────────────────────
+// Element builders
+// ───────────────────────────────────────────
+function el(type, props = {}, ...children) {
+  // Flatten + filter; satori expects children inline in props.
+  const flat = children.flat(Infinity).filter((c) => c !== null && c !== undefined && c !== false);
+  return { type, props: { ...props, children: flat.length === 1 ? flat[0] : flat } };
+}
+
+// Tricolor flag strip — 3-color band (yellow / blue / red).
+// Usage: at top or bottom of a layout for V5 framing.
+// Each inner div must declare display: flex too — satori is strict.
+export function flagBar({ height = 16, reversed = false } = {}) {
+  const colors = reversed
+    ? [PALETTE.red, PALETTE.blue, PALETTE.yellow]
+    : [PALETTE.yellow, PALETTE.blue, PALETTE.red];
+  return el('div',
+    { style: { display: 'flex', flexDirection: 'row', width: '100%', height } },
+    colors.map((c) =>
+      el('div', { style: { display: 'flex', flexGrow: 1, height: '100%', backgroundColor: c } })
+    )
+  );
+}
+
+// Grain noise overlay — embedded as SVG data URI so no disk read.
+// Sized to the parent element via 100% width/height. Empty leaf div.
+export function grainOverlay({ opacity = 0.06 } = {}) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.75"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>`;
+  const dataUri = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  return el('div', {
+    style: {
+      display: 'flex',
+      position: 'absolute',
+      top: 0, left: 0, right: 0, bottom: 0,
+      backgroundImage: `url('${dataUri}')`,
+      backgroundSize: '200px 200px',
+      backgroundRepeat: 'repeat',
+      opacity,
+      mixBlendMode: 'multiply',
+      pointerEvents: 'none',
+    },
+  });
+}
+
+// ───────────────────────────────────────────
+// TRICOLOR logo — stacked layers approach
+// Each syllable gets rendered TWICE:
+//   1. larger, in black (simulated stroke / contour)
+//   2. on top, in the flag color (actual fill)
+// Plus a real text-shadow underneath for the hard-shadow V5 look.
+//
+// Satori doesn't support -webkit-text-stroke, so this is the
+// pixel-perfect equivalent. Each syllable becomes a positioned
+// stack: black-stroke layer + colored fill layer + dropped shadow
+// is handled via textShadow on the colored layer (satori supports
+// it natively).
+// ───────────────────────────────────────────
+const LOGO_VARIANTS = {
+  // sizeKey → { fontSize, strokeOffset (px the black layer pokes out
+  // around the fill), shadow (offset of the hard drop shadow) }
+  xs: { fontSize: 36,  strokeOffset: 1.5, shadow: 2 },
+  sm: { fontSize: 64,  strokeOffset: 2.0, shadow: 3 },
+  md: { fontSize: 96,  strokeOffset: 2.5, shadow: 4 },
+  lg: { fontSize: 140, strokeOffset: 3.0, shadow: 5 },
+  xl: { fontSize: 200, strokeOffset: 4.0, shadow: 7 },
+};
+
+function syllable({ text, color, strokeColor, shadowColor, fontSize, strokeOffset, shadow }) {
+  // Satori only supports display: flex / none / block. Every node
+  // with text content gets display: flex too. The stroke is faked
+  // by rendering a slightly larger black copy behind the colored
+  // fill (8-direction textShadow trick). The outer wrapper uses
+  // position: relative; the stroke layer is absolutely positioned
+  // so it overlays without taking layout space.
+  return el('div',
+    { style: {
+        position: 'relative',
+        display: 'flex',
+        lineHeight: 1,
+      } },
+    // Stroke layer (slightly thickened, behind the fill)
+    el('div', {
+      style: {
+        display: 'flex',
+        position: 'absolute',
+        top: 0, left: 0,
+        fontFamily: 'Anton',
+        fontSize,
+        letterSpacing: '-0.03em',
+        color: strokeColor,
+        // 8-direction textShadow simulates a uniform stroke.
+        textShadow: [
+          `${strokeOffset}px 0 0 ${strokeColor}`,
+          `-${strokeOffset}px 0 0 ${strokeColor}`,
+          `0 ${strokeOffset}px 0 ${strokeColor}`,
+          `0 -${strokeOffset}px 0 ${strokeColor}`,
+          `${strokeOffset}px ${strokeOffset}px 0 ${strokeColor}`,
+          `-${strokeOffset}px ${strokeOffset}px 0 ${strokeColor}`,
+          `${strokeOffset}px -${strokeOffset}px 0 ${strokeColor}`,
+          `-${strokeOffset}px -${strokeOffset}px 0 ${strokeColor}`,
+        ].join(', '),
+      },
+    }, text),
+    // Fill layer (colored, on top, takes layout)
+    el('div', {
+      style: {
+        display: 'flex',
+        position: 'relative',
+        fontFamily: 'Anton',
+        fontSize,
+        letterSpacing: '-0.03em',
+        color,
+        textShadow: `${shadow}px ${shadow}px 0 ${shadowColor}`,
+      },
+    }, text),
+  );
+}
+
+/**
+ * Tricolor logo, satori JSX node.
+ *   size: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+ *   onDark: when true, the syllable contour switches from #0A0A0A
+ *           to cream so the logo reads on a black bg.
+ *   withLa: prepends "★ La ★" Bebas eyebrow above the wordmark.
+ */
+export function logoTricolor({ size = 'md', onDark = false, withLa = false } = {}) {
+  const v = LOGO_VARIANTS[size] || LOGO_VARIANTS.md;
+  const strokeColor = onDark ? PALETTE.cream : PALETTE.ink;
+  const shadowColor = onDark ? 'rgba(0,0,0,0.55)' : PALETTE.ink;
+  const baseProps = { fontSize: v.fontSize, strokeOffset: v.strokeOffset, shadow: v.shadow, strokeColor, shadowColor };
+
+  const word = el('div',
+    { style: { display: 'flex', alignItems: 'baseline' } },
+    syllable({ ...baseProps, text: 'Tri', color: PALETTE.yellow }),
+    syllable({ ...baseProps, text: 'co',  color: PALETTE.blue }),
+    syllable({ ...baseProps, text: 'lor', color: PALETTE.red }),
+  );
+
+  if (!withLa) return word;
+
+  const laFontSize = Math.round(v.fontSize * 0.28);
+  return el('div',
+    { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1 } },
+    el('div', {
+      style: {
+        fontFamily: 'Bebas Neue',
+        fontSize: laFontSize,
+        letterSpacing: '0.4em',
+        color: onDark ? PALETTE.cream : PALETTE.ink,
+        marginBottom: Math.round(v.fontSize * 0.05),
+      },
+    }, '★ La ★'),
+    word,
+  );
+}
+
+// ───────────────────────────────────────────
+// Star separator — small flourish for "★ TEXT ★" patterns
+// ───────────────────────────────────────────
+export function starLabel(text, { color = PALETTE.red, size = 18 } = {}) {
+  return el('div',
+    { style: {
+        fontFamily: 'Bebas Neue',
+        fontSize: size,
+        letterSpacing: '0.2em',
+        color,
+        textTransform: 'uppercase',
+      } },
+    `★ ${text} ★`
+  );
+}
+
+// ───────────────────────────────────────────
+// Common bg helpers
+// ───────────────────────────────────────────
+export function bgColor(name) {
+  const map = {
+    cream:  PALETTE.bg,
+    ink:    PALETTE.ink,
+    yellow: PALETTE.yellow,
+    blue:   PALETTE.blue,
+    red:    PALETTE.red,
+    black:  PALETTE.ink,
+    crema:  PALETTE.bg, // alias used in sequences
+  };
+  return map[name] || name; // pass-through if it's a hex
+}
+
+export function accentColor(name) {
+  // Same alias map — accent and bg use the same palette
+  return bgColor(name);
+}
+
+// Re-export el for templater files that want to build raw nodes
+export { el };
