@@ -27,6 +27,7 @@ import { renderPost } from './templater/post.js';
 import { renderCarousel } from './templater/carousel.js';
 import { generateCaption } from './ai/claude.js';
 import { PROMPTS } from './ai/prompts.js';
+import { getEducationalDeck } from './strategy/educational.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -81,6 +82,11 @@ function postPlan(postKey, day) {
 }
 
 function carouselPlan(theme, day) {
+  // Educational decks ship with their own layout — return both so the
+  // renderer dispatches correctly.
+  const edu = getEducationalDeck(theme);
+  if (edu) return { slides: edu.slides, layout: edu.layout };
+
   const slidesByTheme = {
     'las-4-ediciones': [
       { variant: 'cover',  eyebrow: "Mundial 2026",  headline: 'LAS 4 EDICIONES',     subline: 'Una para cada estado de ánimo', bg: 'cream', accent: 'red' },
@@ -116,7 +122,8 @@ function carouselPlan(theme, day) {
       { variant: 'cta',    headline: '+ 2 GORRAS GRATIS', subline: 'Tricolor oficial FCF', cta: 'Lo Quiero', bg: 'red', accent: 'cream' },
     ],
   };
-  return slidesByTheme[theme] || slidesByTheme['las-4-ediciones'];
+  const slides = slidesByTheme[theme] || slidesByTheme['las-4-ediciones'];
+  return { slides, layout: 'default' };
 }
 
 async function maybeCaption({ promptName, promptArgs }, options, seed) {
@@ -206,8 +213,8 @@ async function main() {
 
   // ─── Carousel ───
   if (plan.carousel) {
-    const slides = carouselPlan(plan.carousel, plan);
-    const buffers = await renderCarousel({ slides });
+    const { slides, layout } = carouselPlan(plan.carousel, plan);
+    const buffers = await renderCarousel({ slides, layout });
     const id = `carousel-${plan.carousel}`;
     const fileNames = [];
     for (let i = 0; i < buffers.length; i++) {
