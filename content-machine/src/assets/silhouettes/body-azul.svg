@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 560" width="400" height="560" role="img" aria-label="La Portera · body azul · número 1">
+  <title>La Portera</title>
+  <desc>Body azul edición Portera, número 1 al pecho — LATRICOLOR.CO</desc>
+
+  <defs>
+    <linearGradient id="portBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0044C0"/>
+      <stop offset="100%" stop-color="#001E70"/>
+    </linearGradient>
+  </defs>
+
+  <path
+    d="M88 56 Q112 24 152 32 L200 48 L248 32 Q288 24 312 56 L328 144 Q320 200 304 240 L288 352 Q288 440 264 488 L248 536 Q224 552 200 528 Q176 552 152 536 L136 488 Q112 440 112 352 L96 240 Q80 200 72 144 Z"
+    fill="url(#portBlue)"
+    stroke="#FFD300"
+    stroke-width="6"
+    stroke-linejoin="round"
+  />
+
+  <!-- V-neck cut -->
+  <path d="M160 48 L200 112 L240 48" fill="#0A0A0A"/>
+
+  <!-- Jersey number 1 (the keeper) -->
+  <text x="200" y="320"
+    text-anchor="middle"
+    font-family="Anton, Impact, Arial Black, sans-serif"
+    font-size="120"
+    font-weight="900"
+    fill="#FFD300"
+    letter-spacing="-4"
+  >01</text>
+
+  <!-- Vertical retro stripes -->
+  <rect x="190" y="160" width="6" height="80" fill="#FFD300" opacity="0.6"/>
+  <rect x="204" y="160" width="6" height="80" fill="#FFD300" opacity="0.6"/>
+
+  <!-- Brand footer -->
+  <text x="200" y="552"
+    text-anchor="middle"
+    font-family="Bebas Neue, Anton, Arial Black, sans-serif"
+    font-size="16"
+    fill="#FFD300"
+    letter-spacing="3"
+  >LATRICOLOR.CO · LA PORTERA</text>
+</svg>

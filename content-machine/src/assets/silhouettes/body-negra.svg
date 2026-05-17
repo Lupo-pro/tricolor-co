@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 560" width="400" height="560" role="img" aria-label="Oro Negro · body negro premium · número 7">
+  <title>Oro Negro</title>
+  <desc>Body negro premium edición Oro Negro, número 7 al pecho — LATRICOLOR.CO</desc>
+
+  <defs>
+    <linearGradient id="oroBlack" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <linearGradient id="oroGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#B8860B"/>
+    </linearGradient>
+  </defs>
+
+  <path
+    d="M88 56 Q112 24 152 32 L200 48 L248 32 Q288 24 312 56 L328 144 Q320 200 304 240 L288 352 Q288 440 264 488 L248 536 Q224 552 200 528 Q176 552 152 536 L136 488 Q112 440 112 352 L96 240 Q80 200 72 144 Z"
+    fill="url(#oroBlack)"
+    stroke="url(#oroGold)"
+    stroke-width="7"
+    stroke-linejoin="round"
+  />
+
+  <!-- V-neck cut (gold accent) -->
+  <path d="M160 48 L200 112 L240 48" fill="url(#oroGold)"/>
+
+  <!-- Jersey number 07 -->
+  <text x="200" y="320"
+    text-anchor="middle"
+    font-family="Anton, Impact, Arial Black, sans-serif"
+    font-size="120"
+    font-weight="900"
+    fill="url(#oroGold)"
+    letter-spacing="-4"
+  >07</text>
+
+  <!-- Gold sleeve trim -->
+  <rect x="80"  y="120" width="40" height="3" fill="url(#oroGold)"/>
+  <rect x="80"  y="128" width="40" height="3" fill="url(#oroGold)"/>
+  <rect x="280" y="120" width="40" height="3" fill="url(#oroGold)"/>
+  <rect x="280" y="128" width="40" height="3" fill="url(#oroGold)"/>
+
+  <!-- Brand footer -->
+  <text x="200" y="552"
+    text-anchor="middle"
+    font-family="Bebas Neue, Anton, Arial Black, sans-serif"
+    font-size="16"
+    fill="url(#oroGold)"
+    letter-spacing="3"
+  >LATRICOLOR.CO · ORO NEGRO</text>
+</svg>

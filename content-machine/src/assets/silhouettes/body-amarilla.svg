@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 560" width="400" height="560" role="img" aria-label="La Capitana · body amarilla · número 10">
+  <title>La Capitana</title>
+  <desc>Body amarillo edición Capitana, número 10 al pecho — LATRICOLOR.CO</desc>
+
+  <defs>
+    <linearGradient id="capYellow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFD300"/>
+      <stop offset="100%" stop-color="#E6BF00"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Bodysuit silhouette -->
+  <path
+    d="M88 56 Q112 24 152 32 L200 48 L248 32 Q288 24 312 56 L328 144 Q320 200 304 240 L288 352 Q288 440 264 488 L248 536 Q224 552 200 528 Q176 552 152 536 L136 488 Q112 440 112 352 L96 240 Q80 200 72 144 Z"
+    fill="url(#capYellow)"
+    stroke="#0A0A0A"
+    stroke-width="6"
+    stroke-linejoin="round"
+  />
+
+  <!-- V-neck cut -->
+  <path
+    d="M160 48 L200 112 L240 48"
+    fill="#0A0A0A"
+  />
+
+  <!-- Jersey number 10 -->
+  <text x="200" y="320"
+    text-anchor="middle"
+    font-family="Anton, Impact, Arial Black, sans-serif"
+    font-size="120"
+    font-weight="900"
+    fill="#0A0A0A"
+    letter-spacing="-4"
+  >10</text>
+
+  <!-- Tricolor sleeve band hint -->
+  <rect x="80"  y="120" width="32" height="12" fill="#FFD300"/>
+  <rect x="80"  y="132" width="32" height="12" fill="#0033A0"/>
+  <rect x="80"  y="144" width="32" height="12" fill="#E63946"/>
+  <rect x="288" y="120" width="32" height="12" fill="#FFD300"/>
+  <rect x="288" y="132" width="32" height="12" fill="#0033A0"/>
+  <rect x="288" y="144" width="32" height="12" fill="#E63946"/>
+
+  <!-- Brand footer -->
+  <text x="200" y="552"
+    text-anchor="middle"
+    font-family="Bebas Neue, Anton, Arial Black, sans-serif"
+    font-size="16"
+    fill="#0A0A0A"
+    letter-spacing="3"
+  >LATRICOLOR.CO · LA CAPITANA</text>
+</svg>
