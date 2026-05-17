@@ -6,8 +6,7 @@
 
 import {
   PALETTE, el, flagBar, grainOverlay,
-  logoTricolor, bgColor, accentColor, pillTag,
-} from './brand.js';
+  logoTricolor, bgColor, accentColor, pillTag, getShadowColor,} from './brand.js';
 
 export function render(descriptor, { width = 1080, height = 1920 } = {}) {
   const bg = bgColor(descriptor.bg || 'cream');
@@ -48,7 +47,7 @@ export function render(descriptor, { width = 1080, height = 1920 } = {}) {
           letterSpacing: '-0.02em',
           color: onDark ? PALETTE.bg : PALETTE.ink,
           textTransform: 'uppercase',
-          textShadow: `8px 8px 0 ${accent}`,
+          textShadow: `8px 8px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, descriptor.headline || ''),
       descriptor.subline

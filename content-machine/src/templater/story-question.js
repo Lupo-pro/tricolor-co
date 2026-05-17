@@ -6,8 +6,7 @@
 
 import {
   PALETTE, el, flagBar, grainOverlay,
-  logoTricolor, bgColor, accentColor, pillTag,
-} from './brand.js';
+  logoTricolor, bgColor, accentColor, pillTag, getShadowColor,} from './brand.js';
 
 const PILL_BG_CYCLE = [PALETTE.yellow, PALETTE.bg, PALETTE.red, PALETTE.blue];
 const PILL_TEXT_CYCLE = [PALETTE.ink, PALETTE.ink, PALETTE.bg, PALETTE.bg];
@@ -51,7 +50,7 @@ export function render(descriptor, { width = 1080, height = 1920 } = {}) {
           letterSpacing: '-0.02em',
           color: onDark ? PALETTE.bg : PALETTE.ink,
           textTransform: 'uppercase',
-          textShadow: `7px 7px 0 ${accent}`,
+          textShadow: `7px 7px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, descriptor.question || descriptor.headline || ''),
     ),

@@ -6,8 +6,7 @@
 
 import {
   PALETTE, el, flagBar, grainOverlay,
-  logoTricolor, bgColor, accentColor, starLabel, photoFrame,
-} from './brand.js';
+  logoTricolor, bgColor, accentColor, starLabel, photoFrame, getShadowColor,} from './brand.js';
 
 export function render(descriptor, { size = 1080 } = {}) {
   const bg = bgColor(descriptor.bg || 'cream');
@@ -79,7 +78,7 @@ export function render(descriptor, { size = 1080 } = {}) {
               letterSpacing: '-0.02em',
               color: onDark ? PALETTE.bg : PALETTE.ink,
               textTransform: 'uppercase',
-              textShadow: `4px 4px 0 ${accent}`,
+              textShadow: `4px 4px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
             },
           }, descriptor.headline || ''),
           descriptor.subline

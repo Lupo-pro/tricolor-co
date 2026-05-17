@@ -7,8 +7,7 @@
 
 import {
   PALETTE, el, flagBar, grainOverlay,
-  logoTricolor, bgColor, accentColor, starLabel, arrowIcon,
-} from './brand.js';
+  logoTricolor, bgColor, accentColor, starLabel, arrowIcon, getShadowColor,} from './brand.js';
 
 const SIZE = 1080;
 
@@ -58,7 +57,7 @@ function renderCover(slide, idx, total) {
         style: {
           marginTop: 10, fontFamily: 'Anton', fontSize: 160, lineHeight: 0.92,
           letterSpacing: '-0.02em', color: onDark ? PALETTE.bg : PALETTE.ink,
-          textTransform: 'uppercase', textShadow: `6px 6px 0 ${accent}`,
+          textTransform: 'uppercase', textShadow: `6px 6px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, slide.headline || ''),
       slide.subline
@@ -95,7 +94,7 @@ function renderNarrative(slide, idx, total) {
         style: {
           fontFamily: 'Anton', fontSize: 200, lineHeight: 0.92,
           letterSpacing: '-0.02em', color: onDark ? PALETTE.bg : PALETTE.ink,
-          textTransform: 'uppercase', textShadow: `7px 7px 0 ${accent}`,
+          textTransform: 'uppercase', textShadow: `7px 7px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, slide.headline || ''),
       slide.subline
@@ -136,7 +135,7 @@ function renderCta(slide, idx, total) {
         style: {
           fontFamily: 'Anton', fontSize: 150, lineHeight: 0.9,
           letterSpacing: '-0.02em', color: onDark ? PALETTE.bg : PALETTE.ink,
-          textTransform: 'uppercase', textShadow: `5px 5px 0 ${accent}`,
+          textTransform: 'uppercase', textShadow: `5px 5px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, slide.headline || ''),
       slide.subline

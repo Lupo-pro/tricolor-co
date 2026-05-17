@@ -17,7 +17,7 @@ import satori from 'satori';
 import sharp from 'sharp';
 import {
   PALETTE, loadFonts, el, flagBar, grainOverlay,
-  logoTricolor, bgColor, accentColor, starLabel,
+  logoTricolor, bgColor, accentColor, starLabel, getShadowColor,
 } from './brand.js';
 
 import { render as renderHookCenter }         from './story-hook-center.js';
@@ -88,7 +88,7 @@ function renderTease({ headline, subline, bg, accent }) {
           letterSpacing: '-0.02em',
           color: onDark ? PALETTE.bg : PALETTE.ink,
           textTransform: 'uppercase',
-          textShadow: `8px 8px 0 ${accent}`,
+          textShadow: `8px 8px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, headline),
       el('div', {
@@ -160,7 +160,7 @@ function renderReveal({ headline, subline, bg, accent }) {
           letterSpacing: '-0.02em',
           color: onDark ? PALETTE.bg : PALETTE.ink,
           textTransform: 'uppercase',
-          textShadow: `8px 8px 0 ${accent}`,
+          textShadow: `8px 8px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, headline),
       el('div', {
@@ -236,7 +236,7 @@ function renderUrgency({ headline, subline, bg, accent }) {
           letterSpacing: '-0.02em',
           color: onDark ? PALETTE.bg : PALETTE.ink,
           textTransform: 'uppercase',
-          textShadow: `9px 9px 0 ${accent}`,
+          textShadow: `9px 9px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, headline),
       el('div', {
@@ -299,7 +299,7 @@ function renderCta({ headline, subline, bg, accent }) {
           letterSpacing: '-0.02em',
           color: onDark ? PALETTE.bg : PALETTE.ink,
           textTransform: 'uppercase',
-          textShadow: `8px 8px 0 ${accent}`,
+          textShadow: `8px 8px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, headline),
       el('div', {

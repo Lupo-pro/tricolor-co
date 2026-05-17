@@ -6,8 +6,7 @@
 
 import {
   PALETTE, el, flagBar, grainOverlay,
-  logoTricolor, bgColor, accentColor, starLabel, bodyShape,
-} from './brand.js';
+  logoTricolor, bgColor, accentColor, starLabel, bodyShape, getShadowColor,} from './brand.js';
 
 const SILHOUETTE_COLORS = {
   yellow: PALETTE.yellow,
@@ -75,7 +74,7 @@ export function render(descriptor, { size = 1080 } = {}) {
               letterSpacing: '-0.02em',
               color: onDark ? PALETTE.bg : PALETTE.ink,
               textTransform: 'uppercase',
-              textShadow: `5px 5px 0 ${accent}`,
+              textShadow: `5px 5px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
             },
           }, descriptor.headline || ''),
           descriptor.subline

@@ -19,8 +19,7 @@ import satori from 'satori';
 import sharp from 'sharp';
 import {
   PALETTE, loadFonts, el, flagBar, grainOverlay,
-  logoTricolor, bgColor, accentColor, starLabel, arrowIcon,
-} from './brand.js';
+  logoTricolor, bgColor, accentColor, starLabel, arrowIcon, getShadowColor,} from './brand.js';
 
 import { renderSlide as renderEducational }  from './carousel-educational.js';
 import { renderSlide as renderGuide }        from './carousel-guide.js';
@@ -94,7 +93,7 @@ function defaultSlide(slide, slideIndex, totalSlides) {
         style: {
           fontFamily: 'Anton', fontSize: isCover ? 140 : 110, lineHeight: 0.92,
           letterSpacing: '-0.02em', color: onDark ? PALETTE.bg : PALETTE.ink,
-          textTransform: 'uppercase', textShadow: `5px 5px 0 ${accent}`,
+          textTransform: 'uppercase', textShadow: `5px 5px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, slide.headline || ''),
       slide.subline

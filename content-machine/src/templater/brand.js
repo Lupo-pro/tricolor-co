@@ -285,6 +285,27 @@ export function arrowIcon({ size = 16, color = PALETTE.ink } = {}) {
   }));
 }
 
+// ───────────────────────────────────────────
+// getShadowColor — picks a text-shadow color that contrasts with the
+// text. The shadow color must NEVER match the text color, otherwise
+// the shadow vanishes and the headline reads as flat type with no
+// depth (e.g. cream text + cream shadow on a red bg).
+//
+// Rule:
+//   text === accent → fall back to ink, except when text is itself
+//                     ink, in which case bounce to yellow.
+//   otherwise       → trust the accent (the layout intent).
+//
+// Pass the helper everywhere a textShadow drop-shadow uses an
+// edition-driven color.
+// ───────────────────────────────────────────
+export function getShadowColor(textColor, accentColor) {
+  if (textColor === accentColor) {
+    return textColor === PALETTE.ink ? PALETTE.yellow : PALETTE.ink;
+  }
+  return accentColor;
+}
+
 // "★ TEXT ★" eyebrow — uses real SVG stars instead of the U+2605
 // character which isn't in any of our loaded fonts.
 export function starLabel(text, { color = PALETTE.red, size = 18 } = {}) {

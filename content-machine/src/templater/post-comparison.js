@@ -6,8 +6,7 @@
 
 import {
   PALETTE, el, flagBar, grainOverlay,
-  logoTricolor, bgColor,
-} from './brand.js';
+  logoTricolor, bgColor, getShadowColor,} from './brand.js';
 
 function panel({ label, headline, bg, accent = PALETTE.red, alignRight = false }) {
   const onDark = isDark(bg);
@@ -43,7 +42,7 @@ function panel({ label, headline, bg, accent = PALETTE.red, alignRight = false }
         letterSpacing: '-0.02em',
         color: onDark ? PALETTE.bg : PALETTE.ink,
         textTransform: 'uppercase',
-        textShadow: `5px 5px 0 ${accent}`,
+        textShadow: `5px 5px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         textAlign: alignRight ? 'right' : 'left',
       },
     }, headline || ''),

@@ -7,8 +7,7 @@ import satori from 'satori';
 import sharp from 'sharp';
 import {
   PALETTE, loadFonts, el, flagBar, grainOverlay,
-  logoTricolor, bgColor, accentColor, starLabel,
-} from './brand.js';
+  logoTricolor, bgColor, accentColor, starLabel, getShadowColor,} from './brand.js';
 
 const W = 1080;
 const H = 1350;
@@ -67,7 +66,7 @@ export async function renderPostPortrait(descriptor) {
           letterSpacing: '-0.02em',
           color: onDark ? PALETTE.bg : PALETTE.ink,
           textTransform: 'uppercase',
-          textShadow: `7px 7px 0 ${accent}`,
+          textShadow: `7px 7px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, descriptor.headline || ''),
       descriptor.subline

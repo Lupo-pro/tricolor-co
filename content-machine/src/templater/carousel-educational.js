@@ -16,8 +16,7 @@
 import {
   PALETTE, el, flagBar, grainOverlay,
   logoTricolor, bgColor, accentColor, starLabel, statNumber,
-  arrowIcon,
-} from './brand.js';
+  arrowIcon, getShadowColor,} from './brand.js';
 
 const SIZE = 1080;
 
@@ -74,7 +73,7 @@ function renderCover(slide, idx, total) {
         style: {
           fontFamily: 'Anton', fontSize: 140, lineHeight: 0.9,
           letterSpacing: '-0.02em', color: onDark ? PALETTE.bg : PALETTE.ink,
-          textTransform: 'uppercase', textShadow: `5px 5px 0 ${accent}`,
+          textTransform: 'uppercase', textShadow: `5px 5px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, slide.headline || ''),
       slide.subline
@@ -178,7 +177,7 @@ function renderCta(slide, idx, total) {
         style: {
           fontFamily: 'Anton', fontSize: 130, lineHeight: 0.9,
           letterSpacing: '-0.02em', color: onDark ? PALETTE.bg : PALETTE.ink,
-          textTransform: 'uppercase', textShadow: `5px 5px 0 ${accent}`,
+          textTransform: 'uppercase', textShadow: `5px 5px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, slide.headline || ''),
       slide.subline

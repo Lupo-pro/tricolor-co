@@ -5,8 +5,7 @@
 
 import {
   PALETTE, el, grainOverlay,
-  logoTricolor, bgColor, accentColor,
-} from './brand.js';
+  logoTricolor, bgColor, accentColor, getShadowColor,} from './brand.js';
 
 export function render(descriptor, { size = 1080 } = {}) {
   const bg = bgColor(descriptor.bg || 'red');
@@ -59,7 +58,7 @@ export function render(descriptor, { size = 1080 } = {}) {
           letterSpacing: '-0.02em',
           color: ink,
           textTransform: 'uppercase',
-          textShadow: `5px 5px 0 ${accent}`,
+          textShadow: `5px 5px 0 ${getShadowColor(onDark ? PALETTE.bg : PALETTE.ink, accent)}`,
         },
       }, descriptor.headline || ''),
       descriptor.subline
