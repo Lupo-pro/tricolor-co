@@ -27,6 +27,7 @@ import { dirname, join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { recordEvent, getInsights } from '../src/strategy/preferences.js';
+import { planForDay } from '../src/strategy/content-mix.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -96,6 +97,23 @@ app.get('/api/today', async (_req, res) => {
 app.get('/api/day/:date', async (req, res) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(req.params.date)) return res.status(400).json({ ok: false, error: 'bad date' });
   await respondWithDay(res, req.params.date);
+});
+
+// /api/plan/:date — returns the calendar-resolved plan (what WILL be
+// generated). Used by the calendar view so days are never visually
+// empty just because their drafts haven't been built yet.
+app.get('/api/plan/:date', async (req, res) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(req.params.date)) return res.status(400).json({ ok: false, error: 'bad date' });
+  try {
+    const plan = await planForDay(req.params.date);
+    // Also flag whether drafts have been built yet (saves the caller
+    // a second round-trip).
+    const draftDir = join(DATA_DIR, 'drafts', req.params.date);
+    const built = await exists(join(draftDir, 'manifest.json'));
+    res.json({ ok: true, plan, built });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 async function respondWithDay(res, date) {

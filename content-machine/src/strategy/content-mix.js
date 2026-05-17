@@ -76,6 +76,46 @@ function estimateStock(day, cal) {
   return Math.max(8, remaining);
 }
 
+// Suggested IG publishing time per theme — derived from a few rules
+// of thumb for the LATAM bodysuit audience (morning drops, evening
+// manifesto, pre-kickoff match content, etc.). Returns 24h HH:mm.
+export function suggestedPublishTime(day) {
+  const theme = String(day.theme || '').toLowerCase();
+  const special = String(day.special || '').toLowerCase();
+
+  if (theme.startsWith('match-day') || special.includes('match-day')) {
+    const k = day.sequence_match?.kickoff;
+    if (k && /^\d{2}:\d{2}$/.test(k)) {
+      const [h, m] = k.split(':').map(Number);
+      const ph = (h + 24 - 2) % 24;
+      return `${String(ph).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    }
+    return '20:00';
+  }
+  if (theme.includes('match-eve') || /1-day-to-match/.test(special)) return '19:00';
+  if (theme.includes('match-week')) return '12:00';
+  if (theme.includes('post-match')) return '12:00';
+
+  if (theme === 'launch')                        return '11:00';
+  if (theme.includes('monday-drop'))             return '11:00';
+  if (theme.includes('midweek-drop'))            return '12:00';
+  if (theme.includes('midweek-pre-mundial'))     return '19:00';
+  if (theme.includes('educational-tuesday'))     return '18:00';
+  if (theme.includes('manifesto-tuesday'))       return '18:00';
+  if (theme.includes('behind-scenes-thursday'))  return '16:00';
+  if (theme.includes('social-proof-friday'))     return '14:00';
+  if (theme.includes('saturday-fomo'))           return '19:00';
+  if (theme.startsWith('sunday-'))               return '18:00';
+  if (theme.includes('mundial-day'))             return '12:00';
+  if (theme.includes('mundial-opens'))           return '12:00';
+  if (theme.includes('post-launch-momentum'))    return '14:00';
+  if (theme.includes('group-stage-recap'))       return '18:00';
+  if (theme.includes('knockout-anticipation'))   return '18:00';
+  if (theme.includes('monday-final-week'))       return '11:00';
+
+  return '12:00';
+}
+
 /**
  * Resolve the plan for a single day. Returns the calendar-defined plan
  * if present, otherwise a fallback derived from day-of-week.
@@ -102,6 +142,7 @@ export async function planForDay(dateKey) {
     carousel: day.carousel || null,
     special: day.special || null,
     match: day.sequence_match || null,
+    publish_time: suggestedPublishTime(day),
   };
 }
 

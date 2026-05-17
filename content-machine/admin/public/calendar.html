@@ -10,19 +10,29 @@
 <link rel="stylesheet" href="/assets/styles.css">
 <style>
   .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.6rem; margin-top: 1rem; }
-  .day { background: #fff; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); padding: 0.7rem; min-height: 180px; display: flex; flex-direction: column; gap: 0.35rem; }
+  .day { background: #fff; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); padding: 0.7rem; min-height: 200px; display: flex; flex-direction: column; gap: 0.35rem; position: relative; }
   .day.today { box-shadow: 5px 5px 0 var(--yellow); border-color: var(--yellow); }
   .day.match { box-shadow: 5px 5px 0 var(--red); border-color: var(--red); }
+  .day.built::after {
+    content: '✓ built';
+    position: absolute; top: 4px; right: 6px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 0.6rem; letter-spacing: 0.15em;
+    color: #2D5016; text-transform: uppercase;
+  }
   .day .date { font-family: 'Anton', sans-serif; font-size: 1rem; letter-spacing: 0.05em; }
   .day .dow  { font-family: 'Bebas Neue', sans-serif; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
-  .day .theme { font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 0.08em; color: var(--ink-soft); text-transform: uppercase; margin-top: 0.2rem; }
+  .day .theme { font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 0.08em; color: var(--ink-soft); text-transform: uppercase; margin-top: 0.2rem; line-height: 1.15; }
   .day .edition { font-family: 'Anton', sans-serif; font-size: 0.78rem; letter-spacing: 0.08em; padding: 0.12rem 0.4rem; background: var(--bg-warm); align-self: flex-start; text-transform: uppercase; }
   .day .edition.la-capitana { background: var(--yellow); color: var(--ink); }
   .day .edition.la-portera  { background: var(--blue);   color: var(--yellow); }
   .day .edition.oro-negro   { background: var(--ink);    color: var(--yellow); }
   .day .edition.la-cafetera { background: var(--red);    color: var(--bg); }
   .day .match-tag { font-family: 'Anton', sans-serif; font-size: 0.78rem; letter-spacing: 0.08em; background: var(--red); color: var(--bg); padding: 0.15rem 0.4rem; align-self: flex-start; text-transform: uppercase; }
-  .day .seq { font-family: 'Bebas Neue', sans-serif; font-size: 0.72rem; letter-spacing: 0.1em; color: var(--ink-mid); text-transform: uppercase; }
+  .day .seq { font-family: 'Bebas Neue', sans-serif; font-size: 0.72rem; letter-spacing: 0.1em; color: var(--ink-mid); text-transform: uppercase; line-height: 1.25; }
+  .day .icons { font-size: 1rem; letter-spacing: 0.3em; margin-top: auto; padding-top: 0.4rem; border-top: 1px dashed var(--bg-warm); }
+  .day .icons .pill { font-family: 'Anton', sans-serif; font-size: 0.65rem; letter-spacing: 0.1em; background: var(--ink); color: var(--bg); padding: 0 0.32rem; margin-left: 0.1rem; vertical-align: middle; }
+  .day .pub-time { font-family: 'Anton', sans-serif; font-size: 0.82rem; letter-spacing: 0.05em; color: var(--red); align-self: flex-end; position: absolute; top: 8px; right: 8px; }
+  .day.built .pub-time { right: 60px; }
   @media (max-width: 900px) { .week { grid-template-columns: repeat(2, 1fr); } }
 </style>
 </head>
@@ -71,6 +81,23 @@
     return d;
   })();
 
+  function iconsFor(plan) {
+    if (!plan) return '';
+    const parts = [];
+    const postCount = plan.posts.length;
+    const carouselCount = plan.carousel ? 1 : 0;
+    const seqCount = plan.sequences.length;
+    if (postCount > 0)     parts.push(`📝<span class="pill">${postCount}</span>`);
+    if (carouselCount > 0) parts.push(`📚<span class="pill">${carouselCount}</span>`);
+    if (seqCount > 0)      parts.push(`🎬<span class="pill">${seqCount}</span>`);
+    return parts.join(' ');
+  }
+
+  function seqSummary(plan) {
+    if (!plan || plan.sequences.length === 0) return '';
+    return plan.sequences.map((s) => s.name).join(' · ');
+  }
+
   async function loadWeek() {
     $week.innerHTML = '';
     $weekStart.textContent = isoKey(weekStart);
@@ -78,20 +105,25 @@
       const date = addDays(weekStart, i);
       const key = isoKey(date);
       try {
-        const r = await fetch(`/api/day/${key}`);
+        const r = await fetch(`/api/plan/${key}`);
         const data = await r.json();
         const cell = document.createElement('article');
         cell.className = 'day';
         if (key === new Date().toISOString().slice(0, 10)) cell.classList.add('today');
-        if (data.ok && data.manifest && /MATCH-DAY/i.test(data.manifest.theme || '')) cell.classList.add('match');
+        if (data.ok && data.plan && /MATCH-DAY/i.test(data.plan.theme || '')) cell.classList.add('match');
+        if (data.ok && data.built) cell.classList.add('built');
 
+        const plan = data.ok ? data.plan : null;
         cell.innerHTML = `
           <div class="dow">${dowEs(date)}</div>
           <div class="date">${date.getDate()}/${date.getMonth() + 1}</div>
-          ${data.ok && data.manifest ? `
-            <div class="theme">${data.manifest.theme || '—'}</div>
-            ${data.manifest.edition_focus ? `<div class="edition ${data.manifest.edition_focus}">${data.manifest.edition_focus}</div>` : ''}
-            ${data.manifest.special && /vs-|MATCH/i.test(data.manifest.special) ? `<div class="match-tag">★ ${data.manifest.special}</div>` : ''}
+          ${plan ? `
+            <div class="pub-time">${plan.publish_time || ''}</div>
+            <div class="theme" title="${plan.theme || ''}">${plan.theme || '—'}</div>
+            ${plan.edition_focus ? `<div class="edition ${plan.edition_focus}">${plan.edition_focus}</div>` : ''}
+            ${plan.special && /vs-|MATCH/i.test(plan.special) ? `<div class="match-tag">★ ${plan.special}</div>` : ''}
+            ${plan.sequences.length > 0 ? `<div class="seq">${seqSummary(plan)}</div>` : ''}
+            <div class="icons">${iconsFor(plan)}</div>
           ` : '<div class="theme">—</div>'}
         `;
         $week.appendChild(cell);
