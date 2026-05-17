@@ -859,18 +859,14 @@ html.promo-active .promo-bar { display: flex; }
   overflow-y: auto;
 }
 .mobile-menu.active { transform: translateX(0); }
-.mm-flag {
-  display: flex;
-  width: 60px;
-  height: 32px;
-  border: var(--border-thin);
-  border-color: var(--bg);
+.mm-logo {
   margin-bottom: 1rem;
 }
-.mm-flag span { flex: 1; }
-.mm-flag span:nth-child(1) { background: var(--yellow); }
-.mm-flag span:nth-child(2) { background: var(--blue); }
-.mm-flag span:nth-child(3) { background: var(--red); }
+.mm-logo .logo-tricolor {
+  font-size: 2.4rem;
+  --logo-stroke: 1.5px;
+  --logo-shadow: 3px;
+}
 .mobile-menu > a {
   font-family: 'Anton', sans-serif;
   font-size: 2rem;
