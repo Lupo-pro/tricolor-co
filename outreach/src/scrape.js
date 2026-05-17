@@ -45,15 +45,29 @@ if (!TOKEN || TOKEN.startsWith('apify_api_xxx')) {
 
 const client = new ApifyClient({ token: TOKEN });
 
+// Hashtag set refocused on the actual target persona: Colombian
+// women 20-35, lifestyle / fitness / dance / fashion / nightlife,
+// 3K-50K followers. The previous "tricolor / cafeteras / mujer-
+// colombiana / mundial2026" hashtags pulled too many B2B accounts,
+// journalists, political activists, and Brazilian football fans.
 const HASHTAGS_IG = [
-  'mujercolombiana', 'paisas', 'cafeteras', 'hinchadafemenina',
-  'mundial2026', 'colombianasbellas', 'tricolor',
-  'modacolombiana', 'fitnesscolombia', 'beautycolombia',
+  // Lifestyle / OOTD
+  'ootdcolombia', 'ootdpaisas', 'lookdeldia', 'lookcolombia',
+  // Fitness Colombia
+  'fitcolombia', 'gymcolombia', 'paisafit', 'fitnesscolombia',
+  // Dance / rumba — huge in Colombia
+  'salsacaleñas', 'bailarinacolombia', 'rumbabogota',
+  // Regional specific
+  'paisasconestilo', 'medellinstyle', 'pereiranas',
+  // Social activities
+  'parchecolombiano', 'amigascolombia',
 ];
 
 const HASHTAGS_TT = [
-  'mujercolombiana', 'paisas', 'cafeteras', 'hinchadafemenina',
-  'mundial2026', 'colombianas', 'fypcolombia',
+  // Same persona on TikTok — minor adaptations for naming conventions
+  'ootdcolombia', 'lookcolombia', 'fitcolombia', 'gymcolombia',
+  'paisafit', 'salsacaleñas', 'bailarinacolombia',
+  'paisasconestilo', 'medellinstyle', 'parchecolombiano',
 ];
 
 const LOCATIONS_IG = [
