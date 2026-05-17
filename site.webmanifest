@@ -4,10 +4,12 @@
   "description": "Bodysuits Selección Colombia · Edición Mundial 2026. Sé Tricolor.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FAF7F2",
+  "background_color": "#F0EBE0",
   "theme_color": "#0A0A0A",
   "lang": "es-CO",
   "icons": [
-    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any maskable" }
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "/favicon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "/favicon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" }
   ]
 }
