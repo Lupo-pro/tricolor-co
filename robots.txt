@@ -1,4 +1,12 @@
 User-agent: *
 Allow: /
 
+# Private paths — keep crawlers out of API, admin tooling, and the
+# raw outreach toolchain. The audio file is also disallowed so search
+# crawlers don't waste budget on a 4MB media asset.
+Disallow: /api/
+Disallow: /admin/
+Disallow: /outreach/
+Disallow: /assets/audio/
+
 Sitemap: https://latricolor.co/sitemap.xml
