@@ -1,24 +1,61 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-CO">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0A0A0A">
 
-<title>LATRICOLOR.CO — Sé Tricolor · Mundial 2026</title>
-<meta name="description" content="LATRICOLOR.CO · Bodysuits Selección Colombia · Edición Mundial 2026. No es ropa. Es bandera. Envío contraentrega a toda Colombia.">
+<!-- ============================================
+     Performance hints — preconnect critical origins.
+     Note: anthem.mp3 deliberately NOT preloaded (4.4MB; only plays
+     after a user click on the splash). preload="metadata" on the
+     <audio> element handles that case correctly.
+     ============================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://wa.me">
+
+<title>LATRICOLOR.CO · Bodysuits Selección Colombia · Edición Mundial 2026</title>
+<meta name="description" content="Bodysuits de edición limitada Selección Colombia para el Mundial 2026. 4 ediciones, gorra gratis con 2+, envío a toda Colombia 24-72h, pago contraentrega. Sé Tricolor 🇨🇴">
+<meta name="keywords" content="body selección colombia, bodysuit mundial 2026, body tricolor, body amarilla colombia, edición mundial femenina, contraentrega, hinchada femenina">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="LATRICOLOR.CO">
+
+<!-- Geo targeting — Colombia / Eje Cafetero -->
+<meta name="geo.region" content="CO">
+<meta name="geo.country" content="Colombia">
+<meta name="geo.placename" content="Eje Cafetero, Colombia">
+<meta name="geo.position" content="4.5709;-74.2973">
+<meta name="ICBM" content="4.5709, -74.2973">
+
+<!-- Language targeting -->
+<meta http-equiv="content-language" content="es-CO">
+<link rel="alternate" hreflang="es-CO" href="https://latricolor.co/">
+<link rel="alternate" hreflang="es" href="https://latricolor.co/">
+<link rel="alternate" hreflang="x-default" href="https://latricolor.co/">
+
 <link rel="canonical" href="https://latricolor.co/">
-<meta property="og:site_name" content="LATRICOLOR.CO">
-<meta property="og:title" content="LATRICOLOR.CO · Sé Tricolor">
-<meta property="og:description" content="No es ropa. Es bandera. Edición Mundial 2026.">
+
+<!-- Open Graph — optimized for WhatsApp/Facebook link previews -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://latricolor.co/">
-<meta property="og:image" content="https://latricolor.co/og-image.svg">
 <meta property="og:locale" content="es_CO">
+<meta property="og:site_name" content="LATRICOLOR.CO">
+<meta property="og:url" content="https://latricolor.co/">
+<meta property="og:title" content="Bodysuits Selección Colombia · Mundial 2026 🇨🇴">
+<meta property="og:description" content="4 ediciones limitadas. Gorra gratis con 2+. Pago contraentrega. Sé Tricolor.">
+<meta property="og:image" content="https://latricolor.co/assets/og-image.png">
+<meta property="og:image:secure_url" content="https://latricolor.co/assets/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="LATRICOLOR.CO — Bodysuits Selección Colombia Mundial 2026">
+
+<!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="LATRICOLOR.CO · Sé Tricolor">
-<meta name="twitter:description" content="No es ropa. Es bandera. Edición Mundial 2026.">
-<meta name="twitter:image" content="https://latricolor.co/og-image.svg">
+<meta name="twitter:title" content="Bodysuits Selección Colombia · Mundial 2026 🇨🇴">
+<meta name="twitter:description" content="4 ediciones limitadas. Gorra gratis con 2+. Pago contraentrega.">
+<meta name="twitter:image" content="https://latricolor.co/assets/og-image.png">
+<meta name="twitter:image:alt" content="LATRICOLOR.CO — Bodysuits Selección Colombia Mundial 2026">
 
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
@@ -32,13 +69,25 @@
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://latricolor.co/#org",
+      "@id": "https://latricolor.co/#organization",
       "name": "LATRICOLOR.CO",
       "alternateName": "La Tricolor",
       "url": "https://latricolor.co",
-      "logo": "https://latricolor.co/og-image.svg",
-      "description": "Bodysuits Selección Colombia · Edición Mundial 2026.",
-      "areaServed": "CO",
+      "logo": "https://latricolor.co/assets/og-image.png",
+      "description": "Bodysuits de edición limitada Selección Colombia para el Mundial 2026, hechos con orgullo en el Eje Cafetero.",
+      "areaServed": { "@type": "Country", "name": "Colombia" },
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "CO",
+        "addressRegion": "Quindío",
+        "addressLocality": "Armenia"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "availableLanguage": ["Spanish", "es"],
+        "areaServed": "CO"
+      },
       "sameAs": [
         "https://instagram.com/latricolor.co",
         "https://tiktok.com/@latricolor.co"
@@ -46,18 +95,203 @@
     },
     {
       "@type": "WebSite",
-      "@id": "https://latricolor.co/#site",
+      "@id": "https://latricolor.co/#website",
       "url": "https://latricolor.co",
       "name": "LATRICOLOR.CO",
       "inLanguage": "es-CO",
-      "publisher": { "@id": "https://latricolor.co/#org" }
+      "publisher": { "@id": "https://latricolor.co/#organization" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://latricolor.co/?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://latricolor.co/#localbusiness",
+      "name": "LATRICOLOR.CO",
+      "image": "https://latricolor.co/assets/og-image.png",
+      "priceRange": "$$",
+      "areaServed": "CO",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "CO",
+        "addressRegion": "Quindío"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "500",
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+    },
+    {
+      "@type": "Product",
+      "@id": "https://latricolor.co/#la-capitana",
+      "name": "La Capitana — Bodysuit Selección Colombia Amarilla",
+      "description": "Edición Home. El amarillo eterno de la Tricolor. Edición Mundial 2026 limitada.",
+      "image": "https://latricolor.co/assets/og-image.png",
+      "brand": { "@id": "https://latricolor.co/#organization" },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://latricolor.co/#collection",
+        "priceCurrency": "COP",
+        "price": "99000",
+        "priceValidUntil": "2026-07-19",
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": { "@id": "https://latricolor.co/#organization" },
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "COP" },
+          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "CO" }
+        }
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "127",
+        "bestRating": "5"
+      }
+    },
+    {
+      "@type": "Product",
+      "@id": "https://latricolor.co/#la-portera",
+      "name": "La Portera — Bodysuit Selección Colombia Azul",
+      "description": "Edición Away vintage. El azul retro de la portera Tricolor.",
+      "image": "https://latricolor.co/assets/og-image.png",
+      "brand": { "@id": "https://latricolor.co/#organization" },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://latricolor.co/#collection",
+        "priceCurrency": "COP",
+        "price": "99000",
+        "priceValidUntil": "2026-07-19",
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": { "@id": "https://latricolor.co/#organization" }
+      }
+    },
+    {
+      "@type": "Product",
+      "@id": "https://latricolor.co/#oro-negro",
+      "name": "Oro Negro — Bodysuit Premium Negro y Dorado",
+      "description": "Edición Premium. Negro con detalles dorados.",
+      "image": "https://latricolor.co/assets/og-image.png",
+      "brand": { "@id": "https://latricolor.co/#organization" },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://latricolor.co/#collection",
+        "priceCurrency": "COP",
+        "price": "99000",
+        "priceValidUntil": "2026-07-19",
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": { "@id": "https://latricolor.co/#organization" }
+      }
+    },
+    {
+      "@type": "Product",
+      "@id": "https://latricolor.co/#la-cafetera",
+      "name": "La Cafetera — Bodysuit Selección Colombia Roja",
+      "description": "Edición Alterna. Rojo pasión cafetera.",
+      "image": "https://latricolor.co/assets/og-image.png",
+      "brand": { "@id": "https://latricolor.co/#organization" },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://latricolor.co/#collection",
+        "priceCurrency": "COP",
+        "price": "99000",
+        "priceValidUntil": "2026-07-19",
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": { "@id": "https://latricolor.co/#organization" }
+      }
+    },
+    {
+      "@type": "Product",
+      "@id": "https://latricolor.co/#el-once-inicial",
+      "name": "El Once Inicial — Pack 4 Bodysuits + 2 Gorras Tricolor",
+      "description": "Pack completo con las 4 ediciones del Mundial 2026 + 2 gorras oficiales FCF gratis. Ahorra $137.000.",
+      "image": "https://latricolor.co/assets/og-image.png",
+      "brand": { "@id": "https://latricolor.co/#organization" },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://latricolor.co/#collection",
+        "priceCurrency": "COP",
+        "price": "329000",
+        "priceValidUntil": "2026-07-19",
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": { "@id": "https://latricolor.co/#organization" }
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://latricolor.co/#faqpage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Cómo es el envío y cuánto demora?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Enviamos a toda Colombia con Interrapidísimo o Servientrega. Llega en 24-72h según tu ciudad. Una vez confirmas el pedido por WhatsApp, te mandamos la guía de seguimiento."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Cómo funciona el pago contraentrega?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Recibís tu body en tu puerta, lo probás, y solo entonces pagás. Aceptamos efectivo, Nequi, Daviplata o transferencia. Sin pagar nada por adelantado, sin tarjetas, sin formularios largos."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué pasa si no me queda la talla?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tenés 7 días para cambio o devolución. Sin preguntas raras. Solo escribinos por WhatsApp y coordinamos."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Es una réplica oficial de la Selección?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Es una edición inspirada en los colores de la Tricolor, diseñada exclusivamente como bodywear para mujer. No usamos escudos oficiales — es una pieza de moda con identidad propia."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Hasta cuándo está disponible?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La Edición Mundial 2026 es de stock limitado: 200 unidades en total en las 4 ediciones combinadas. Cuando se agote, se agotó. No habrá restock para el Mundial."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Hacen pedidos al por mayor?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí, desde 10 unidades manejamos condiciones especiales. Escríbenos por WhatsApp y te contamos todo."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://latricolor.co/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://latricolor.co/" }
+      ]
     }
   ]
 }
 </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="/styles.css">
