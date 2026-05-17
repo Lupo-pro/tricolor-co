@@ -100,7 +100,7 @@ async function main() {
     const descriptor = {
       role:     args.role     || 'reveal',
       headline: args.headline || 'VAMOS COLOMBIA',
-      subline:  args.subline  || '★ Mundial 2026 ★',
+      subline:  args.subline  || 'Mundial 2026',
       bg:       args.bg       || 'cream',
       accent:   args.accent   || 'red',
     };

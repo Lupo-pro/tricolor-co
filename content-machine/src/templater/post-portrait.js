@@ -92,7 +92,7 @@ export async function renderPostPortrait(descriptor) {
         padding: '0 72px 64px',
       },
     },
-      logoTricolor({ size: 'md', onDark }),
+      logoTricolor({ size: 'lg', onDark }),
       descriptor.footer
         ? el('div', {
             style: {

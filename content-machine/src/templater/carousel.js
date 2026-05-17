@@ -16,7 +16,7 @@ import satori from 'satori';
 import sharp from 'sharp';
 import {
   PALETTE, loadFonts, el, flagBar, grainOverlay,
-  logoTricolor, bgColor, accentColor, starLabel,
+  logoTricolor, bgColor, accentColor, starLabel, arrowIcon,
 } from './brand.js';
 
 const SIZE = 1080;
@@ -116,6 +116,9 @@ function nodeForSlide(slide, slideIndex, totalSlides) {
       isCta && slide.cta
         ? el('div', {
             style: {
+              display: 'flex',
+              alignItems: 'center',
+              gap: 18,
               marginTop: 56,
               alignSelf: 'flex-start',
               padding: '20px 36px',
@@ -128,7 +131,10 @@ function nodeForSlide(slide, slideIndex, totalSlides) {
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
             },
-          }, slide.cta)
+          },
+            el('div', { style: { display: 'flex' } }, slide.cta),
+            arrowIcon({ size: 40, color: PALETTE.ink }),
+          )
         : null,
     ),
 
@@ -142,16 +148,11 @@ function nodeForSlide(slide, slideIndex, totalSlides) {
       },
     },
       (isCover || isCta)
-        ? logoTricolor({ size: 'sm', onDark })
-        : el('div', {
-            style: {
-              fontFamily: 'Bebas Neue',
-              fontSize: 20,
-              letterSpacing: '0.22em',
-              color: onDark ? 'rgba(240,235,224,0.5)' : PALETTE.muted,
-              textTransform: 'uppercase',
-            },
-          }, '★ LATRICOLOR.CO ★'),
+        ? logoTricolor({ size: 'md', onDark })
+        : starLabel('LATRICOLOR.CO', {
+            color: onDark ? 'rgba(240,235,224,0.6)' : PALETTE.muted,
+            size: 20,
+          }),
       slide.footer
         ? el('div', {
             style: {

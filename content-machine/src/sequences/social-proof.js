@@ -49,7 +49,7 @@ export function generate({ reviews = [], stats = {} } = {}) {
       role: 'urgency',
       offsetMin: 360,
       headline: `${stat.weekly} CAFETERAS`,
-      subline: `Pidieron esta semana · ${stat.rating} ★ · ${stat.pct} recomienda`,
+      subline: `Pidieron esta semana · ${stat.rating}/5 · ${stat.pct} recomienda`,
       bg: 'ink',
       accent: 'yellow',
       sticker: null,

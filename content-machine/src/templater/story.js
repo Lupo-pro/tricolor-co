@@ -38,10 +38,14 @@ function renderHook({ headline, subline, bg, accent }) {
     grainOverlay({ opacity: 0.07 }),
     // Top flag bar
     flagBar({ height: 24 }),
-    // Tribune live tag
+    // Tribune live tag — pulsing dot rendered as a real div so the glyph
+    // never falls back to tofu (● is not in the latin subset of any
+    // loaded display font).
     el('div', {
       style: {
         display: 'flex',
+        alignItems: 'center',
+        gap: 14,
         alignSelf: 'flex-start',
         marginTop: 60, marginLeft: 60,
         padding: '14px 24px',
@@ -54,7 +58,10 @@ function renderHook({ headline, subline, bg, accent }) {
         boxShadow: `5px 5px 0 ${PALETTE.ink}`,
         border: `3px solid ${PALETTE.ink}`,
       },
-    }, '● EN VIVO'),
+    },
+      el('div', { style: { display: 'flex', width: 18, height: 18, borderRadius: 9, backgroundColor: PALETTE.bg } }),
+      el('div', { style: { display: 'flex' } }, 'EN VIVO'),
+    ),
     // Headline
     el('div', {
       style: {
@@ -96,7 +103,7 @@ function renderHook({ headline, subline, bg, accent }) {
         paddingBottom: 80,
       },
     },
-      logoTricolor({ size: 'sm', onDark: pickInkOnBg(bg) }),
+      logoTricolor({ size: 'lg', onDark: pickInkOnBg(bg) }),
     ),
     flagBar({ height: 24, reversed: true }),
   );
@@ -126,17 +133,15 @@ function renderTease({ headline, subline, bg, accent }) {
         justifyContent: 'center',
         alignItems: 'center',
         flex: 1,
-        padding: '0 80px',
+        padding: '80px 80px 40px',
         textAlign: 'center',
       },
     },
-      starLabel('Adivina cuál...', { color: PALETTE.yellow, size: 32 }),
       el('div', {
         style: {
-          marginTop: 60,
           fontFamily: 'Anton',
-          fontSize: 220,
-          lineHeight: 0.9,
+          fontSize: 180,
+          lineHeight: 0.95,
           letterSpacing: '-0.02em',
           color: onDark ? PALETTE.bg : PALETTE.ink,
           textTransform: 'uppercase',
@@ -162,7 +167,7 @@ function renderTease({ headline, subline, bg, accent }) {
         paddingBottom: 100,
       },
     },
-      logoTricolor({ size: 'sm', onDark }),
+      logoTricolor({ size: 'lg', onDark }),
     ),
   );
 }
@@ -200,15 +205,15 @@ function renderReveal({ headline, subline, bg, accent }) {
         justifyContent: 'center',
         alignItems: 'center',
         flex: 1,
-        padding: '0 60px',
+        padding: '60px 60px 40px',
         textAlign: 'center',
       },
     },
       el('div', {
         style: {
           fontFamily: 'Anton',
-          fontSize: 200,
-          lineHeight: 0.9,
+          fontSize: 170,
+          lineHeight: 0.95,
           letterSpacing: '-0.02em',
           color: onDark ? PALETTE.bg : PALETTE.ink,
           textTransform: 'uppercase',
@@ -233,7 +238,7 @@ function renderReveal({ headline, subline, bg, accent }) {
         paddingBottom: 100,
       },
     },
-      logoTricolor({ size: 'sm', onDark }),
+      logoTricolor({ size: 'lg', onDark }),
     ),
   );
 }
@@ -262,25 +267,30 @@ function renderUrgency({ headline, subline, bg, accent }) {
         justifyContent: 'center',
         alignItems: 'center',
         flex: 1,
-        padding: '0 60px',
+        padding: '80px 60px 40px',
         textAlign: 'center',
       },
     },
       el('div', {
         style: {
+          display: 'flex',
+          alignItems: 'center',
+          padding: '14px 28px',
+          backgroundColor: onDark ? PALETTE.yellow : PALETTE.ink,
+          color: onDark ? PALETTE.ink : PALETTE.yellow,
+          border: `4px solid ${onDark ? PALETTE.ink : PALETTE.bg}`,
           fontFamily: 'Anton',
-          fontSize: 56,
+          fontSize: 52,
           letterSpacing: '0.22em',
-          color: onDark ? PALETTE.yellow : PALETTE.ink,
           textTransform: 'uppercase',
           marginBottom: 40,
         },
-      }, '⚠ ATENCIÓN ⚠'),
+      }, 'ATENCIÓN'),
       el('div', {
         style: {
           fontFamily: 'Anton',
-          fontSize: 220,
-          lineHeight: 0.88,
+          fontSize: 180,
+          lineHeight: 0.95,
           letterSpacing: '-0.02em',
           color: onDark ? PALETTE.bg : PALETTE.ink,
           textTransform: 'uppercase',
@@ -306,7 +316,7 @@ function renderUrgency({ headline, subline, bg, accent }) {
         paddingBottom: 100,
       },
     },
-      logoTricolor({ size: 'sm', onDark }),
+      logoTricolor({ size: 'lg', onDark }),
     ),
     flagBar({ height: 24, reversed: true }),
   );
@@ -335,15 +345,15 @@ function renderCta({ headline, subline, bg, accent }) {
         justifyContent: 'center',
         alignItems: 'center',
         flex: 1,
-        padding: '0 60px',
+        padding: '80px 60px 40px',
         textAlign: 'center',
       },
     },
       el('div', {
         style: {
           fontFamily: 'Anton',
-          fontSize: 200,
-          lineHeight: 0.9,
+          fontSize: 170,
+          lineHeight: 0.95,
           letterSpacing: '-0.02em',
           color: onDark ? PALETTE.bg : PALETTE.ink,
           textTransform: 'uppercase',
@@ -373,7 +383,7 @@ function renderCta({ headline, subline, bg, accent }) {
         paddingBottom: 100,
       },
     },
-      logoTricolor({ size: 'sm', onDark }),
+      logoTricolor({ size: 'lg', onDark }),
     ),
     flagBar({ height: 20, reversed: true }),
   );

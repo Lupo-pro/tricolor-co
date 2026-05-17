@@ -42,7 +42,7 @@ export function generate({ edition = 'la-capitana', stockStart = 23, stockMid1 =
       role: 'urgency',
       offsetMin: 180,
       headline: 'A PUNTO DE AGOTARSE',
-      subline: `Quedan ${stockMid2} unidades ⚠️`,
+      subline: `¡Quedan ${stockMid2} unidades!`,
       bg: 'red',
       accent: 'yellow',
       sticker: { type: 'countdown', endsInHours: 1, label: 'Cierra en' },

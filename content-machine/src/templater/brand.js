@@ -46,6 +46,10 @@ const FONT_PATHS = {
   inter600: '@fontsource/inter/files/inter-latin-600-normal.woff',
   inter700: '@fontsource/inter/files/inter-latin-700-normal.woff',
   archivoBlack: '@fontsource/archivo-black/files/archivo-black-latin-400-normal.woff',
+  // Noto Sans Symbols — fallback so ★ (U+2605), → (U+2192), and the
+  // other glyph not present in the latin-subset of our display fonts
+  // render properly instead of as tofu / □ boxes.
+  symbols: '@fontsource/noto-sans-symbols/files/noto-sans-symbols-latin-400-normal.woff',
 };
 
 const fontCache = new Map();
@@ -60,14 +64,19 @@ async function readFontBuffer(pkgPath) {
 }
 
 export async function loadFonts() {
-  const [anton, bebas, inter400, inter600, inter700, archivoBlack] = await Promise.all([
+  const [anton, bebas, inter400, inter600, inter700, archivoBlack, symbols] = await Promise.all([
     readFontBuffer(FONT_PATHS.anton),
     readFontBuffer(FONT_PATHS.bebas),
     readFontBuffer(FONT_PATHS.inter400),
     readFontBuffer(FONT_PATHS.inter600),
     readFontBuffer(FONT_PATHS.inter700),
     readFontBuffer(FONT_PATHS.archivoBlack),
+    readFontBuffer(FONT_PATHS.symbols),
   ]);
+  // satori cascades through the font list per-glyph. Display fonts
+  // (Anton / Bebas / Inter / Archivo Black) come first; the Symbols
+  // font is appended last as a catch-all so ★ / → / etc. render as
+  // real glyphs even though the display fonts only ship latin.
   return [
     { name: 'Anton',         data: anton,        weight: 400, style: 'normal' },
     { name: 'Bebas Neue',    data: bebas,        weight: 400, style: 'normal' },
@@ -75,6 +84,7 @@ export async function loadFonts() {
     { name: 'Inter',         data: inter600,     weight: 600, style: 'normal' },
     { name: 'Inter',         data: inter700,     weight: 700, style: 'normal' },
     { name: 'Archivo Black', data: archivoBlack, weight: 900, style: 'normal' },
+    { name: 'Symbols',       data: symbols,      weight: 400, style: 'normal' },
   ];
 }
 
@@ -219,34 +229,80 @@ export function logoTricolor({ size = 'md', onDark = false, withLa = false } = {
   if (!withLa) return word;
 
   const laFontSize = Math.round(v.fontSize * 0.28);
+  const laColor = onDark ? PALETTE.cream : PALETTE.ink;
   return el('div',
     { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1 } },
+    // "★ La ★" eyebrow rendered with SVG stars + a centered "La" label.
     el('div', {
       style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: Math.round(laFontSize * 0.4),
         fontFamily: 'Bebas Neue',
         fontSize: laFontSize,
         letterSpacing: '0.4em',
-        color: onDark ? PALETTE.cream : PALETTE.ink,
+        color: laColor,
         marginBottom: Math.round(v.fontSize * 0.05),
       },
-    }, '★ La ★'),
+    },
+      starIcon({ size: Math.round(laFontSize * 0.85), color: laColor }),
+      el('div', { style: { display: 'flex' } }, 'La'),
+      starIcon({ size: Math.round(laFontSize * 0.85), color: laColor }),
+    ),
     word,
   );
 }
 
 // ───────────────────────────────────────────
-// Star separator — small flourish for "★ TEXT ★" patterns
+// Star + arrow icons rendered as inline SVG.
+// Satori's font fallback chain doesn't cover U+2605 (★) or U+2192 (→)
+// even with @fontsource/noto-sans-symbols loaded — neither char ships
+// in fontsource's latin-only subsets. Going SVG bypasses that.
 // ───────────────────────────────────────────
+export function starIcon({ size = 16, color = PALETTE.red } = {}) {
+  // 5-point star. The viewBox is 24×24 so size in px = the rendered
+  // square dimension. Satori supports inline <svg>.
+  return el('svg', {
+    width: size, height: size, viewBox: '0 0 24 24',
+    style: { display: 'flex' },
+  }, el('path', {
+    d: 'M12 1.5l3 7.5 8 .5-6 5.5 2 8-7-4-7 4 2-8-6-5.5 8-.5z',
+    fill: color,
+  }));
+}
+
+export function arrowIcon({ size = 16, color = PALETTE.ink } = {}) {
+  return el('svg', {
+    width: size, height: size, viewBox: '0 0 24 24',
+    style: { display: 'flex' },
+  }, el('path', {
+    d: 'M5 12h14m-4-4l4 4-4 4',
+    stroke: color,
+    strokeWidth: 2.5,
+    fill: 'none',
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+  }));
+}
+
+// "★ TEXT ★" eyebrow — uses real SVG stars instead of the U+2605
+// character which isn't in any of our loaded fonts.
 export function starLabel(text, { color = PALETTE.red, size = 18 } = {}) {
+  const iconSize = Math.round(size * 0.85);
   return el('div',
     { style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: Math.round(size * 0.4),
         fontFamily: 'Bebas Neue',
         fontSize: size,
         letterSpacing: '0.2em',
         color,
         textTransform: 'uppercase',
       } },
-    `★ ${text} ★`
+    starIcon({ size: iconSize, color }),
+    el('div', { style: { display: 'flex' } }, text),
+    starIcon({ size: iconSize, color }),
   );
 }
 

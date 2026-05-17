@@ -62,20 +62,20 @@ function postPlan(postKey, day) {
   }[edition] || 'yellow';
 
   const plans = {
-    'hero-launch':       { promptName: 'drop',      promptArgs: { edition }, post: { eyebrow: '★ LAUNCH ★',           headline: 'SÉ TRICOLOR',                 subline: '4 ediciones · Edición Mundial 2026', bg: 'cream', accent: 'red' } },
-    'drop-capitana':     { promptName: 'drop',      promptArgs: { edition: 'la-capitana' }, post: { eyebrow: '★ Edición Home ★',  headline: 'LA CAPITANA',             subline: 'Amarilla · $99K',                    bg: 'yellow', accent: 'ink' } },
-    'drop-portera':      { promptName: 'drop',      promptArgs: { edition: 'la-portera'  }, post: { eyebrow: '★ Edición Away ★',  headline: 'LA PORTERA',              subline: 'Azul vintage · $99K',                bg: 'blue',   accent: 'yellow' } },
-    'drop-oronegro':     { promptName: 'drop',      promptArgs: { edition: 'oro-negro'   }, post: { eyebrow: '★ Edición Premium ★', headline: 'ORO NEGRO',             subline: 'Negro + dorado · $99K',              bg: 'ink',    accent: 'yellow' } },
-    'drop-cafetera':     { promptName: 'drop',      promptArgs: { edition: 'la-cafetera' }, post: { eyebrow: '★ Edición Alterna ★', headline: 'LA CAFETERA',           subline: 'Rojo pasión · $99K',                 bg: 'red',    accent: 'cream' } },
-    'manifesto-quote':   { promptName: 'manifesto', promptArgs: {}, post: { eyebrow: '★ Manifiesto ★',  headline: 'ES BANDERA',               subline: 'Este body no es ropa',                bg: 'ink',    accent: 'yellow' } },
-    'testimonial':       { promptName: 'review',    promptArgs: {}, post: { eyebrow: '★ La Tribuna ★',  headline: '★★★★★',                   subline: '500+ cafeteras esta semana',          bg: 'cream',  accent: 'red' } },
-    'bundle-push':       { promptName: 'bundle',    promptArgs: {}, post: { eyebrow: '★ El Once Inicial ★', headline: '4 EDICIONES',         subline: 'Ahorra $267.000 · 2 gorras gratis',   bg: 'cream',  accent: 'red' } },
-    'countdown-mundial': { promptName: 'countdown', promptArgs: {}, post: { eyebrow: '★ Mundial 2026 ★', headline: 'CUENTA REGRESIVA',        subline: 'Tu outfit · tu energía · tu día',     bg: 'red',    accent: 'yellow' } },
-    'countdown-match':   { promptName: 'countdown', promptArgs: {}, post: { eyebrow: '★ Próximo Partido ★', headline: 'GAME WEEK',           subline: editionLabel + ' · listas para el partido', bg: editionColor, accent: 'ink' } },
-    'match-day-hero':    { promptName: 'matchDay',  promptArgs: { opponent: day.match?.opponent || 'Uzbekistán', kickoffTime: day.match?.kickoff || '22:00', stadium: day.match?.stadium || '' }, post: { eyebrow: '★ Match Day ★',  headline: '¡VAMOS COLOMBIA!', subline: `vs ${day.match?.opponent || 'Uzbekistán'} · ${day.match?.kickoff || '22:00'}`, bg: 'red', accent: 'yellow' } },
-    'ugc-recap':         { promptName: 'ugc',       promptArgs: {}, post: { eyebrow: '★ La Hinchada ★',  headline: 'TU LOOK NOS MATÓ',         subline: 'Repost de la semana',                 bg: 'cream',  accent: 'red' } },
-    'mundial-opens':     { promptName: 'countdown', promptArgs: { daysToMundial: 0 }, post: { eyebrow: '★ HOY EMPIEZA ★', headline: 'MUNDIAL 2026',     subline: 'Sé Tricolor desde el silbatazo',      bg: 'yellow', accent: 'red' } },
-    'group-stage-recap': { promptName: 'countdown', promptArgs: {}, post: { eyebrow: '★ Fase de Grupos ★', headline: 'GRUPO K',                subline: 'Lo que viene · knockouts',           bg: 'cream',  accent: 'blue' } },
+    'hero-launch':       { promptName: 'drop',      promptArgs: { edition }, post: { eyebrow: "LAUNCH",           headline: 'SÉ TRICOLOR',                 subline: '4 ediciones · Edición Mundial 2026', bg: 'cream', accent: 'red' } },
+    'drop-capitana':     { promptName: 'drop',      promptArgs: { edition: 'la-capitana' }, post: { eyebrow: "Edición Home",  headline: 'LA CAPITANA',             subline: 'Amarilla · $99K',                    bg: 'yellow', accent: 'ink' } },
+    'drop-portera':      { promptName: 'drop',      promptArgs: { edition: 'la-portera'  }, post: { eyebrow: "Edición Away",  headline: 'LA PORTERA',              subline: 'Azul vintage · $99K',                bg: 'blue',   accent: 'yellow' } },
+    'drop-oronegro':     { promptName: 'drop',      promptArgs: { edition: 'oro-negro'   }, post: { eyebrow: "Edición Premium", headline: 'ORO NEGRO',             subline: 'Negro + dorado · $99K',              bg: 'ink',    accent: 'yellow' } },
+    'drop-cafetera':     { promptName: 'drop',      promptArgs: { edition: 'la-cafetera' }, post: { eyebrow: "Edición Alterna", headline: 'LA CAFETERA',           subline: 'Rojo pasión · $99K',                 bg: 'red',    accent: 'cream' } },
+    'manifesto-quote':   { promptName: 'manifesto', promptArgs: {}, post: { eyebrow: "Manifiesto",  headline: 'ES BANDERA',               subline: 'Este body no es ropa',                bg: 'ink',    accent: 'yellow' } },
+    'testimonial':       { promptName: 'review',    promptArgs: {}, post: { eyebrow: "La Tribuna",  headline: "5 ESTRELLAS",                   subline: '500+ cafeteras esta semana',          bg: 'cream',  accent: 'red' } },
+    'bundle-push':       { promptName: 'bundle',    promptArgs: {}, post: { eyebrow: "El Once Inicial", headline: '4 EDICIONES',         subline: 'Ahorra $267.000 · 2 gorras gratis',   bg: 'cream',  accent: 'red' } },
+    'countdown-mundial': { promptName: 'countdown', promptArgs: {}, post: { eyebrow: "Mundial 2026", headline: 'CUENTA REGRESIVA',        subline: 'Tu outfit · tu energía · tu día',     bg: 'red',    accent: 'yellow' } },
+    'countdown-match':   { promptName: 'countdown', promptArgs: {}, post: { eyebrow: "Próximo Partido", headline: 'GAME WEEK',           subline: editionLabel + ' · listas para el partido', bg: editionColor, accent: 'ink' } },
+    'match-day-hero':    { promptName: 'matchDay',  promptArgs: { opponent: day.match?.opponent || 'Uzbekistán', kickoffTime: day.match?.kickoff || '22:00', stadium: day.match?.stadium || '' }, post: { eyebrow: "Match Day",  headline: '¡VAMOS COLOMBIA!', subline: `vs ${day.match?.opponent || 'Uzbekistán'} · ${day.match?.kickoff || '22:00'}`, bg: 'red', accent: 'yellow' } },
+    'ugc-recap':         { promptName: 'ugc',       promptArgs: {}, post: { eyebrow: "La Hinchada",  headline: 'TU LOOK NOS MATÓ',         subline: 'Repost de la semana',                 bg: 'cream',  accent: 'red' } },
+    'mundial-opens':     { promptName: 'countdown', promptArgs: { daysToMundial: 0 }, post: { eyebrow: "HOY EMPIEZA", headline: 'MUNDIAL 2026',     subline: 'Sé Tricolor desde el silbatazo',      bg: 'yellow', accent: 'red' } },
+    'group-stage-recap': { promptName: 'countdown', promptArgs: {}, post: { eyebrow: "Fase de Grupos", headline: 'GRUPO K',                subline: 'Lo que viene · knockouts',           bg: 'cream',  accent: 'blue' } },
   };
   return plans[postKey] || plans['drop-capitana'];
 }
@@ -83,37 +83,37 @@ function postPlan(postKey, day) {
 function carouselPlan(theme, day) {
   const slidesByTheme = {
     'las-4-ediciones': [
-      { variant: 'cover',  eyebrow: '★ Mundial 2026 ★',  headline: 'LAS 4 EDICIONES',     subline: 'Una para cada estado de ánimo', bg: 'cream', accent: 'red' },
+      { variant: 'cover',  eyebrow: "Mundial 2026",  headline: 'LAS 4 EDICIONES',     subline: 'Una para cada estado de ánimo', bg: 'cream', accent: 'red' },
       { variant: 'middle', headline: 'LA CAPITANA',      subline: 'Home · #10 Amarilla',  bg: 'yellow', accent: 'ink' },
       { variant: 'middle', headline: 'LA PORTERA',       subline: 'Away · #01 Azul',      bg: 'blue',   accent: 'yellow' },
       { variant: 'middle', headline: 'ORO NEGRO',        subline: 'Premium · #07',        bg: 'ink',    accent: 'yellow' },
       { variant: 'middle', headline: 'LA CAFETERA',      subline: 'Alterna · #09 Roja',   bg: 'red',    accent: 'yellow' },
-      { variant: 'cta',    headline: 'ELEGÍ LA TUYA',    subline: '$99K · Contraentrega', cta: 'Pedir Ahora →', bg: 'cream', accent: 'red' },
+      { variant: 'cta',    headline: 'ELEGÍ LA TUYA',    subline: '$99K · Contraentrega', cta: 'Pedir Ahora', bg: 'cream', accent: 'red' },
     ],
     'guia-tallas': [
-      { variant: 'cover',  eyebrow: '★ Guía de Tallas ★', headline: 'TU TALLA · S/M/L', subline: 'Sin adivinar', bg: 'cream', accent: 'red' },
+      { variant: 'cover',  eyebrow: "Guía de Tallas", headline: 'TU TALLA · S/M/L', subline: 'Sin adivinar', bg: 'cream', accent: 'red' },
       { variant: 'middle', headline: 'TALLA S',          subline: '32-34 · Busto 80-87 cm', bg: 'cream', accent: 'red' },
       { variant: 'middle', headline: 'TALLA M',          subline: '36-38 · Busto 88-95 cm', bg: 'yellow', accent: 'ink' },
       { variant: 'middle', headline: 'TALLA L',          subline: '40-42 · Busto 96-104 cm', bg: 'red', accent: 'cream' },
-      { variant: 'cta',    headline: 'ENTRE DOS · LA MÁS AMPLIA', subline: 'El body abraza, no aprieta', cta: 'Asesoría Talla →', bg: 'cream', accent: 'red' },
+      { variant: 'cta',    headline: 'ENTRE DOS · LA MÁS AMPLIA', subline: 'El body abraza, no aprieta', cta: 'Asesoría Talla', bg: 'cream', accent: 'red' },
     ],
     'como-funciona': [
-      { variant: 'cover',  eyebrow: '★ Cómo Comprar ★',  headline: 'TRES PASOS',          subline: 'Cero drama',   bg: 'cream', accent: 'red' },
+      { variant: 'cover',  eyebrow: "Cómo Comprar",  headline: 'TRES PASOS',          subline: 'Cero drama',   bg: 'cream', accent: 'red' },
       { variant: 'middle', headline: '01 · ESCRÍBENOS',  subline: 'WhatsApp con mensaje listo', bg: 'cream', accent: 'red' },
       { variant: 'middle', headline: '02 · CONFIRMÁS',   subline: 'Asesoría de talla + dirección', bg: 'yellow', accent: 'ink' },
-      { variant: 'cta',    headline: '03 · RECIBÍS Y PAGÁS', subline: '24-72h · Efectivo, Nequi, Daviplata', cta: 'Empezar →', bg: 'cream', accent: 'red' },
+      { variant: 'cta',    headline: '03 · RECIBÍS Y PAGÁS', subline: '24-72h · Efectivo, Nequi, Daviplata', cta: 'Empezar', bg: 'cream', accent: 'red' },
     ],
     'por-que-tricolor': [
-      { variant: 'cover',  eyebrow: '★ Manifiesto ★',    headline: 'NACIMOS AMARILLAS', subline: 'Azules y rojas', bg: 'yellow', accent: 'red' },
+      { variant: 'cover',  eyebrow: "Manifiesto",    headline: 'NACIMOS AMARILLAS', subline: 'Azules y rojas', bg: 'yellow', accent: 'red' },
       { variant: 'middle', headline: 'CANTANDO',         subline: 'El himno con la mano en el pecho', bg: 'blue', accent: 'yellow' },
       { variant: 'middle', headline: 'GRITAMOS',         subline: 'Cuando perdemos', bg: 'red', accent: 'cream' },
       { variant: 'middle', headline: 'TRIBUNA · SALA · CALLE', subline: 'Donde sea estás Tricolor', bg: 'cream', accent: 'red' },
-      { variant: 'cta',    headline: 'ES BANDERA',       subline: 'Este body no es ropa', cta: 'Leer Más →', bg: 'ink', accent: 'yellow' },
+      { variant: 'cta',    headline: 'ES BANDERA',       subline: 'Este body no es ropa', cta: 'Leer Más', bg: 'ink', accent: 'yellow' },
     ],
     'once-inicial': [
-      { variant: 'cover',  eyebrow: '★ El Once Inicial ★', headline: '4 BODIES · 1 PACK', subline: 'Las 4 ediciones del Mundial', bg: 'cream', accent: 'red' },
+      { variant: 'cover',  eyebrow: "El Once Inicial", headline: '4 BODIES · 1 PACK', subline: 'Las 4 ediciones del Mundial', bg: 'cream', accent: 'red' },
       { variant: 'middle', headline: 'AHORRAS $267.000', subline: '$329K en vez de $596K', bg: 'yellow', accent: 'ink' },
-      { variant: 'cta',    headline: '+ 2 GORRAS GRATIS', subline: 'Tricolor oficial FCF', cta: 'Lo Quiero →', bg: 'red', accent: 'cream' },
+      { variant: 'cta',    headline: '+ 2 GORRAS GRATIS', subline: 'Tricolor oficial FCF', cta: 'Lo Quiero', bg: 'red', accent: 'cream' },
     ],
   };
   return slidesByTheme[theme] || slidesByTheme['las-4-ediciones'];

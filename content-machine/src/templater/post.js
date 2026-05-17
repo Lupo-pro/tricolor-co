@@ -104,7 +104,7 @@ export async function renderPost(descriptor) {
         padding: '0 64px 56px',
       },
     },
-      logoTricolor({ size: 'sm', onDark }),
+      logoTricolor({ size: 'md', onDark }),
       descriptor.footer
         ? el('div', {
             style: {

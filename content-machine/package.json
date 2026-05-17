@@ -17,6 +17,7 @@
     "@fontsource/archivo-black": "^5.0.18",
     "@fontsource/bebas-neue": "^5.0.18",
     "@fontsource/inter": "^5.0.18",
+    "@fontsource/noto-sans-symbols": "^5.2.11",
     "archiver": "^7.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
