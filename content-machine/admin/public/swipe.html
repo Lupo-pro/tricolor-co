@@ -54,7 +54,10 @@
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
     <div class="progress-meta" id="progressMeta">0 / 0</div>
     <div class="progress-log" id="progressLog"></div>
-    <button class="bar-btn alt" id="progressClose" type="button" hidden>Close</button>
+    <div style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top:0.4rem;">
+      <button class="bar-btn alt" id="progressCancel" type="button">❌ Cancel</button>
+      <button class="bar-btn alt" id="progressClose" type="button" hidden>Close</button>
+    </div>
   </div>
 </div>
 
@@ -106,7 +109,8 @@
   const $progressFill  = document.getElementById('progressFill');
   const $progressMeta  = document.getElementById('progressMeta');
   const $progressLog   = document.getElementById('progressLog');
-  const $progressClose = document.getElementById('progressClose');
+  const $progressClose  = document.getElementById('progressClose');
+  const $progressCancel = document.getElementById('progressCancel');
 
   // state.days lists every date that has built drafts, used by the
   // day-tab strip. state.date is the day currently being swiped.
@@ -533,50 +537,79 @@
     $progressMeta.textContent = `${done} / ${total} · ${pct}%`;
   }
 
+  // Active fetch controller — exposed so the Cancel button can abort.
+  let _activeBuild = null;
+
   async function runBuildBatch(days, claude) {
     openProgress(`Building ${days} day${days > 1 ? 's' : ''}${claude ? ' · with Claude' : ''}`);
-    // Show the target denominator immediately so the user sees the
-    // counter as "0 / N" rather than "0 / 0" while the first day
-    // builds (each day takes 5-15 s).
+    // Cancel is visible from the very first frame so the operator
+    // never gets locked out, even if the fetch hangs.
+    $progressCancel.hidden = false;
+    $progressClose.hidden = true;
+
     let total = days, done = 0;
     setProgress(0, total);
     progressLine(`Starting batch · ${days} day${days > 1 ? 's' : ''}${claude ? ' · Claude' : ''}`, 'info');
 
+    const url = `/api/build-week?count=${days}&claude=${claude ? 1 : 0}`;
+    console.log(`→ Clicked Build (${days} days, claude=${claude})`);
+    console.log(`→ Opening fetch ${url}`);
+
+    const ac = new AbortController();
+    _activeBuild = ac;
+
+    // Startup watchdog — if the server hasn't emitted any event in 5s
+    // we abort and tell the user there's no response. This catches the
+    // "stuck at 0/0 forever" case where the fetch never reaches the
+    // server (CORS, wrong port, server down, stale browser cache, etc.)
+    let firstEventReceived = false;
+    const startupTimer = setTimeout(() => {
+      if (!firstEventReceived) {
+        console.warn('→ Startup watchdog fired — aborting, no event in 5s');
+        progressLine('✗ No response from server after 5s — aborting.', 'err');
+        ac.abort();
+      }
+    }, 5000);
+
     try {
-      const r = await fetch(`/api/build-week?count=${days}&claude=${claude ? 1 : 0}`, { method: 'POST' });
-      if (!r.ok && r.status !== 200) {
-        // Server rejected before opening the stream (e.g. no Claude key)
+      const r = await fetch(url, { method: 'POST', signal: ac.signal });
+      console.log(`→ Fetch resolved · status=${r.status} ok=${r.ok}`);
+      if (!r.ok) {
         let err = `HTTP ${r.status}`;
         try { const j = await r.json(); err = j.error || err; } catch {}
         throw new Error(err);
       }
-      if (!r.body) throw new Error('streaming not supported by this browser');
+      if (!r.body) throw new Error('Streaming not supported by this browser');
+
       const reader = r.body.getReader();
       const decoder = new TextDecoder();
       let buf = '';
       while (true) {
         const { done: streamDone, value } = await reader.read();
-        if (streamDone) break;
+        if (streamDone) {
+          console.log('→ Stream closed by server');
+          break;
+        }
         buf += decoder.decode(value, { stream: true });
-        // Events end with \n\n; keep the trailing partial in buf.
         const parts = buf.split('\n\n');
         buf = parts.pop() || '';
         for (const ev of parts) {
           const line = ev.split('\n').find((l) => l.startsWith('data:'));
           if (!line) continue;
           let data; try { data = JSON.parse(line.slice(5).trim()); } catch { continue; }
+          console.log(`→ Received event: ${data.type}`, data);
+          if (!firstEventReceived) {
+            firstEventReceived = true;
+            clearTimeout(startupTimer);
+          }
           if (typeof data.total === 'number' && data.total > 0) total = data.total;
 
           if (data.type === 'start') {
-            // The server told us how many days are queued — update the
-            // denominator right away even though done is still 0.
             setProgress(done, total);
             progressLine(`Queued ${data.total} day${data.total > 1 ? 's' : ''}: ${data.dates.join(' · ')}`, 'info');
           } else if (data.type === 'day-start') {
             const idx = data.index || (done + 1);
             progressLine(`▶ Day ${idx}/${total} · ${data.date} · building...`, 'info');
-            // Keep "0/N" visible while building, but force a repaint
-            // so the user knows the panel is alive.
             setProgress(done, total);
           } else if (data.type === 'day-ok') {
             done++;
@@ -597,12 +630,31 @@
       toast(`✓ ${done} days generated`);
       await load();
     } catch (e) {
-      progressLine(`✗ ${e.message}`, 'err');
-      toastError('Build failed:\n' + e.message);
+      if (e.name === 'AbortError') {
+        console.log('→ Build aborted by user or watchdog');
+        progressLine('Build cancelled.', 'err');
+      } else {
+        console.error('→ Build failed:', e);
+        progressLine(`✗ ${e.message}`, 'err');
+        toastError('Build failed:\n' + e.message);
+      }
     } finally {
+      clearTimeout(startupTimer);
+      _activeBuild = null;
+      $progressCancel.hidden = true;
       $progressClose.hidden = false;
     }
   }
+
+  $progressCancel.addEventListener('click', () => {
+    if (_activeBuild) {
+      console.log('→ User clicked Cancel');
+      _activeBuild.abort();
+    } else {
+      // Nothing running — just close the modal.
+      $progressOverlay.hidden = true;
+    }
+  });
 
   $btnBuildWeek.addEventListener('click', async () => {
     const claude = !!$useClaude.checked;
