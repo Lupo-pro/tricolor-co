@@ -1,58 +1,102 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="ogtitle">
+  <title id="ogtitle">LATRICOLOR.CO · Bodysuits Selección Colombia · Mundial 2026</title>
+
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#FAF7F2"/>
-      <stop offset="100%" stop-color="#EDE7DA"/>
+      <stop offset="0%" stop-color="#F0EBE0"/>
+      <stop offset="100%" stop-color="#E8E0CF"/>
     </linearGradient>
-    <linearGradient id="card-yellow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FCD116"/>
-      <stop offset="100%" stop-color="#E8B800"/>
-    </linearGradient>
+    <radialGradient id="glow-yellow" cx="0.2" cy="0.25" r="0.6">
+      <stop offset="0%"  stop-color="#FFD300" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#FFD300" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-red" cx="0.85" cy="0.75" r="0.55">
+      <stop offset="0%"  stop-color="#E63946" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#E63946" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="card-yellow" cx="0.3" cy="0.3" r="0.85">
+      <stop offset="0%" stop-color="#FFE552"/>
+      <stop offset="55%" stop-color="#FFD300"/>
+      <stop offset="100%" stop-color="#D9B400"/>
+    </radialGradient>
     <pattern id="grain" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-      <rect width="4" height="4" fill="rgba(0,0,0,0.015)"/>
+      <rect width="4" height="4" fill="rgba(0,0,0,0.018)"/>
+    </pattern>
+    <pattern id="mesh" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(135)">
+      <rect width="14" height="14" fill="transparent"/>
+      <rect width="14" height="1" fill="rgba(255,255,255,0.06)"/>
     </pattern>
   </defs>
+
+  <!-- Background -->
   <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow-yellow)"/>
+  <rect width="1200" height="630" fill="url(#glow-red)"/>
   <rect width="1200" height="630" fill="url(#grain)"/>
 
-  <!-- Flag stripe top -->
-  <rect x="0" y="0" width="1200" height="6" fill="#FCD116"/>
-  <rect x="400" y="0" width="400" height="6" fill="#003893"/>
-  <rect x="800" y="0" width="400" height="6" fill="#CE1126"/>
+  <!-- Tricolor bar — top -->
+  <rect x="0" y="0" width="400"  height="10" fill="#FFD300"/>
+  <rect x="400" y="0" width="400" height="10" fill="#0033A0"/>
+  <rect x="800" y="0" width="400" height="10" fill="#E63946"/>
 
-  <!-- Logo mark -->
-  <g transform="translate(80, 80)">
-    <rect x="0" y="0" width="14" height="36" rx="2" fill="#FCD116"/>
-    <rect x="16" y="0" width="14" height="36" rx="2" fill="#003893"/>
-    <rect x="32" y="0" width="14" height="36" rx="2" fill="#CE1126"/>
-    <text x="60" y="28" font-family="Georgia, serif" font-size="28" font-weight="900" fill="#0A0A0A" letter-spacing="-1">LATRICOLOR<tspan fill="#CE1126" font-weight="400">.CO</tspan></text>
-  </g>
+  <!-- Tricolor bar — bottom (mirrored) -->
+  <rect x="0" y="620" width="400"  height="10" fill="#E63946"/>
+  <rect x="400" y="620" width="400" height="10" fill="#0033A0"/>
+  <rect x="800" y="620" width="400" height="10" fill="#FFD300"/>
 
-  <!-- Visual: bodysuit silhouette card -->
-  <g transform="translate(720, 110)">
-    <rect x="0" y="0" width="400" height="450" rx="24" fill="url(#card-yellow)"/>
-    <g transform="translate(80, 65) scale(1.2)">
-      <path d="M 55 25 Q 55 12 68 10 L 82 10 Q 86 10 88 14 L 94 28 Q 100 35 106 28 L 112 14 Q 114 10 118 10 L 132 10 Q 145 12 145 25 L 145 38 Q 152 45 158 58 Q 168 90 165 130 Q 162 175 154 210 Q 148 235 138 260 L 130 274 Q 126 278 120 278 L 110 278 Q 104 274 104 266 L 104 250 Q 104 244 100 244 Q 96 244 96 250 L 96 266 Q 96 274 90 278 L 80 278 Q 74 278 70 274 L 62 260 Q 52 235 46 210 Q 38 175 35 130 Q 32 90 42 58 Q 48 45 55 38 Z" fill="rgba(0,0,0,0.55)"/>
-    </g>
-    <text x="200" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" letter-spacing="3" fill="rgba(0,0,0,0.7)">LA CAPITANA · 01 / 04</text>
-  </g>
+  <!-- Eyebrow "★ MUNDIAL 2026 · EDICIÓN LIMITADA ★" -->
+  <text x="80" y="100" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="600" letter-spacing="6" fill="#E63946">
+    ★ MUNDIAL 2026 · EDICIÓN LIMITADA ★
+  </text>
 
-  <!-- Big title -->
-  <g transform="translate(80, 220)">
-    <text font-family="Georgia, serif" font-size="120" font-weight="400" fill="#0A0A0A" letter-spacing="-4">
-      <tspan x="0" y="0">Sé</tspan>
-      <tspan x="0" y="120" font-weight="500">Tricolor.</tspan>
-      <tspan x="0" y="240" font-style="italic" font-weight="300" fill="#CE1126">Sé tú.</tspan>
+  <!-- TRICOLOR — 3 color syllables. Hand-positioned tspan x so each
+       starts where the previous ends; stroke first, fill on top via
+       paint-order so the contour reads as a hard outline. Sized to
+       leave breathing room for the product card on the right. -->
+  <text x="86" y="306" font-family="Georgia, 'Times New Roman', serif" font-size="165" font-weight="900" letter-spacing="-5" fill="rgba(0,0,0,0.15)">
+    Tricolor
+  </text>
+  <g style="paint-order:stroke fill;" stroke="#0A0A0A" stroke-width="5" stroke-linejoin="round">
+    <text x="80" y="300" font-family="Georgia, 'Times New Roman', serif" font-size="165" font-weight="900" letter-spacing="-5">
+      <tspan fill="#FFD300">Tri</tspan><tspan fill="#0033A0">co</tspan><tspan fill="#E63946">lor</tspan>
     </text>
   </g>
 
-  <!-- Tagline pill -->
-  <g transform="translate(80, 540)">
-    <rect x="0" y="0" width="280" height="38" rx="19" fill="rgba(206,17,38,0.08)" stroke="rgba(206,17,38,0.2)"/>
-    <circle cx="20" cy="19" r="4" fill="#CE1126"/>
-    <text x="34" y="24" font-family="Inter, sans-serif" font-size="13" font-weight="600" letter-spacing="2" fill="#2A2A28">EDICIÓN MUNDIAL 2026</text>
+  <!-- Subtitle -->
+  <text x="80" y="370" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="500" letter-spacing="2" fill="#0A0A0A">
+    Bodysuits Selección Colombia
+  </text>
+  <text x="80" y="412" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="400" letter-spacing="6" fill="#4A4A48">
+    SÉ FUERTE · SÉ FIERA · SÉ TRICOLOR
+  </text>
+
+  <!-- Product card preview right -->
+  <g transform="translate(820, 130)">
+    <rect x="0" y="0" width="300" height="380" fill="url(#card-yellow)" stroke="#0A0A0A" stroke-width="6"/>
+    <rect x="0" y="0" width="300" height="380" fill="url(#mesh)"/>
+    <!-- Top strip -->
+    <rect x="0" y="0" width="300" height="50" fill="#FFD300"/>
+    <line x1="0" y1="50" x2="300" y2="50" stroke="#0A0A0A" stroke-width="6"/>
+    <!-- Number pill -->
+    <rect x="14" y="11" width="36" height="30" fill="#0A0A0A"/>
+    <text x="32" y="34" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="900" fill="#FFD300">10</text>
+    <text x="240" y="33" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="16" font-weight="700" letter-spacing="3" fill="#0A0A0A">★ TITULAR</text>
+    <!-- Body silhouette -->
+    <g transform="translate(70, 90) scale(0.85)" fill="rgba(0,0,0,0.6)">
+      <path d="M 55 25 Q 55 12 68 10 L 82 10 Q 86 10 88 14 L 94 28 Q 100 35 106 28 L 112 14 Q 114 10 118 10 L 132 10 Q 145 12 145 25 L 145 38 Q 152 45 158 58 Q 168 90 165 130 Q 162 175 154 210 Q 148 235 138 260 L 130 274 Q 126 278 120 278 L 110 278 Q 104 274 104 266 L 104 250 Q 104 244 100 244 Q 96 244 96 250 L 96 266 Q 96 274 90 278 L 80 278 Q 74 278 70 274 L 62 260 Q 52 235 46 210 Q 38 175 35 130 Q 32 90 42 58 Q 48 45 55 38 Z"/>
+    </g>
+    <!-- Info strip bottom -->
+    <line x1="0" y1="330" x2="300" y2="330" stroke="#FFD300" stroke-width="4"/>
+    <rect x="0" y="330" width="300" height="50" fill="#0A0A0A"/>
+    <text x="20" y="362" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="900" fill="#F0EBE0">LA CAPITANA</text>
+    <text x="280" y="362" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="900" fill="#FFD300">$99K</text>
   </g>
 
-  <!-- URL -->
-  <text x="80" y="600" font-family="Inter, sans-serif" font-size="16" font-weight="600" letter-spacing="3" fill="#8A867E">LATRICOLOR.CO · BODYSUITS SELECCIÓN COLOMBIA</text>
+  <!-- URL pill bottom -->
+  <g transform="translate(80, 540)">
+    <rect x="0" y="0" width="540" height="42" fill="#0A0A0A"/>
+    <text x="270" y="29" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="18" font-weight="700" letter-spacing="6" fill="#FFD300">
+      LATRICOLOR.CO · ENVÍO 24-72H · CONTRAENTREGA
+    </text>
+  </g>
 </svg>
