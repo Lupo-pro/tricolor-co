@@ -1,12 +1,29 @@
 // ============================================
-// scrape.js — Run Instagram + TikTok scrapers in parallel via Apify.
+// scrape.js — Run Instagram + TikTok scrapers via Apify.
 // Outputs /data/raw-instagram.json and /data/raw-tiktok.json
 // (normalized to a common shape).
 //
+// Platform selection:
+//   node src/scrape.js                    → both (default)
+//   node src/scrape.js --only=instagram   → IG only
+//   node src/scrape.js --only=tiktok      → TT only
+//
+// Instagram is a TWO-STAGE pipeline:
+//   Stage 1 — apify/instagram-hashtag-scraper extracts unique
+//             ownerUsernames from public posts under each hashtag.
+//   Stage 2 — apify/instagram-profile-scraper enriches those
+//             usernames with followers, bio, posts_count, latest
+//             posts (for engagement rate calc).
+//
+// This is necessary because instagram-hashtag-scraper returns
+// post-shape objects with NO follower or bio data (that's not its
+// job). The previously used apify/instagram-search-scraper is
+// deprecated / behind paid tier and was failing silently.
+//
 // Apify actor input schemas drift; the inputs below match the docs
-// as of late 2025. If your run returns 0 items, open the actor page
+// as of mid-2026. If your run returns 0 items, open the actor page
 // on apify.com, check the latest input spec, and tweak the INPUTS
-// constants near the top of each function.
+// constants near each scrape function.
 // ============================================
 
 import 'dotenv/config';
@@ -96,56 +113,142 @@ function lastPostDate(profile) {
 }
 
 // ============================================
-// Instagram scraper
+// Instagram scraper — two-stage
 // ============================================
 async function scrapeInstagram() {
-  console.log('▶ Instagram scrape starting (~5-10 min)...');
-  // Actor: apify/instagram-search-scraper
-  // We do BOTH hashtag and location searches in one call.
-  const INPUT = {
-    search: [...HASHTAGS_IG.map((h) => '#' + h), ...LOCATIONS_IG],
-    searchType: 'hashtag', // most reliable for finding accounts via post authors
-    searchLimit: 60, // posts per query — actor will return up to this many
-    resultsLimit: PER_PLATFORM,
+  console.log('\n▶ Instagram scrape (two-stage)');
+
+  // ───────────────────────────────────────────
+  // STAGE 1 — hashtag-scraper: extract usernames
+  // ───────────────────────────────────────────
+  const stage1Input = {
+    hashtags: HASHTAGS_IG,
+    resultsLimit: 50,
   };
-  console.log('  input:', JSON.stringify(INPUT, null, 2));
+  console.log('  → Stage 1: apify/instagram-hashtag-scraper');
+  console.log('    input:', JSON.stringify(stage1Input));
 
-  const run = await client.actor('apify/instagram-search-scraper').call(INPUT);
-  const { items } = await client.dataset(run.defaultDatasetId).listItems();
+  let stage1Run;
+  try {
+    stage1Run = await client.actor('apify/instagram-hashtag-scraper').call(stage1Input);
+  } catch (err) {
+    console.error('  ✗ Stage 1 actor call failed:', err.message || err);
+    if (err.statusCode) console.error('    statusCode:', err.statusCode);
+    if (err.type) console.error('    type:', err.type);
+    throw err;
+  }
+  console.log(`    runId: ${stage1Run.id} · status: ${stage1Run.status}`);
 
-  // Items here are typically posts; pull the unique owner profiles out.
-  const seen = new Map();
-  for (const it of items) {
-    const owner = it.ownerUsername || it.username || it.owner?.username;
-    if (!owner) continue;
-    if (seen.has(owner)) continue;
-    seen.set(owner, it);
+  const { items: posts } = await client.dataset(stage1Run.defaultDatasetId).listItems();
+  console.log(`    → Got ${posts.length} posts from Instagram`);
+
+  if (posts.length === 0) {
+    console.warn('  ⚠ Stage 1 returned 0 posts — bailing on Instagram.');
+    return 0;
   }
 
-  const profiles = [...seen.values()].map((it) => {
-    const username = it.ownerUsername || it.username || it.owner?.username;
-    const bio = it.ownerBiography || it.biography || it.bio || '';
+  // Dedupe by ownerUsername; cache per-post likes/comments/timestamp
+  // so we can recover an engagement signal if Stage 2 profile data
+  // doesn't include latestPosts.
+  const usernameCache = new Map();
+  for (const p of posts) {
+    const u = p.ownerUsername;
+    if (!u) continue;
+    if (!usernameCache.has(u)) {
+      usernameCache.set(u, {
+        fullName: p.ownerFullName || null,
+        ownerId: p.ownerId || null,
+        hashtagPosts: [],
+      });
+    }
+    usernameCache.get(u).hashtagPosts.push({
+      likesCount: Number(p.likesCount || 0),
+      commentsCount: Number(p.commentsCount || 0),
+      timestamp: p.timestamp || null,
+      caption: p.caption || '',
+      url: p.url || null,
+      type: p.type || null,
+    });
+  }
+  const uniqueUsernames = [...usernameCache.keys()];
+  console.log(`    → ${uniqueUsernames.length} unique usernames extracted`);
+
+  if (uniqueUsernames.length === 0) {
+    console.warn('  ⚠ Zero usernames after dedup — bailing.');
+    return 0;
+  }
+
+  // ───────────────────────────────────────────
+  // STAGE 2 — profile-scraper: enrich each username
+  // ───────────────────────────────────────────
+  const stage2Input = {
+    usernames: uniqueUsernames,
+    resultsType: 'details',
+    resultsLimit: uniqueUsernames.length,
+  };
+  console.log(`  → Stage 2: apify/instagram-profile-scraper`);
+  console.log(`    input: { usernames: [${uniqueUsernames.length} items], resultsType: 'details' }`);
+
+  let stage2Run;
+  try {
+    stage2Run = await client.actor('apify/instagram-profile-scraper').call(stage2Input);
+  } catch (err) {
+    console.error('  ✗ Stage 2 actor call failed:', err.message || err);
+    if (err.statusCode) console.error('    statusCode:', err.statusCode);
+    if (err.type) console.error('    type:', err.type);
+    throw err;
+  }
+  console.log(`    runId: ${stage2Run.id} · status: ${stage2Run.status}`);
+
+  const { items: rawProfiles } = await client.dataset(stage2Run.defaultDatasetId).listItems();
+  console.log(`    → Got ${rawProfiles.length} profiles enriched`);
+
+  // ───────────────────────────────────────────
+  // Normalize to the shape enrich.js expects
+  // ───────────────────────────────────────────
+  const profiles = rawProfiles.map((p) => {
+    const username = p.username || p.ownerUsername;
+    const cached = usernameCache.get(username);
+    const bio = p.biography || p.bio || '';
+    // Prefer profile-scraper's latestPosts (richer); fall back to the
+    // hashtag posts we already have cached if absent.
+    const postsForER = (Array.isArray(p.latestPosts) && p.latestPosts.length > 0)
+      ? p.latestPosts
+      : (cached?.hashtagPosts || []);
+    const profileForER = {
+      followersCount: Number(p.followersCount || 0),
+      latestPosts: postsForER,
+    };
     return {
       username,
       platform: 'instagram',
-      followers: Number(it.ownerFollowersCount || it.followersCount || 0),
-      following: Number(it.ownerFollowingCount || it.followingCount || 0),
-      posts_count: Number(it.ownerPostsCount || it.postsCount || 0),
+      followers: Number(p.followersCount || 0),
+      following: Number(p.followsCount || p.followingCount || 0),
+      posts_count: Number(p.postsCount || 0),
       bio,
-      email_from_bio: extractEmailFromBio(bio),
-      engagement_rate: calcEngagementRate(it),
-      last_post_date: lastPostDate(it) || (it.timestamp ? new Date(it.timestamp).toISOString() : null),
-      location: it.locationName || it.locationCity || null,
+      email_from_bio: extractEmailFromBio(bio) || extractEmailFromBio(p.businessEmail || ''),
+      engagement_rate: calcEngagementRate(profileForER),
+      last_post_date: lastPostDate(p)
+        || (cached?.hashtagPosts?.[0]?.timestamp
+            ? new Date(cached.hashtagPosts[0].timestamp).toISOString()
+            : null),
+      location: p.businessAddressJson?.city_name || p.businessCategoryName || null,
       profile_url: `https://instagram.com/${username}`,
-      avatar_url: it.ownerProfilePicUrl || it.profilePicUrl || null,
+      avatar_url: p.profilePicUrlHD || p.profilePicUrl || null,
       detected_language: detectLanguage(bio),
-      _source: 'apify/instagram-search-scraper',
+      full_name: p.fullName || cached?.fullName || null,
+      verified: !!p.verified,
+      private: !!p.private,
+      _source: 'apify/instagram-hashtag+profile-scraper',
     };
   });
 
-  console.log(`✓ Scraped ${profiles.length} unique Instagram profiles`);
-  await writeFile(join(DATA_DIR, 'raw-instagram.json'), JSON.stringify(profiles, null, 2));
-  return profiles.length;
+  // Drop any with no username (shouldn't happen but safe-guard)
+  const valid = profiles.filter((x) => x.username);
+
+  console.log(`\n  ✓ Instagram done: ${valid.length} normalized profiles`);
+  await writeFile(join(DATA_DIR, 'raw-instagram.json'), JSON.stringify(valid, null, 2));
+  return valid.length;
 }
 
 // ============================================
@@ -202,27 +305,50 @@ async function scrapeTikTok() {
 }
 
 // ============================================
-// Main
+// Main — CLI:
+//   node src/scrape.js                    → both platforms
+//   node src/scrape.js --only=instagram   → IG only
+//   node src/scrape.js --only=tiktok      → TT only
 // ============================================
-async function main() {
-  await mkdir(DATA_DIR, { recursive: true });
-  const started = Date.now();
-  try {
-    const [ig, tt] = await Promise.all([
-      scrapeInstagram().catch((e) => { console.error('IG scrape failed:', e.message); return 0; }),
-      scrapeTikTok().catch((e) => { console.error('TikTok scrape failed:', e.message); return 0; }),
-    ]);
-    const secs = ((Date.now() - started) / 1000).toFixed(1);
-    console.log(`\n══════════════════════════════════════`);
-    console.log(`✓ Scrape complete in ${secs}s`);
-    console.log(`  Instagram: ${ig} profiles → data/raw-instagram.json`);
-    console.log(`  TikTok:    ${tt} profiles → data/raw-tiktok.json`);
-    console.log(`  Total raw: ${ig + tt} (target ${TARGET}; dedup happens in enrich.js)`);
-    console.log(`══════════════════════════════════════`);
-  } catch (err) {
-    console.error('Scrape pipeline error:', err);
+function parseOnly() {
+  const arg = process.argv.slice(2).find((a) => a.startsWith('--only='));
+  if (!arg) return null;
+  const value = arg.split('=')[1]?.toLowerCase();
+  if (!['instagram', 'tiktok'].includes(value)) {
+    console.error(`✗ --only must be 'instagram' or 'tiktok' (got: ${value})`);
     process.exit(1);
   }
+  return value;
 }
 
-main();
+async function main() {
+  await mkdir(DATA_DIR, { recursive: true });
+  const only = parseOnly();
+  const runIG = !only || only === 'instagram';
+  const runTT = !only || only === 'tiktok';
+
+  console.log('══════════════════════════════════════');
+  console.log(`Scrape plan · Instagram: ${runIG ? 'YES' : 'skip'} · TikTok: ${runTT ? 'YES' : 'skip'}`);
+  console.log('══════════════════════════════════════');
+
+  const started = Date.now();
+  // Each scrape errors loudly now — failure halts the pipeline so a
+  // silent zero-result run can't go unnoticed. If you want resilient
+  // batch behavior in the future, wrap individual calls here.
+  let ig = 0, tt = 0;
+  if (runIG) ig = await scrapeInstagram();
+  if (runTT) tt = await scrapeTikTok();
+
+  const secs = ((Date.now() - started) / 1000).toFixed(1);
+  console.log(`\n══════════════════════════════════════`);
+  console.log(`✓ Scrape complete in ${secs}s`);
+  if (runIG) console.log(`  Instagram: ${ig} profiles → data/raw-instagram.json`);
+  if (runTT) console.log(`  TikTok:    ${tt} profiles → data/raw-tiktok.json`);
+  console.log(`  Total raw: ${ig + tt} (target ${TARGET}; dedup happens in enrich.js)`);
+  console.log(`══════════════════════════════════════`);
+}
+
+main().catch((err) => {
+  console.error('\n✗ Scrape pipeline error:', err.message || err);
+  process.exit(1);
+});
