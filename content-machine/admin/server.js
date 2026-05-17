@@ -57,18 +57,29 @@ async function writeJson(filePath, data) {
 }
 async function exists(p) { try { await access(p); return true; } catch { return false; } }
 
-function runScript(scriptPath, args = []) {
+// runScript can hand the spawned ChildProcess back to the caller via
+// `onChild` so the SSE handler keeps a reference and can SIGTERM it on
+// a client disconnect — otherwise a long Claude-backed build keeps
+// running even after the operator hit Cancel.
+function runScript(scriptPath, args = [], { onChild } = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn('node', [scriptPath, ...args], { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'] });
+    if (onChild) onChild(child);
     let out = '', err = '';
     child.stdout.on('data', (chunk) => out += chunk.toString());
     child.stderr.on('data', (chunk) => err += chunk.toString());
-    child.on('close', (code) => {
+    child.on('close', (code, signal) => {
       if (code === 0) resolve({ ok: true, stdout: out });
+      else if (signal === 'SIGTERM') reject(new Error('aborted'));
       else reject(new Error(err || `exit ${code}`));
     });
   });
 }
+
+// Single source of truth for the date format we accept anywhere user
+// input touches a filesystem path or a child-process argument.
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+function isValidDateKey(s) { return typeof s === 'string' && DATE_RE.test(s); }
 
 // ────── pages ──────
 app.get('/', (_req, res) => res.redirect('/swipe'));
@@ -80,7 +91,9 @@ app.get('/insights', (_req, res) => res.sendFile(join(__dirname, 'public', 'insi
 // embed them without exposing the whole filesystem.
 app.get('/assets/png/:date/:filename', async (req, res) => {
   const { date, filename } = req.params;
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || filename.includes('..')) {
+  // basename() rejects both `../foo` and `..\foo` (Windows-style) by
+  // comparing against the cleaned form. Stricter than .includes('..').
+  if (!isValidDateKey(date) || basename(filename) !== filename) {
     return res.status(400).end();
   }
   const path = join(DATA_DIR, 'drafts', date, filename);
@@ -211,12 +224,20 @@ async function buildWeekHandler(req, res) {
   };
 
   // Detect a client that walked away mid-stream so we stop spending
-  // CPU on builds for a dead connection.
+  // CPU on builds for a dead connection. We also keep a handle to the
+  // currently-running child so we can SIGTERM it immediately — without
+  // this, a 30-day Build-month run ignores cancel for up to a full
+  // day's build (~15 s without Claude, much longer with).
   let aborted = false;
+  let currentChild = null;
   req.on('close', () => {
     if (!res.writableEnded) {
       aborted = true;
       console.warn('⚠ Client disconnected mid-stream — aborting batch.');
+      if (currentChild && !currentChild.killed) {
+        try { currentChild.kill('SIGTERM'); }
+        catch (e) { console.error('  could not SIGTERM child:', e.message); }
+      }
     }
   });
 
@@ -248,7 +269,10 @@ async function buildWeekHandler(req, res) {
       if (!wantClaude) args.push('--no-claude');
       const dayT0 = Date.now();
       try {
-        const r = await runScript(join(ROOT, 'src', 'build-day.js'), args);
+        const r = await runScript(join(ROOT, 'src', 'build-day.js'), args, {
+          onChild: (c) => { currentChild = c; },
+        });
+        currentChild = null;
         const m = r.stdout.match(/✓ (\d+) drafts/);
         const items = m ? parseInt(m[1], 10) : 0;
         totalDrafts += items;
@@ -257,7 +281,12 @@ async function buildWeekHandler(req, res) {
         console.log(`→ Day ${i + 1}/${count}: done in ${elapsed}ms (${items} drafts)`);
         emit({ type: 'day-ok', date, items, elapsedMs: elapsed, index: i + 1, total: count });
       } catch (e) {
+        currentChild = null;
         const elapsed = Date.now() - dayT0;
+        if (aborted && /aborted|SIGTERM/i.test(e.message)) {
+          console.log(`→ Day ${i + 1}/${count} (${date}) aborted after ${elapsed}ms`);
+          break;
+        }
         console.error(`✗ Day ${i + 1}/${count} (${date}) failed in ${elapsed}ms: ${e.message}`);
         emit({ type: 'day-error', date, error: e.message, elapsedMs: elapsed, index: i + 1, total: count });
       }
@@ -278,6 +307,9 @@ app.post('/api/build-week', buildWeekHandler);
 
 app.post('/api/build-day', async (req, res) => {
   const date = (req.body && req.body.date) || todayKey();
+  if (!isValidDateKey(date)) {
+    return res.status(400).json({ ok: false, error: 'bad date — expected YYYY-MM-DD' });
+  }
   const wantClaude = !!(req.body && req.body.claude);
   // If the caller wants Claude but the server has no key, fail loudly
   // instead of silently degrading — the UI surfaces this in a toast.
@@ -420,6 +452,9 @@ app.get('/api/insights', async (_req, res) => {
 
 app.post('/api/build-pack', async (req, res) => {
   const date = (req.body && req.body.date) || todayKey();
+  if (!isValidDateKey(date)) {
+    return res.status(400).json({ ok: false, error: 'bad date — expected YYYY-MM-DD' });
+  }
   try {
     console.log(`▶ Triggering pack builder for ${date}...`);
     const r = await runScript(join(ROOT, 'src', 'build-pack.js'), [`--date=${date}`]);
