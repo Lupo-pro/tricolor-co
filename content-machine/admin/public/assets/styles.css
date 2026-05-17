@@ -405,6 +405,9 @@ main.stage {
 }
 
 /* ---- Progress overlay (build week/month) ---- */
+/* [hidden] must beat the .progress-overlay { display: flex } below,
+   otherwise the modal shows on page load before any user action. */
+[hidden] { display: none !important; }
 .progress-overlay {
   position: fixed; inset: 0;
   background: rgba(10,10,10,0.7);

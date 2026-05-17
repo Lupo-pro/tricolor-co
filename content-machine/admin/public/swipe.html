@@ -646,14 +646,24 @@
     }
   }
 
-  $progressCancel.addEventListener('click', () => {
+  function closeProgress() {
     if (_activeBuild) {
-      console.log('→ User clicked Cancel');
-      _activeBuild.abort();
-    } else {
-      // Nothing running — just close the modal.
-      $progressOverlay.hidden = true;
+      console.log('→ User cancelled build');
+      try { _activeBuild.abort(); } catch (_) {}
+      _activeBuild = null;
     }
+    $progressOverlay.hidden = true;
+  }
+
+  $progressCancel.addEventListener('click', closeProgress);
+  $progressClose .addEventListener('click', () => { $progressOverlay.hidden = true; });
+
+  // Esc dismisses the progress overlay too — same path as the Cancel
+  // button so an aborted build cleans up consistently.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (!$progressOverlay.hidden) closeProgress();
+    else if (!$confirmOverlay.hidden) $confirmOverlay.hidden = true;
   });
 
   $btnBuildWeek.addEventListener('click', async () => {
@@ -675,8 +685,6 @@
     if (!ok) return;
     runBuildBatch(30, claude);
   });
-
-  $progressClose.addEventListener('click', () => { $progressOverlay.hidden = true; });
 
   $btnBuildDay.addEventListener('click', async () => {
     $btnBuildDay.disabled = true;
