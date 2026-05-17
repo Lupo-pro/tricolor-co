@@ -7,7 +7,9 @@
   "scripts": {
     "generate": "node src/generate.js",
     "admin": "node admin/server.js",
-    "test:story": "node src/generate.js --type=sequence --sequence=daily-drop --edition=la-capitana --out=test"
+    "test:story": "node src/generate.js --type=sequence --sequence=daily-drop --edition=la-capitana --out=test",
+    "pack": "node src/build-pack.js",
+    "build:day": "node src/build-day.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.65.0",
