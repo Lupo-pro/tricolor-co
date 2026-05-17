@@ -307,6 +307,170 @@ export function starLabel(text, { color = PALETTE.red, size = 18 } = {}) {
 }
 
 // ───────────────────────────────────────────
+// Pill / chip — small inline tag used across layouts.
+// ───────────────────────────────────────────
+export function pillTag(text, {
+  bg = PALETTE.yellow,
+  color = PALETTE.ink,
+  border = PALETTE.ink,
+  shadow = PALETTE.red,
+  fontSize = 28,
+  pad = '10px 22px',
+} = {}) {
+  return el('div', {
+    style: {
+      display: 'flex',
+      padding: pad,
+      backgroundColor: bg,
+      color,
+      border: `3px solid ${border}`,
+      boxShadow: `4px 4px 0 ${shadow}`,
+      fontFamily: 'Anton',
+      fontSize,
+      letterSpacing: '0.18em',
+      textTransform: 'uppercase',
+    },
+  }, text);
+}
+
+// ───────────────────────────────────────────
+// statNumber — huge number with caption underneath.
+// For "127 cafeteras" style posts/stories.
+// ───────────────────────────────────────────
+export function statNumber({
+  value,
+  label,
+  color = PALETTE.ink,
+  accent = PALETTE.red,
+  fontSize = 320,
+  labelSize = 44,
+}) {
+  return el('div', {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+  },
+    el('div', {
+      style: {
+        display: 'flex',
+        fontFamily: 'Anton',
+        fontSize,
+        lineHeight: 0.85,
+        letterSpacing: '-0.04em',
+        color,
+        textShadow: `${Math.round(fontSize * 0.04)}px ${Math.round(fontSize * 0.04)}px 0 ${accent}`,
+      },
+    }, String(value)),
+    label
+      ? el('div', {
+          style: {
+            display: 'flex',
+            marginTop: Math.round(fontSize * 0.05),
+            fontFamily: 'Bebas Neue',
+            fontSize: labelSize,
+            letterSpacing: '0.18em',
+            color,
+            textTransform: 'uppercase',
+          },
+        }, label)
+      : null,
+  );
+}
+
+// ───────────────────────────────────────────
+// photoFrame — dashed-border placeholder zone for future photos.
+// Renders an "X" diagonal so designers know what to drop in.
+// ───────────────────────────────────────────
+export function photoFrame({
+  width = '100%',
+  height = '100%',
+  label = 'PHOTO',
+  borderColor = PALETTE.ink,
+  bg = 'rgba(10,10,10,0.04)',
+} = {}) {
+  return el('div', {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width, height,
+      backgroundColor: bg,
+      border: `4px dashed ${borderColor}`,
+    },
+  },
+    el('div', {
+      style: {
+        display: 'flex',
+        fontFamily: 'Bebas Neue',
+        fontSize: 28,
+        letterSpacing: '0.3em',
+        color: borderColor,
+        opacity: 0.6,
+        textTransform: 'uppercase',
+      },
+    }, label),
+  );
+}
+
+// ───────────────────────────────────────────
+// bodyShape — stylized bodysuit silhouette as inline SVG.
+// Used by post-typo-silhouette / mood / comparison layouts.
+// For richer per-edition assets see src/assets/silhouettes/*.svg.
+// ───────────────────────────────────────────
+export function bodyShape({
+  width = 300,
+  height = 420,
+  color = PALETTE.yellow,
+  stroke = PALETTE.ink,
+  strokeWidth = 6,
+  number,
+  numberColor,
+} = {}) {
+  // viewBox 100×140. One-piece bodysuit outline: shoulders → V-neck →
+  // narrow waist → high-cut legs.
+  const path = 'M22 14 Q28 6 38 8 L50 12 L62 8 Q72 6 78 14 L82 36 Q80 50 76 60 L72 88 Q72 110 66 122 L62 134 Q56 138 50 132 Q44 138 38 134 L34 122 Q28 110 28 88 L24 60 Q20 50 18 36 Z';
+  // V-neck cut (inner shape, subtracts visually via a same-bg fill).
+  const neckPath = 'M40 12 L50 28 L60 12';
+  const svg = el('svg', {
+    width, height,
+    viewBox: '0 0 100 140',
+    style: { display: 'flex' },
+  },
+    el('path', { d: path, fill: color, stroke, strokeWidth, strokeLinejoin: 'round' }),
+    el('path', { d: neckPath, fill: stroke, stroke, strokeWidth: 0 }),
+  );
+  if (!number) return svg;
+  // Satori doesn't support <text> SVG. Overlay the jersey number as an
+  // HTML div using absolute positioning instead.
+  const numberSize = Math.round(width * 0.22);
+  const numberTop = Math.round(height * 0.45) - Math.round(numberSize * 0.55);
+  return el('div', {
+    style: {
+      display: 'flex',
+      position: 'relative',
+      width, height,
+    },
+  },
+    svg,
+    el('div', {
+      style: {
+        display: 'flex',
+        position: 'absolute',
+        top: numberTop, left: 0, right: 0,
+        justifyContent: 'center',
+        fontFamily: 'Anton',
+        fontSize: numberSize,
+        lineHeight: 1,
+        color: numberColor || stroke,
+      },
+    }, String(number)),
+  );
+}
+
+// ───────────────────────────────────────────
 // Common bg helpers
 // ───────────────────────────────────────────
 export function bgColor(name) {

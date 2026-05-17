@@ -1,129 +1,55 @@
 // ============================================
-// post.js — Instagram square feed post (1080×1080).
-// Use cases (per spec):
-//   - Hero drop post
-//   - Single edition presentation
-//   - Bundle "El Once Inicial" promo
-//   - Manifesto quote
-//   - Match day announcement
-//   - Customer testimonial (with photo)
+// post.js — Instagram square feed post dispatcher (1080×1080).
+//
+// Picks a layout based on descriptor.layout. Default is 'typo-pure'
+// which preserves the v1 behavior. Each layout module exports a
+// `render(descriptor, { size })` that returns a satori JSX node.
+//
+// Available layouts:
+//   typo-pure         — big Anton headline, eyebrow, subline (default)
+//   typo-silhouette   — typo left, bodysuit SVG right
+//   split-screen      — 50/50 color/ink split
+//   photo-placeholder — top 65% photo zone, bottom typo
+//   quote-fullbg      — manifesto quote, full color background
+//   quote-crema       — manifesto quote on crema with tricolor band
+//   numbers           — giant stat as hero ("127 CAFETERAS")
+//   comparison        — antes/después split
 // ============================================
 
 import satori from 'satori';
 import sharp from 'sharp';
-import {
-  PALETTE, loadFonts, el, flagBar, grainOverlay,
-  logoTricolor, bgColor, accentColor, starLabel,
-} from './brand.js';
+import { loadFonts } from './brand.js';
+
+import { render as renderTypoPure }        from './post-typo-pure.js';
+import { render as renderTypoSilhouette }  from './post-typo-silhouette.js';
+import { render as renderSplitScreen }     from './post-split-screen.js';
+import { render as renderPhotoPlaceholder } from './post-photo-placeholder.js';
+import { render as renderQuoteFullbg }     from './post-quote-fullbg.js';
+import { render as renderQuoteCrema }      from './post-quote-crema.js';
+import { render as renderNumbers }         from './post-numbers.js';
+import { render as renderComparison }      from './post-comparison.js';
 
 const SIZE = 1080;
 
-function pickOnDark(bg) {
-  if (bg === PALETTE.bg || bg === PALETTE.bgWarm || bg === PALETTE.yellow) return false;
-  return true;
-}
+const LAYOUTS = {
+  'typo-pure':         renderTypoPure,
+  'typo-silhouette':   renderTypoSilhouette,
+  'split-screen':      renderSplitScreen,
+  'photo-placeholder': renderPhotoPlaceholder,
+  'quote-fullbg':      renderQuoteFullbg,
+  'quote-crema':       renderQuoteCrema,
+  'numbers':           renderNumbers,
+  'comparison':        renderComparison,
+};
 
-/**
- * Generic square post.
- *   { variant, headline, subline, bg, accent, eyebrow, footer }
- * variant ∈ 'hero' | 'quote' | 'announce'
- */
 export async function renderPost(descriptor) {
   const fonts = await loadFonts();
-  const bg = bgColor(descriptor.bg || 'cream');
-  const accent = accentColor(descriptor.accent || 'red');
-  const onDark = pickOnDark(bg);
-
-  const node = el('div',
-    {
-      style: {
-        display: 'flex',
-        flexDirection: 'column',
-        width: SIZE, height: SIZE,
-        backgroundColor: bg,
-        position: 'relative',
-        overflow: 'hidden',
-        fontFamily: 'Inter',
-      },
-    },
-    grainOverlay({ opacity: 0.07 }),
-    flagBar({ height: 18 }),
-
-    el('div', {
-      style: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        paddingTop: 56, paddingLeft: 64, paddingRight: 64,
-      },
-    },
-      descriptor.eyebrow
-        ? starLabel(descriptor.eyebrow, { color: accent, size: 28 })
-        : null,
-    ),
-
-    el('div', {
-      style: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        flex: 1,
-        padding: '0 64px',
-      },
-    },
-      el('div', {
-        style: {
-          fontFamily: 'Anton',
-          fontSize: 156,
-          lineHeight: 0.9,
-          letterSpacing: '-0.02em',
-          color: onDark ? PALETTE.bg : PALETTE.ink,
-          textTransform: 'uppercase',
-          textShadow: `6px 6px 0 ${accent}`,
-        },
-      }, descriptor.headline || ''),
-      descriptor.subline
-        ? el('div', {
-            style: {
-              marginTop: 36,
-              fontFamily: 'Bebas Neue',
-              fontSize: 44,
-              letterSpacing: '0.1em',
-              color: onDark ? 'rgba(240,235,224,0.78)' : PALETTE.inkSoft,
-              textTransform: 'uppercase',
-            },
-          }, descriptor.subline)
-        : null,
-    ),
-
-    el('div', {
-      style: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        padding: '0 64px 56px',
-      },
-    },
-      logoTricolor({ size: 'md', onDark }),
-      descriptor.footer
-        ? el('div', {
-            style: {
-              fontFamily: 'Bebas Neue',
-              fontSize: 22,
-              letterSpacing: '0.18em',
-              color: onDark ? 'rgba(240,235,224,0.6)' : PALETTE.muted,
-              textTransform: 'uppercase',
-              textAlign: 'right',
-            },
-          }, descriptor.footer)
-        : null,
-    ),
-
-    flagBar({ height: 18, reversed: true }),
-  );
-
+  const layoutName = descriptor.layout || 'typo-pure';
+  const layoutFn = LAYOUTS[layoutName] || LAYOUTS['typo-pure'];
+  const node = layoutFn(descriptor, { size: SIZE });
   const svg = await satori(node, { width: SIZE, height: SIZE, fonts });
   return await sharp(Buffer.from(svg)).png({ compressionLevel: 9 }).toBuffer();
 }
 
 export const POST_SIZE = SIZE;
+export const POST_LAYOUTS = Object.keys(LAYOUTS);

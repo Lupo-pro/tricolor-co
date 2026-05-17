@@ -1,116 +1,59 @@
 // ============================================
-// story.js — Instagram Story format (1080×1920).
-// Each call returns a PNG buffer for one story.
+// story.js — Instagram Story dispatcher (1080×1920).
 //
-// Story descriptor shape (per the sequence spec):
-//   { step, role, headline, subline, bg, accent, image?, sticker? }
-//   role: 'hook' | 'tease' | 'reveal' | 'urgency' | 'cta' | 'poll' | ...
+// Picks a layout by `descriptor.layout` first; if absent, falls back
+// to the legacy `descriptor.role` (hook/tease/reveal/urgency/cta) so
+// existing sequences keep working.
 //
-// The role drives layout; the headline/subline/bg/accent fill it.
+// Layouts (descriptor.layout):
+//   hook-center, hook-split, sticker-placeholder, quote-center,
+//   numbers, question, bts, match-score
+//
+// Roles (descriptor.role, legacy):
+//   hook, tease, reveal, urgency, cta
 // ============================================
 
 import satori from 'satori';
 import sharp from 'sharp';
-import { PALETTE, loadFonts, el, flagBar, grainOverlay, logoTricolor, bgColor, accentColor, starLabel } from './brand.js';
+import {
+  PALETTE, loadFonts, el, flagBar, grainOverlay,
+  logoTricolor, bgColor, accentColor, starLabel,
+} from './brand.js';
+
+import { render as renderHookCenter }         from './story-hook-center.js';
+import { render as renderHookSplit }          from './story-hook-split.js';
+import { render as renderStickerPlaceholder } from './story-sticker-placeholder.js';
+import { render as renderQuoteCenter }        from './story-quote-center.js';
+import { render as renderNumbers }            from './story-numbers.js';
+import { render as renderQuestion }           from './story-question.js';
+import { render as renderBts }                from './story-bts.js';
+import { render as renderMatchScore }         from './story-match-score.js';
 
 const WIDTH = 1080;
 const HEIGHT = 1920;
 
+const LAYOUTS = {
+  'hook-center':         renderHookCenter,
+  'hook-split':          renderHookSplit,
+  'sticker-placeholder': renderStickerPlaceholder,
+  'quote-center':        renderQuoteCenter,
+  'numbers':             renderNumbers,
+  'question':            renderQuestion,
+  'bts':                 renderBts,
+  'match-score':         renderMatchScore,
+};
+
 function pickInkOnBg(bg) {
-  // Choose readable contour color based on the bg lightness.
-  if (bg === PALETTE.bg || bg === PALETTE.bgWarm || bg === PALETTE.yellow) return false; // light bg → onDark = false
-  return true; // dark bg → onDark = true
+  if (bg === PALETTE.bg || bg === PALETTE.bgWarm || bg === PALETTE.yellow) return false;
+  return true;
 }
 
-function renderHook({ headline, subline, bg, accent }) {
-  return el('div',
-    {
-      style: {
-        display: 'flex',
-        flexDirection: 'column',
-        width: WIDTH, height: HEIGHT,
-        backgroundColor: bg,
-        position: 'relative',
-        overflow: 'hidden',
-        fontFamily: 'Inter',
-      },
-    },
-    grainOverlay({ opacity: 0.07 }),
-    // Top flag bar
-    flagBar({ height: 24 }),
-    // Tribune live tag — pulsing dot rendered as a real div so the glyph
-    // never falls back to tofu (● is not in the latin subset of any
-    // loaded display font).
-    el('div', {
-      style: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: 14,
-        alignSelf: 'flex-start',
-        marginTop: 60, marginLeft: 60,
-        padding: '14px 24px',
-        backgroundColor: PALETTE.red,
-        color: PALETTE.bg,
-        fontFamily: 'Anton',
-        fontSize: 32,
-        letterSpacing: '0.18em',
-        textTransform: 'uppercase',
-        boxShadow: `5px 5px 0 ${PALETTE.ink}`,
-        border: `3px solid ${PALETTE.ink}`,
-      },
-    },
-      el('div', { style: { display: 'flex', width: 18, height: 18, borderRadius: 9, backgroundColor: PALETTE.bg } }),
-      el('div', { style: { display: 'flex' } }, 'EN VIVO'),
-    ),
-    // Headline
-    el('div', {
-      style: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        flex: 1,
-        padding: '0 60px',
-      },
-    },
-      el('div', {
-        style: {
-          fontFamily: 'Anton',
-          fontSize: 180,
-          lineHeight: 0.92,
-          letterSpacing: '-0.02em',
-          color: PALETTE.ink,
-          textTransform: 'uppercase',
-          textShadow: `7px 7px 0 ${accent}`,
-        },
-      }, headline),
-      el('div', {
-        style: {
-          marginTop: 40,
-          fontFamily: 'Bebas Neue',
-          fontSize: 48,
-          letterSpacing: '0.1em',
-          color: PALETTE.inkSoft,
-          textTransform: 'uppercase',
-        },
-      }, subline),
-    ),
-    // Bottom: logo + flag bar
-    el('div', {
-      style: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        paddingBottom: 80,
-      },
-    },
-      logoTricolor({ size: 'lg', onDark: pickInkOnBg(bg) }),
-    ),
-    flagBar({ height: 24, reversed: true }),
-  );
-}
+// ───────────────────────────────────────────
+// Legacy role-based renderers (still used by sequences that pass
+// `role: 'hook' | 'tease' | 'reveal' | 'urgency' | 'cta'`).
+// ───────────────────────────────────────────
 
 function renderTease({ headline, subline, bg, accent }) {
-  // Mostly dark, mysterious — keep type tight.
   const onDark = pickInkOnBg(bg);
   return el('div',
     {
@@ -244,7 +187,6 @@ function renderReveal({ headline, subline, bg, accent }) {
 }
 
 function renderUrgency({ headline, subline, bg, accent }) {
-  // Default: red bg, cream type. Hard high-contrast.
   const onDark = pickInkOnBg(bg);
   return el('div',
     {
@@ -389,11 +331,8 @@ function renderCta({ headline, subline, bg, accent }) {
   );
 }
 
-// ───────────────────────────────────────────
-// Role → renderer map
-// ───────────────────────────────────────────
 const ROLE_RENDERERS = {
-  hook: renderHook,
+  hook: (d) => renderHookCenter(d, { width: WIDTH, height: HEIGHT }),
   tease: renderTease,
   reveal: renderReveal,
   urgency: renderUrgency,
@@ -401,22 +340,27 @@ const ROLE_RENDERERS = {
 };
 
 /**
- * Renders a single story to a PNG Buffer.
- * @param {object} descriptor - {role, headline, subline, bg, accent, ...}
- * @returns {Promise<Buffer>}
+ * Renders a single story to a PNG Buffer. Dispatches by `layout` first,
+ * then falls back to `role` for legacy sequence descriptors.
  */
 export async function renderStory(descriptor) {
   const fonts = await loadFonts();
-  const role = descriptor.role || 'reveal';
-  const renderer = ROLE_RENDERERS[role] || renderReveal;
-  const node = renderer({
-    headline: descriptor.headline || '',
-    subline: descriptor.subline || '',
-    bg: bgColor(descriptor.bg || 'cream'),
-    accent: accentColor(descriptor.accent || 'red'),
-    image: descriptor.image,
-    sticker: descriptor.sticker,
-  });
+
+  let node;
+  if (descriptor.layout && LAYOUTS[descriptor.layout]) {
+    node = LAYOUTS[descriptor.layout](descriptor, { width: WIDTH, height: HEIGHT });
+  } else {
+    const role = descriptor.role || 'reveal';
+    const renderer = ROLE_RENDERERS[role] || renderReveal;
+    node = renderer({
+      headline: descriptor.headline || '',
+      subline: descriptor.subline || '',
+      bg: bgColor(descriptor.bg || 'cream'),
+      accent: accentColor(descriptor.accent || 'red'),
+      image: descriptor.image,
+      sticker: descriptor.sticker,
+    });
+  }
 
   const svg = await satori(node, { width: WIDTH, height: HEIGHT, fonts });
   return await sharp(Buffer.from(svg)).png({ compressionLevel: 9 }).toBuffer();
@@ -424,3 +368,4 @@ export async function renderStory(descriptor) {
 
 export const STORY_WIDTH = WIDTH;
 export const STORY_HEIGHT = HEIGHT;
+export const STORY_LAYOUTS = Object.keys(LAYOUTS);

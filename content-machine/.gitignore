@@ -11,8 +11,13 @@ data/drafts/**
 !data/drafts/.gitkeep
 data/approved/**
 !data/approved/.gitkeep
+data/layout-tests/**
+data/daily-packs/**
 data/published.json
 data/failed.json
+
+# Secret backups
+.env.save
 
 # Misc
 .DS_Store
