@@ -569,6 +569,8 @@
   async function runBuildBatch(days, claude, opts = {}) {
     const { startDate, skipExisting = true, titleSuffix = '' } = opts;
     openProgress(`Building ${days} day${days > 1 ? 's' : ''}${claude ? ' · with Claude' : ''}${titleSuffix}`);
+    console.log('→ runBuildBatch opts:', { days, claude, startDate, skipExisting, titleSuffix });
+    console.log('→ state.days at click time:', state.days?.length || 0, 'days');
     // Cancel is visible from the very first frame so the operator
     // never gets locked out, even if the fetch hangs.
     $progressCancel.hidden = false;
@@ -584,6 +586,10 @@
     const url = `/api/build-week?${params.toString()}`;
     console.log(`→ Clicked Build (${days} days, claude=${claude}, startDate=${startDate || 'today'}, skipExisting=${skipExisting})`);
     console.log(`→ Opening fetch ${url}`);
+    // Surface the exact URL inside the modal so the operator doesn't
+    // need DevTools to see what's being hit. Truncated if the params
+    // grow long but the full string is in the console.
+    progressLine(`GET ${url}`, 'info');
 
     const ac = new AbortController();
     _activeBuild = ac;
