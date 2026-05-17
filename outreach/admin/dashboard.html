@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard · LATRICOLOR.CO Outreach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #F0EBE0;
+  --bg-warm: #E8E0CF;
+  --ink:     #0A0A0A;
+  --ink-soft:#2A2A28;
+  --ink-mid: #4A4A48;
+  --muted:   #8A867E;
+  --yellow:  #FFD300;
+  --blue:    #0033A0;
+  --red:     #E63946;
+  --green:   #2D5016;
+  --wa:      #25D366;
+  --line:    rgba(10,10,10,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+
+header.bar{
+  position:sticky;top:0;z-index:20;
+  background:var(--ink);
+  color:var(--bg);
+  padding:0.85rem 1.4rem;
+  display:flex;align-items:center;gap:1.2rem;
+  border-bottom:3px solid var(--yellow);
+  flex-wrap:wrap;
+}
+.brand{
+  font-family:'Anton',sans-serif;
+  font-size:1rem;letter-spacing:0.15em;text-transform:uppercase;
+}
+.brand span{color:var(--yellow);}
+nav.tabs{display:flex;gap:0.5rem;}
+nav.tabs a{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:rgba(240,235,224,0.65);
+  padding:0.4rem 0.7rem;border:1.5px solid transparent;
+  text-decoration:none;
+}
+nav.tabs a.active{color:var(--yellow);border-color:var(--yellow);}
+.refresh{
+  margin-left:auto;
+  background:var(--yellow);color:var(--ink);
+  border:2px solid var(--ink);
+  padding:0.35rem 0.8rem;
+  font-family:'Anton',sans-serif;
+  font-size:0.78rem;letter-spacing:0.13em;text-transform:uppercase;
+  cursor:pointer;box-shadow:3px 3px 0 var(--red);
+}
+.refresh:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--red);}
+
+main{max-width:1280px;margin:0 auto;padding:1.5rem;}
+
+section{margin-bottom:2rem;}
+h2.shead{
+  font-family:'Anton',sans-serif;
+  font-size:1.4rem;letter-spacing:0.04em;text-transform:uppercase;
+  padding-bottom:0.4rem;border-bottom:3px solid var(--ink);
+  margin-bottom:1rem;position:relative;
+}
+h2.shead::after{
+  content:'';position:absolute;bottom:-3px;left:0;width:80px;height:3px;background:var(--red);
+}
+
+/* Stat cards grid */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;}
+.kpi{
+  background:#fff;border:3px solid var(--ink);
+  padding:0.9rem 1.1rem;box-shadow:5px 5px 0 var(--ink);position:relative;
+}
+.kpi-label{
+  font-family:'Bebas Neue',sans-serif;font-size:0.72rem;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);
+}
+.kpi-value{
+  font-family:'Anton',sans-serif;font-size:2.4rem;
+  line-height:1;color:var(--ink);margin-top:0.3rem;letter-spacing:0.02em;
+}
+.kpi-value small{
+  font-family:'Bebas Neue',sans-serif;font-size:0.5em;
+  color:var(--red);margin-left:0.2em;letter-spacing:0.1em;
+}
+.kpi-sub{
+  font-family:'Bebas Neue',sans-serif;font-size:0.78rem;
+  letter-spacing:0.12em;color:var(--ink-mid);text-transform:uppercase;
+  margin-top:0.3rem;
+}
+.kpi.warm-low { box-shadow:5px 5px 0 var(--green); }
+.kpi.warm-mid { box-shadow:5px 5px 0 var(--yellow); }
+.kpi.warm-hi  { box-shadow:5px 5px 0 var(--red); }
+
+/* Funnel */
+.funnel{display:flex;flex-direction:column;gap:0.5rem;}
+.funnel-row{
+  display:grid;grid-template-columns:120px 1fr 80px;align-items:center;gap:0.8rem;
+}
+.funnel-label{
+  font-family:'Bebas Neue',sans-serif;font-size:0.85rem;
+  letter-spacing:0.13em;text-transform:uppercase;color:var(--ink);
+}
+.funnel-bar{
+  background:#fff;border:2px solid var(--ink);
+  height:24px;position:relative;
+}
+.funnel-fill{
+  position:absolute;left:0;top:0;bottom:0;
+  background:var(--yellow);
+  transition:width 0.4s;
+}
+.funnel-row[data-stage="opened"] .funnel-fill,
+.funnel-row[data-stage="clicked"] .funnel-fill{background:var(--blue);}
+.funnel-row[data-stage="replied"] .funnel-fill{background:var(--green);}
+.funnel-row[data-stage="sent"] .funnel-fill{background:#C9A961;}
+.funnel-count{
+  font-family:'Anton',sans-serif;font-size:1.1rem;color:var(--ink);text-align:right;
+}
+
+/* Leads list */
+.leads{display:grid;grid-template-columns:1fr;gap:0.7rem;}
+.lead{
+  display:grid;grid-template-columns:46px 1fr auto;gap:0.7rem;
+  align-items:center;
+  background:#fff;border:2px solid var(--ink);padding:0.65rem 0.9rem;
+}
+.lead-replied{box-shadow:4px 4px 0 var(--green);border-color:var(--green);}
+.lead-avatar{
+  width:46px;height:46px;
+  background:var(--ink);color:var(--yellow);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Anton',sans-serif;font-size:1.4rem;
+  background-size:cover;background-position:center;
+}
+.lead-info{min-width:0;}
+.lead-handle{
+  font-family:'Anton',sans-serif;font-size:1.05rem;
+  letter-spacing:0.02em;text-transform:lowercase;
+  word-break:break-all;
+}
+.lead-handle::before{content:"@";color:var(--red);margin-right:0.05em;}
+.lead-meta{
+  font-family:'Bebas Neue',sans-serif;font-size:0.72rem;
+  letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-mid);
+  margin-top:0.15rem;
+}
+.lead-meta strong{color:var(--ink);font-family:'Anton',sans-serif;font-weight:400;margin-right:0.2em;}
+.lead-tier{
+  display:inline-block;background:var(--yellow);color:var(--ink);
+  padding:0.1rem 0.4rem;font-family:'Bebas Neue',sans-serif;
+  font-size:0.65rem;letter-spacing:0.13em;text-transform:uppercase;
+  margin-right:0.3em;
+}
+.lead-tier.premium{background:var(--ink);color:var(--yellow);}
+.lead-actions{display:flex;gap:0.4rem;}
+.lact{
+  font-family:'Anton',sans-serif;font-size:0.72rem;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:0.4rem 0.65rem;border:2px solid var(--ink);
+  cursor:pointer;background:var(--bg);color:var(--ink);
+  box-shadow:2px 2px 0 var(--ink);
+  transition:transform 0.1s,box-shadow 0.1s,background 0.15s;
+}
+.lact:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+.lact-replied{background:var(--green);color:var(--yellow);}
+.lact-fulfilled{background:var(--wa);color:var(--ink);}
+.lact-done{
+  background:var(--muted);color:#fff;cursor:default;box-shadow:none;
+}
+
+.empty,.note{
+  font-family:'Bebas Neue',sans-serif;letter-spacing:0.1em;
+  color:var(--ink-mid);text-transform:uppercase;
+  background:rgba(255,211,0,0.18);border:2px dashed rgba(255,211,0,0.6);
+  padding:0.7rem 1rem;
+}
+
+.toast{
+  position:fixed;bottom:1.2rem;left:50%;transform:translate(-50%,30px);
+  background:var(--ink);color:var(--yellow);
+  padding:0.6rem 1rem;font-family:'Anton',sans-serif;
+  font-size:0.85rem;letter-spacing:0.13em;text-transform:uppercase;
+  border:2px solid var(--yellow);box-shadow:4px 4px 0 var(--red);
+  opacity:0;transition:opacity 0.2s,transform 0.2s;
+  z-index:50;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translate(-50%,0);}
+
+footer.fine{
+  padding:1.4rem;text-align:center;
+  font-family:'Bebas Neue',sans-serif;font-size:0.78rem;
+  letter-spacing:0.13em;text-transform:uppercase;color:var(--muted);
+}
+footer.fine a{color:var(--ink);text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <span class="brand">LATRICOLOR <span>· Outreach</span></span>
+  <nav class="tabs">
+    <a href="/influencers">Validar</a>
+    <a href="/dashboard" class="active">Dashboard</a>
+  </nav>
+  <button class="refresh" id="refreshBtn" type="button">↻ Refrescar</button>
+</header>
+
+<main>
+  <section>
+    <h2 class="shead">★ KPIs</h2>
+    <div class="kpis" id="kpis">
+      <p class="empty">Cargando stats...</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="shead">★ Funnel</h2>
+    <div class="funnel" id="funnel"></div>
+  </section>
+
+  <section>
+    <h2 class="shead">★ Leads activos</h2>
+    <p class="note" id="leadsNote">
+      Resend track opens/clicks por su cuenta (panel Resend → Activity).
+      Aquí enfocamos en cuántos emails se enviaron y quién respondió.
+    </p>
+    <div class="leads" id="leads"></div>
+  </section>
+</main>
+
+<footer class="fine">
+  Datos en <code>/outreach/data/*.json</code>. Tracking en logs Vercel + Resend dashboard.
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function init() {
+  const kpisEl = document.getElementById('kpis');
+  const funnelEl = document.getElementById('funnel');
+  const leadsEl = document.getElementById('leads');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const toastEl = document.getElementById('toast');
+
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    setTimeout(() => toastEl.classList.remove('show'), 1600);
+  }
+
+  function fmtCount(n) {
+    if (n == null) return '—';
+    if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+    if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return String(n);
+  }
+
+  async function loadStats() {
+    const r = await fetch('/api/stats');
+    return r.json();
+  }
+  async function loadLeads() {
+    const r = await fetch('/api/leads');
+    return r.json();
+  }
+
+  function renderKpis(stats) {
+    const warm = stats.warmup;
+    const warmCls = warm
+      ? (warm.daysElapsed <= 2 ? 'warm-low' : warm.daysElapsed <= 6 ? 'warm-mid' : 'warm-hi')
+      : '';
+    kpisEl.innerHTML = `
+      <div class="kpi">
+        <div class="kpi-label">Total enviados</div>
+        <div class="kpi-value">${fmtCount(stats.emails.total)}</div>
+        <div class="kpi-sub">Hoy: ${stats.emails.today} · Semana: ${stats.emails.week}</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Tasa de respuesta</div>
+        <div class="kpi-value">${stats.responses.rate}<small>%</small></div>
+        <div class="kpi-sub">${stats.responses.count} respuestas</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Tasa de bounce</div>
+        <div class="kpi-value">${stats.emails.bounce_rate}<small>%</small></div>
+        <div class="kpi-sub">${stats.emails.failed} fallos</div>
+      </div>
+      <div class="kpi ${warmCls}">
+        <div class="kpi-label">Warm-up</div>
+        <div class="kpi-value">${warm ? 'Día ' + warm.daysElapsed : '—'}</div>
+        <div class="kpi-sub">${warm ? warm.sentToday + ' enviados hoy' : 'Sin estado'}</div>
+      </div>
+    `;
+  }
+
+  function renderFunnel(stats) {
+    const f = stats.funnel;
+    const top = Math.max(f.scraped, 1);
+    const stages = [
+      { key: 'scraped',  label: 'Scraped',  n: f.scraped },
+      { key: 'filtered', label: 'Enriched', n: f.filtered },
+      { key: 'approved', label: 'Approved', n: f.approved },
+      { key: 'sent',     label: 'Sent',     n: f.sent },
+      { key: 'replied',  label: 'Replied',  n: f.replied },
+    ];
+    funnelEl.innerHTML = stages.map((s) => `
+      <div class="funnel-row" data-stage="${s.key}">
+        <div class="funnel-label">${s.label}</div>
+        <div class="funnel-bar">
+          <div class="funnel-fill" style="width:${(s.n / top) * 100}%"></div>
+        </div>
+        <div class="funnel-count">${fmtCount(s.n)}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderLeads(leads) {
+    if (!leads.length) {
+      leadsEl.innerHTML = '<p class="empty">Aún no hay leads contactados. Corré <code>npm run send</code>.</p>';
+      return;
+    }
+    leadsEl.innerHTML = leads.map((l) => {
+      const initial = (l.username || '?')[0].toUpperCase();
+      const avatarStyle = l.avatar_url ? `style="background-image:url('${l.avatar_url}')"` : '';
+      const platforms = (l.platforms || []).join(' · ').toUpperCase();
+      const dateShort = l.last_sent_at ? new Date(l.last_sent_at).toLocaleDateString('es-CO', { month: 'short', day: 'numeric' }) : '—';
+      const tierCls = l.tier === 'premium' ? 'lead-tier premium' : 'lead-tier';
+      const repliedCls = l.replied ? 'lead lead-replied' : 'lead';
+      const repliedBtn = l.replied
+        ? `<button class="lact lact-done" disabled>✓ Respondió</button>`
+        : `<button class="lact lact-replied" data-action="replied" data-username="${l.username}">Marcar respondió</button>`;
+      const fulfilledBtn = l.fulfilled
+        ? `<button class="lact lact-done" disabled>✓ Enviado</button>`
+        : (l.replied
+          ? `<button class="lact lact-fulfilled" data-action="fulfilled" data-username="${l.username}">Envié body</button>`
+          : '');
+      return `
+        <article class="${repliedCls}">
+          <div class="lead-avatar" ${avatarStyle}>${l.avatar_url ? '' : initial}</div>
+          <div class="lead-info">
+            <div class="lead-handle">${l.username}</div>
+            <div class="lead-meta">
+              <span class="${tierCls}">${l.tier}</span>
+              <strong>${fmtCount(l.followers)}</strong> fans
+              · <strong>${l.engagement_rate || 0}%</strong> ER
+              · <strong>${l.email_count}</strong> emails (último: #${l.last_email_number || '?'}, ${dateShort})
+              · ${platforms || ''}
+            </div>
+          </div>
+          <div class="lead-actions">
+            ${repliedBtn}
+            ${fulfilledBtn}
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    // Wire action buttons
+    leadsEl.querySelectorAll('.lact[data-action]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const action = btn.dataset.action;
+        const username = btn.dataset.username;
+        const endpoint = action === 'replied' ? '/api/mark-replied' : '/api/mark-fulfilled';
+        btn.disabled = true;
+        btn.textContent = '...';
+        try {
+          const r = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username }),
+          });
+          const data = await r.json();
+          if (data.ok) {
+            toast(action === 'replied' ? '✓ Marcado como respondió' : '✓ Body enviado');
+            await load();
+          } else {
+            toast('Error: ' + (data.error || ''));
+            btn.disabled = false;
+          }
+        } catch (e) {
+          toast('Error de red');
+          btn.disabled = false;
+        }
+      });
+    });
+  }
+
+  async function load() {
+    try {
+      const [stats, leads] = await Promise.all([loadStats(), loadLeads()]);
+      if (stats.ok) {
+        renderKpis(stats.stats);
+        renderFunnel(stats.stats);
+      } else {
+        kpisEl.innerHTML = '<p class="empty">Error cargando stats.</p>';
+      }
+      if (leads.ok) renderLeads(leads.leads);
+    } catch (e) {
+      kpisEl.innerHTML = '<p class="empty">Error de red.</p>';
+    }
+  }
+
+  refreshBtn.addEventListener('click', () => { load(); toast('Refrescado'); });
+
+  load();
+  // Auto-refresh every 2 minutes for live runs
+  setInterval(load, 120_000);
+})();
+</script>
+</body>
+</html>
