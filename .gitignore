@@ -30,3 +30,13 @@ npm-debug.log*
 .idea/
 *.swp
 *.swo
+
+# Outreach sub-project — local-only runtime state. /outreach/.gitignore
+# already covers these inside the subdir; re-listed here as defense in
+# depth so a stray `git add outreach/` from the repo root can't leak
+# PII or secrets.
+outreach/.env
+outreach/.env.*
+outreach/node_modules/
+outreach/data/*.json
+!outreach/data/.gitkeep
