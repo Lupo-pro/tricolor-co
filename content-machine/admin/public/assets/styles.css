@@ -367,3 +367,39 @@ main.stage {
   transition: opacity 0.18s, transform 0.18s;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---- Claude toggle ---- */
+.claude-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: 0.6rem;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.18em;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  cursor: pointer;
+  user-select: none;
+}
+.claude-toggle input { accent-color: var(--red); width: 16px; height: 16px; }
+.claude-toggle .badge {
+  display: inline-block;
+  padding: 0 0.4rem;
+  margin-left: 0.2rem;
+  background: var(--bg-warm);
+  border: 1px solid var(--ink);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+}
+.claude-toggle .badge.on  { background: var(--green); color: var(--bg); }
+.claude-toggle .badge.off { background: var(--red);   color: var(--bg); }
+
+/* Toast — multi-line variant for errors */
+.toast.error {
+  background: var(--red);
+  color: var(--bg);
+  max-width: min(640px, 90vw);
+  white-space: pre-wrap;
+  text-align: left;
+}

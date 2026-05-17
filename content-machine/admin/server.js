@@ -126,16 +126,41 @@ async function respondWithDay(res, date) {
   res.json({ ok: true, date, manifest, captions, approvedIds: [...approvedIds] });
 }
 
+function claudeConfigured() {
+  const k = process.env.ANTHROPIC_API_KEY;
+  return Boolean(k && !k.startsWith('sk_xxx'));
+}
+
+// Lightweight status — used by the UI to know whether Claude is wired
+// up so it can show the right label on the Build buttons.
+app.get('/api/status', async (_req, res) => {
+  res.json({
+    ok: true,
+    claude_configured: claudeConfigured(),
+    today: todayKey(),
+  });
+});
+
 app.post('/api/build-day', async (req, res) => {
   const date = (req.body && req.body.date) || todayKey();
-  const noClaude = req.body && req.body.noClaude;
+  const wantClaude = !!(req.body && req.body.claude);
+  // If the caller wants Claude but the server has no key, fail loudly
+  // instead of silently degrading — the UI surfaces this in a toast.
+  if (wantClaude && !claudeConfigured()) {
+    return res.status(400).json({
+      ok: false,
+      error: 'ANTHROPIC_API_KEY is missing or placeholder. Fill content-machine/.env and restart, or untoggle "Use Claude".',
+      code: 'no-claude-key',
+    });
+  }
   const args = [`--date=${date}`];
-  if (noClaude) args.push('--no-claude');
+  if (!wantClaude) args.push('--no-claude');
   try {
-    console.log(`▶ Triggering build-day for ${date}...`);
+    console.log(`▶ Triggering build-day for ${date} (claude=${wantClaude})...`);
     const r = await runScript(join(ROOT, 'src', 'build-day.js'), args);
-    res.json({ ok: true, stdout: r.stdout });
+    res.json({ ok: true, date, claude: wantClaude, stdout: r.stdout });
   } catch (e) {
+    console.error(`✗ build-day ${date} failed: ${e.message}`);
     res.status(500).json({ ok: false, error: e.message });
   }
 });
