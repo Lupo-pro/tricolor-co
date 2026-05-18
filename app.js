@@ -341,41 +341,11 @@ function openModal(color, returnTo) {
 }
 
 function updateModalCta(productName, price) {
-  const upsell = document.getElementById('modalUpsell');
-  const upsellOn = upsell?.dataset.state === 'on';
-
-  let msg = `¡Hola! Quiero pedir el body ${productName} 🇨🇴\n\nTalla: única (S a XL)\nPrecio: ${price}\n\n`;
-
-  if (upsellOn) {
-    const colorLabel = selectedCapColor ? CAP_LABELS[selectedCapColor] : 'a definir';
-    msg += `+ Quiero agregar una 2da edición para activar la GORRA TRICOLOR GRATIS 🎁\nColor de la gorra: ${colorLabel}\n\n¿Cuál edición me recomendás como 2da?`;
-  } else {
-    msg += '¿Está disponible?';
-  }
-
+  const msg = `¡Hola! Quiero pedir el body ${productName} 🇨🇴\n\nTalla: única (S a XL)\nPrecio: ${price}\n\n¿Está disponible?`;
   modalCta.href = buildWaUrl(msg);
   modalCta.target = '_blank';
   modalCta.rel = 'noopener';
 }
-
-// Expose for setCapColor → reflect color picks live into the modal CTA
-window.__refreshModalCta = () => {
-  if (!modal.classList.contains('active')) return;
-  updateModalCta(modalTitle.textContent, modalPriceNow.textContent);
-};
-
-// Modal upsell toggle — show cap picker + rebuild WA message.
-(function initModalUpsell() {
-  const upsell = document.getElementById('modalUpsell');
-  const toggle = document.getElementById('upsellToggle');
-  if (!upsell || !toggle) return;
-  toggle.addEventListener('click', () => {
-    const next = upsell.dataset.state === 'on' ? 'off' : 'on';
-    upsell.dataset.state = next;
-    toggle.setAttribute('aria-pressed', next === 'on' ? 'true' : 'false');
-    updateModalCta(modalTitle.textContent, modalPriceNow.textContent);
-  });
-})();
 
 function closeModal() {
   modal.classList.remove('active');
@@ -650,7 +620,7 @@ const STICKY_BAR_PRODUCTS = {
   cafetera: { name: 'La Cafetera', price: '$89.000', old: '$149.000', msg: '¡Hola! Me interesa La Cafetera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
 };
 const STICKY_BAR_DEFAULT = {
-  name: 'Desde $89K · 🎁 Gorra gratis con 2+',
+  name: 'Desde $89K · 🎁 Pack: 2 gorras GRATIS',
   price: '',           // empty → JS collapses the price column
   old: '',
   msg: '¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴',
@@ -682,7 +652,7 @@ const stickyBuy = document.getElementById('stickyBuy');
     sbName.textContent = p.name;
     sbPrice.textContent = p.price || '';
     sbOld.textContent = p.old || '';
-    // When no price (default "Desde $89K · 🎁 Gorra gratis..." state),
+    // When no price (default "Desde $89K · 🎁 Pack..." state),
     // collapse the price column so the name has the whole row.
     const priceWrap = sbPrice.parentElement;
     if (priceWrap) priceWrap.style.display = p.price ? '' : 'none';
@@ -734,34 +704,6 @@ const stickyBuy = document.getElementById('stickyBuy');
 function vibrate(d = 8) { if ('vibrate' in navigator) navigator.vibrate(d); }
 document.querySelectorAll('.cta, .product-cta, .nav-cta, .bundle-cta, .card-cta, .sb-cta')
   .forEach((b) => b.addEventListener('click', () => vibrate(8)));
-
-// ============================================
-// GORRA GRATIS — cap color selection state
-// One source of truth for the user's preferred gorra color. Both the
-// Regalo section and the product modal read/write through this, so a
-// click in one place reflects in the other (and in the WhatsApp
-// message). Defaults to null until the user picks.
-// ============================================
-let selectedCapColor = null;
-const CAP_LABELS = { negra: 'Negra', roja: 'Roja', amarilla: 'Amarilla', blanca: 'Blanca' };
-
-function setCapColor(color) {
-  if (color && !CAP_LABELS[color]) return;
-  selectedCapColor = color;
-  document.querySelectorAll('.cap-option').forEach((opt) => {
-    const on = opt.dataset.color === color;
-    opt.setAttribute('aria-checked', String(on));
-    opt.classList.toggle('active', on);
-  });
-  // Modal CTA may need to refresh if the modal is open with the gorra
-  // toggle enabled. The modal code below re-reads selectedCapColor when
-  // it rebuilds the message.
-  if (typeof window.__refreshModalCta === 'function') window.__refreshModalCta();
-}
-
-document.querySelectorAll('.cap-option').forEach((btn) => {
-  btn.addEventListener('click', () => setCapColor(btn.dataset.color));
-});
 
 // ============================================
 // STADIUM ANTHEM — floating audio player
