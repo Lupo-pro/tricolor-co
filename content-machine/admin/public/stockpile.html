@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stockpile · LATRICOLOR.CO Content</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/styles.css">
+<style>
+  /* Filter chip strip + result count */
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    margin: 1rem 0 0.4rem;
+    align-items: center;
+  }
+  .filter-group {
+    display: inline-flex; flex-wrap: wrap; gap: 0.3rem;
+    padding: 0.25rem 0.5rem;
+    border: 2px solid var(--ink);
+    background: #fff;
+  }
+  .filter-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.72rem; letter-spacing: 0.22em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-right: 0.3rem;
+    align-self: center;
+  }
+  .chip {
+    padding: 0.18rem 0.55rem;
+    font-family: 'Anton', sans-serif;
+    font-size: 0.72rem; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 2px solid var(--ink);
+    background: var(--bg);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .chip:hover { box-shadow: 2px 2px 0 var(--ink); }
+  .chip.active {
+    background: var(--yellow);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .chip .count {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.65rem; letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .chip.active .count { color: var(--ink); }
+
+  /* Edition chip color hints */
+  .chip[data-value="la-capitana"] { background: var(--yellow); }
+  .chip[data-value="la-portera"]  { background: var(--blue); color: var(--yellow); }
+  .chip[data-value="oro-negro"]   { background: var(--ink); color: var(--yellow); }
+  .chip[data-value="la-cafetera"] { background: var(--red); color: var(--bg); }
+
+  /* Color filter chips: solid swatch */
+  .chip.swatch-yellow { background: var(--yellow); }
+  .chip.swatch-blue   { background: var(--blue);   color: var(--yellow); }
+  .chip.swatch-red    { background: var(--red);    color: var(--bg); }
+  .chip.swatch-ink    { background: var(--ink);    color: var(--yellow); }
+  .chip.swatch-cream  { background: var(--bg-warm); }
+  .chip.swatch-green  { background: var(--green);  color: var(--bg); }
+
+  .reset {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.78rem; letter-spacing: 0.18em;
+    color: var(--red);
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+  }
+
+  /* Result toolbar — count + bulk-action stubs */
+  .toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin: 0.4rem 0 0.8rem;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.18em;
+    color: var(--ink-mid);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+  }
+  .toolbar strong { font-family: 'Anton', sans-serif; font-weight: 400; color: var(--ink); }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.7rem;
+  }
+  .tile {
+    position: relative;
+    background: #fff;
+    border: 3px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .tile:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--red); }
+  .tile img { width: 100%; display: block; aspect-ratio: 1 / 1; object-fit: cover; }
+  .tile.story img { aspect-ratio: 9 / 16; }
+  .tile .meta {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 0.35rem 0.5rem;
+    background: rgba(10,10,10,0.78);
+    color: var(--bg);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.65rem; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex; justify-content: space-between; gap: 0.4rem;
+    pointer-events: none;
+  }
+  .tile .kind-tag {
+    position: absolute; top: 6px; left: 6px;
+    padding: 0.1rem 0.4rem;
+    font-family: 'Anton', sans-serif;
+    font-size: 0.62rem; letter-spacing: 0.12em;
+    background: var(--ink); color: var(--yellow);
+    border: 1.5px solid var(--ink);
+    text-transform: uppercase;
+  }
+  .tile .kind-tag.post     { background: var(--yellow); color: var(--ink); }
+  .tile .kind-tag.carousel { background: var(--red);    color: var(--bg); }
+  .tile .star {
+    position: absolute; top: 6px; right: 6px;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.85);
+    border: 2px solid var(--ink);
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .tile .star.active { background: var(--yellow); color: var(--ink); }
+
+  .empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* Detail overlay */
+  .detail-overlay {
+    position: fixed; inset: 0;
+    background: rgba(10,10,10,0.78);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 250;
+    padding: 1rem;
+  }
+  .detail-panel {
+    background: var(--bg);
+    border: 4px solid var(--ink);
+    box-shadow: 10px 10px 0 var(--red);
+    max-width: 1100px; width: 100%;
+    max-height: 92vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+  @media (max-width: 800px) {
+    .detail-panel { grid-template-columns: 1fr; max-height: 92vh; overflow-y: auto; }
+  }
+  .detail-preview {
+    background: var(--bg-warm);
+    padding: 1rem;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0.6rem;
+    border-right: 3px solid var(--ink);
+    overflow-y: auto;
+  }
+  @media (max-width: 800px) { .detail-preview { border-right: 0; border-bottom: 3px solid var(--ink); } }
+  .detail-preview img { max-width: 100%; max-height: 60vh; border: 2px solid var(--ink); }
+  .detail-preview .strip {
+    display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.4rem;
+    max-width: 100%;
+  }
+  .detail-preview .strip img { height: 90px; border: 1.5px solid var(--ink); cursor: pointer; }
+  .detail-preview .strip img.active { box-shadow: 2px 2px 0 var(--red); }
+
+  .detail-info { padding: 1rem 1.1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.7rem; }
+  .detail-info h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.4rem; letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+  .detail-info .meta-row {
+    display: flex; flex-wrap: wrap; gap: 0.3rem;
+  }
+  .meta-pill {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.7rem; letter-spacing: 0.15em;
+    padding: 0.18rem 0.45rem;
+    background: var(--bg-warm);
+    border: 1.5px solid var(--ink);
+    text-transform: uppercase;
+  }
+  .meta-pill.angle   { background: var(--red);    color: var(--bg); }
+  .meta-pill.edition { background: var(--yellow); }
+  .meta-pill.kind    { background: var(--ink);    color: var(--yellow); }
+
+  .caption-box {
+    background: #fff;
+    border: 2px dashed var(--ink);
+    padding: 0.7rem 0.85rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    color: var(--ink-soft);
+    max-height: 30vh;
+    overflow-y: auto;
+  }
+
+  .detail-actions {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    padding-top: 0.4rem;
+    border-top: 2px solid var(--line);
+  }
+
+  .close-x {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--ink);
+    color: var(--bg);
+    border: 2px solid var(--ink);
+    font-family: 'Anton', sans-serif;
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">
+    <span class="tri">Tri</span><span class="co">co</span><span class="lor">lor</span>
+    <span class="brand-tag">· Stockpile</span>
+  </div>
+  <nav class="tabs">
+    <a href="/swipe">Swipe</a>
+    <a href="/calendar">Calendar</a>
+    <a href="/insights">Insights</a>
+    <a href="/stockpile" class="active">Stockpile</a>
+  </nav>
+  <div class="bar-spacer"></div>
+  <button class="bar-btn alt" id="btnRefresh" type="button">↻ Refresh</button>
+</header>
+
+<main class="stage">
+  <div class="row">
+    <span style="font-family:'Bebas Neue',sans-serif;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-mid);">
+      Pila de contenido — busca, filtra, descarga
+    </span>
+  </div>
+
+  <div class="filters" id="filters"></div>
+
+  <div class="toolbar">
+    <div><strong id="resultCount">0</strong> resultados · <span id="totalCount">0</span> en la pila</div>
+    <div id="bulkActions"></div>
+  </div>
+
+  <div class="grid" id="grid">
+    <div class="empty">Cargando…</div>
+  </div>
+</main>
+
+<div class="detail-overlay" id="detailOverlay" hidden>
+  <div class="detail-panel" id="detailPanel">
+    <button class="close-x" id="detailClose" type="button">✕</button>
+    <div class="detail-preview" id="detailPreview"></div>
+    <div class="detail-info" id="detailInfo"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(async function init() {
+  const $filters    = document.getElementById('filters');
+  const $grid       = document.getElementById('grid');
+  const $resultCt   = document.getElementById('resultCount');
+  const $totalCt    = document.getElementById('totalCount');
+  const $btnRefresh = document.getElementById('btnRefresh');
+  const $toast      = document.getElementById('toast');
+  const $detailOver = document.getElementById('detailOverlay');
+  const $detailPre  = document.getElementById('detailPreview');
+  const $detailInfo = document.getElementById('detailInfo');
+  const $detailClose= document.getElementById('detailClose');
+
+  const state = {
+    filters: { kind: null, angle: null, edition: null, color: null },
+    items: [],
+    facets: { kind: [], angle: [], edition: [], color: [] },
+    total: 0,
+  };
+
+  function toast(msg, ms = 1800) {
+    $toast.textContent = msg;
+    $toast.classList.add('show');
+    setTimeout(() => $toast.classList.remove('show'), ms);
+  }
+
+  function chipHtml(axis, opt, active, extraClass = '') {
+    const cls = `chip ${active ? 'active' : ''} ${extraClass}`.trim();
+    return `<button class="${cls}" data-axis="${axis}" data-value="${opt.value}" type="button">
+      ${opt.value}
+      <span class="count">${opt.count}</span>
+    </button>`;
+  }
+
+  function renderFilters() {
+    const groups = [
+      { axis: 'kind',    label: 'Tipo',    opts: state.facets.kind },
+      { axis: 'angle',   label: 'Ángulo',  opts: state.facets.angle },
+      { axis: 'edition', label: 'Edición', opts: state.facets.edition },
+      { axis: 'color',   label: 'Color',   opts: state.facets.color },
+    ];
+    const anyActive = Object.values(state.filters).some(Boolean);
+    $filters.innerHTML = groups.map(({ axis, label, opts }) => {
+      if (opts.length === 0) return '';
+      const html = opts.map((o) => {
+        const swatch = axis === 'color' ? ` swatch-${o.value}` : '';
+        return chipHtml(axis, o, state.filters[axis] === o.value, swatch);
+      }).join('');
+      return `<div class="filter-group"><span class="filter-label">${label}</span>${html}</div>`;
+    }).join('') + (anyActive ? `<span class="reset" id="resetFilters">✗ Reset</span>` : '');
+    for (const btn of $filters.querySelectorAll('.chip')) {
+      btn.addEventListener('click', () => {
+        const axis = btn.dataset.axis;
+        const value = btn.dataset.value;
+        state.filters[axis] = state.filters[axis] === value ? null : value;
+        load();
+      });
+    }
+    const reset = document.getElementById('resetFilters');
+    if (reset) reset.addEventListener('click', () => {
+      state.filters = { kind: null, angle: null, edition: null, color: null };
+      load();
+    });
+  }
+
+  function pngUrl(item, slideIdx = 0) {
+    if (item.kind === 'carousel' && item.files && item.files.length > 0) {
+      return `/assets/png/${item.date}/${item.files[Math.min(slideIdx, item.files.length - 1)]}`;
+    }
+    return `/assets/png/${item.date}/${item.file}`;
+  }
+
+  function tileHtml(item) {
+    const headline = (item.headline || item.theme || item.id || '').toString().slice(0, 60);
+    const kindClass = `kind-tag ${item.kind}`;
+    const tileClass = `tile ${item.kind}`;
+    return `<article class="${tileClass}" data-id="${item.globalId}">
+      <img loading="lazy" src="${pngUrl(item)}" alt="${headline}">
+      <span class="${kindClass}">${item.kind}</span>
+      <div class="meta">
+        <span>${item.angle || ''}</span>
+        <span>${item.date.slice(5)}</span>
+      </div>
+    </article>`;
+  }
+
+  function renderGrid() {
+    if (state.items.length === 0) {
+      $grid.innerHTML = '<div class="empty">Sin resultados · ajusta los filtros</div>';
+      return;
+    }
+    $grid.innerHTML = state.items.map(tileHtml).join('');
+    for (const tile of $grid.querySelectorAll('.tile')) {
+      tile.addEventListener('click', () => openDetail(tile.dataset.id));
+    }
+  }
+
+  async function load() {
+    const params = new URLSearchParams();
+    for (const [k, v] of Object.entries(state.filters)) if (v) params.set(k, v);
+    try {
+      const r = await fetch(`/api/stockpile?${params.toString()}`);
+      const d = await r.json();
+      if (!d.ok) throw new Error(d.error || 'load failed');
+      state.items = d.items;
+      state.facets = d.facets;
+      state.total = d.total;
+      $resultCt.textContent = d.shown;
+      $totalCt.textContent  = d.total;
+      renderFilters();
+      renderGrid();
+    } catch (e) {
+      toast('Error · ' + e.message);
+      $grid.innerHTML = `<div class="empty">Error: ${e.message}</div>`;
+    }
+  }
+
+  // ───── Detail panel ─────
+  async function openDetail(globalId) {
+    try {
+      const r = await fetch(`/api/stockpile/item/${encodeURIComponent(globalId)}`);
+      const d = await r.json();
+      if (!d.ok) throw new Error(d.error || 'not found');
+      renderDetail(d.item);
+      $detailOver.hidden = false;
+    } catch (e) {
+      toast('Error · ' + e.message);
+    }
+  }
+
+  function renderDetail(item) {
+    const isCarousel = item.kind === 'carousel' && Array.isArray(item.files);
+    const files = isCarousel ? item.files : (item.file ? [item.file] : []);
+
+    // Preview pane — single image OR carousel strip with active picker.
+    let previewHtml = '';
+    if (files.length > 0) {
+      const big = `<img id="detailBig" src="${pngUrl(item, 0)}" alt="${item.id}">`;
+      const strip = isCarousel
+        ? `<div class="strip">${files.map((f, i) => `
+            <img class="${i === 0 ? 'active' : ''}" data-idx="${i}"
+                 src="/assets/png/${item.date}/${f}" alt="slide ${i + 1}">
+          `).join('')}</div>`
+        : '';
+      previewHtml = big + strip;
+    } else {
+      previewHtml = `<div class="empty">No file</div>`;
+    }
+    $detailPre.innerHTML = previewHtml;
+
+    if (isCarousel) {
+      const $big = document.getElementById('detailBig');
+      for (const thumb of $detailPre.querySelectorAll('.strip img')) {
+        thumb.addEventListener('click', () => {
+          const idx = parseInt(thumb.dataset.idx, 10);
+          $big.src = pngUrl(item, idx);
+          for (const t of $detailPre.querySelectorAll('.strip img')) t.classList.remove('active');
+          thumb.classList.add('active');
+        });
+      }
+    }
+
+    const pills = [];
+    pills.push(`<span class="meta-pill kind">${item.kind}</span>`);
+    if (item.angle)   pills.push(`<span class="meta-pill angle">${item.angle}</span>`);
+    if (item.edition) pills.push(`<span class="meta-pill edition">${item.edition}</span>`);
+    if (item.layout)  pills.push(`<span class="meta-pill">${item.layout}</span>`);
+    if (item.sequence) pills.push(`<span class="meta-pill">${item.sequence} · #${item.step}</span>`);
+    if (item.theme)   pills.push(`<span class="meta-pill">${item.theme}</span>`);
+    pills.push(`<span class="meta-pill">${item.date}</span>`);
+
+    const headline = item.headline || item.theme || item.id;
+    const downloadHref = isCarousel
+      ? null
+      : `${pngUrl(item)}`;
+    const downloadAttr = isCarousel ? '' : `download="${item.id}.png"`;
+
+    $detailInfo.innerHTML = `
+      <div class="meta-row">${pills.join('')}</div>
+      <h2>${headline || ''}</h2>
+      ${item.subline ? `<div style="font-family:'Bebas Neue',sans-serif;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;">${item.subline}</div>` : ''}
+      <div class="caption-box">${item.caption || '(sin caption)'}</div>
+      <div class="detail-actions">
+        ${downloadHref ? `<a class="bar-btn" href="${downloadHref}" ${downloadAttr} target="_blank">📥 Download PNG</a>` : ''}
+        ${isCarousel ? files.map((f, i) => `<a class="bar-btn alt" href="/assets/png/${item.date}/${f}" download="${item.id}-${String(i+1).padStart(2,'0')}.png" target="_blank">${i + 1}</a>`).join('') : ''}
+        <button class="bar-btn alt" id="copyCaption" type="button">📋 Copy caption</button>
+      </div>
+    `;
+
+    const $copy = document.getElementById('copyCaption');
+    if ($copy) $copy.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(item.caption || ''); toast('✓ Caption copied'); }
+      catch (e) { toast('Error · ' + e.message); }
+    });
+  }
+
+  $detailClose.addEventListener('click', () => { $detailOver.hidden = true; });
+  $detailOver.addEventListener('click', (e) => { if (e.target === $detailOver) $detailOver.hidden = true; });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$detailOver.hidden) $detailOver.hidden = true; });
+
+  $btnRefresh.addEventListener('click', load);
+  await load();
+})();
+</script>
+</body>
+</html>

@@ -28,6 +28,7 @@ import { fileURLToPath } from 'node:url';
 
 import { recordEvent, getInsights } from '../src/strategy/preferences.js';
 import { planForDay } from '../src/strategy/content-mix.js';
+import { listStockpile, itemFacets, getItem } from '../src/stockpile/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -86,6 +87,7 @@ app.get('/', (_req, res) => res.redirect('/swipe'));
 app.get('/swipe',    (_req, res) => res.sendFile(join(__dirname, 'public', 'swipe.html')));
 app.get('/calendar', (_req, res) => res.sendFile(join(__dirname, 'public', 'calendar.html')));
 app.get('/insights', (_req, res) => res.sendFile(join(__dirname, 'public', 'insights.html')));
+app.get('/stockpile', (_req, res) => res.sendFile(join(__dirname, 'public', 'stockpile.html')));
 
 // Serve draft PNGs through a controlled route so the dashboard can
 // embed them without exposing the whole filesystem.
@@ -469,6 +471,47 @@ app.get('/api/insights', async (_req, res) => {
   try {
     const data = await getInsights();
     res.json({ ok: true, ...data });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// /api/stockpile — flat aggregated view. Supports query filters:
+// ?kind=story&angle=rebellion&edition=la-capitana&color=red
+// facets are computed over the UNFILTERED set so the filter chips
+// always show every option, with current-filter counts in `subset`.
+app.get('/api/stockpile', async (req, res) => {
+  try {
+    const filters = {
+      kind:    req.query.kind    || null,
+      angle:   req.query.angle   || null,
+      edition: req.query.edition || null,
+      color:   req.query.color   || null,
+    };
+    const all = await listStockpile({});
+    const filtered = await listStockpile({ filters });
+    res.json({
+      ok: true,
+      total: all.length,
+      shown: filtered.length,
+      filters,
+      facets: itemFacets(all),
+      items: filtered,
+    });
+  } catch (e) {
+    console.error('stockpile error:', e);
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// Detail endpoint for a single item — used when the operator opens
+// the preview panel. Returns the same shape as one item in
+// /api/stockpile but includes the full caption + all slide files.
+app.get('/api/stockpile/item/:globalId(*)', async (req, res) => {
+  try {
+    const it = await getItem(req.params.globalId);
+    if (!it) return res.status(404).json({ ok: false, error: 'not found' });
+    res.json({ ok: true, item: it });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
   }
