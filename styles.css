@@ -2296,16 +2296,233 @@ html.promo-active .promo-bar { display: flex; }
 .mini-3 { background: radial-gradient(circle at 30% 30%, #3a3a36, #0A0A0A); color: rgba(201,169,97,0.55); }
 .mini-4 { background: radial-gradient(circle at 30% 30%, var(--red-warm), var(--red-deep)); color: rgba(0,0,0,0.55); }
 
-/* Cap minis — second row of the bundle visual: 2 caps spanning
-   2 cols each, themed yellow + red to evoke the tricolor pair. */
-.mini-cap {
-  aspect-ratio: 4 / 3;
-  grid-column: span 2;
-  padding: 0.7rem;
+/* Bundle caps preview — second row of the bundle visual: a single
+   strip with all 4 real cap photos as thumbnails + the picker hint.
+   Spans the full grid width below the 4 mini-bodies. */
+.bundle-caps-strip {
+  grid-column: 1 / -1;
+  background: var(--bg);
+  border: 2px solid var(--bg);
+  padding: 0.55rem 0.7rem 0.55rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
 }
-.mini-cap svg { width: 88%; height: auto; }
-.mini-cap-y { background: radial-gradient(circle at 30% 30%, #FFF8D8, var(--yellow-warm)); color: var(--yellow); }
-.mini-cap-r { background: radial-gradient(circle at 30% 30%, var(--red-warm), var(--red-deep)); color: var(--red); }
+.bcs-thumbs {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+  width: 100%;
+}
+.bcs-thumbs picture,
+.bcs-thumbs img {
+  display: block;
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--ink);
+  border-radius: 2px;
+  background: var(--bg-warm);
+  object-fit: cover;
+}
+.bcs-hint {
+  font-family: 'Anton', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  text-transform: uppercase;
+  line-height: 1.1;
+  text-align: center;
+}
+.bcs-hint span {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-mid);
+  text-transform: none;
+  margin-top: 0.1rem;
+}
+
+/* ============================================================
+   CAP PICKER PACK — interactive 4→2 color selector inside the
+   El Once Inicial bundle. Selected state mirrors the V5 fanzine
+   look: black border + red hard shadow.
+   ============================================================ */
+.cap-picker-pack {
+  background: var(--bg-warm);
+  border: var(--border);
+  padding: 1rem 1rem 1.1rem;
+  margin-top: 1rem;
+  position: relative;
+}
+.cpp-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 2px solid var(--ink);
+}
+.cpp-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.cpp-title em {
+  font-style: normal;
+  color: var(--red);
+  font-weight: 400;
+}
+.cpp-counter {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.88rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-mid);
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.cpp-counter strong { font-family: 'Anton', sans-serif; color: var(--ink); font-weight: 400; }
+.cpp-check-done {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  background: var(--ink);
+  color: var(--yellow);
+  border-radius: 50%;
+  font-size: 0.7rem;
+  line-height: 1rem;
+  text-align: center;
+  font-weight: 700;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.2s, transform 0.2s cubic-bezier(.34,1.56,.64,1);
+}
+.cap-picker-pack[data-selected-count="2"] .cpp-check-done {
+  opacity: 1;
+  transform: scale(1);
+}
+.cap-picker-pack[data-selected-count="2"] .cpp-counter strong { color: var(--red); }
+
+.cpp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+.cpp-option {
+  background: var(--bg);
+  border: 2px solid var(--ink);
+  padding: 0.4rem 0.4rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  position: relative;
+}
+.cpp-option:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.cpp-option:focus-visible {
+  outline: none;
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 var(--red);
+}
+.cpp-option[aria-pressed="true"] {
+  background: var(--yellow);
+  border-color: var(--ink);
+  transform: translate(-3px, -3px);
+  box-shadow: 5px 5px 0 var(--red);
+}
+.cpp-option[aria-pressed="true"]:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 6px 6px 0 var(--red);
+}
+.cpp-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1.5px solid var(--ink);
+  background: var(--bg-warm);
+  overflow: hidden;
+  display: block;
+}
+.cpp-photo picture,
+.cpp-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cpp-mark {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 1.1rem;
+  height: 1.1rem;
+  background: var(--ink);
+  color: var(--yellow);
+  border-radius: 50%;
+  font-size: 0.7rem;
+  line-height: 1.1rem;
+  text-align: center;
+  font-weight: 700;
+  font-family: 'Anton', sans-serif;
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.18s, transform 0.18s cubic-bezier(.34,1.56,.64,1);
+  pointer-events: none;
+}
+.cpp-option[aria-pressed="true"] .cpp-mark {
+  opacity: 1;
+  transform: scale(1);
+}
+.cpp-label {
+  font-family: 'Anton', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Disabled CTA state (less than 2 caps picked) */
+.bundle-cta.is-disabled {
+  background: var(--bg-deep);
+  color: var(--ink-mid);
+  cursor: not-allowed;
+  box-shadow: 3px 3px 0 rgba(10,10,10,0.18);
+}
+.bundle-cta.is-disabled:hover {
+  background: var(--bg-deep);
+  transform: none;
+  box-shadow: 3px 3px 0 rgba(10,10,10,0.18);
+}
+.bundle-cta-arrow {
+  margin-left: 0.4rem;
+  transition: transform 0.15s ease;
+}
+.bundle-cta:not(.is-disabled):hover .bundle-cta-arrow { transform: translateX(3px); }
+
+@media (max-width: 520px) {
+  .cpp-grid { grid-template-columns: repeat(2, 1fr); gap: 0.55rem; }
+  .cpp-label { font-size: 0.85rem; }
+}
+
+@media (max-width: 360px) {
+  .bcs-thumbs picture,
+  .bcs-thumbs img { width: 38px; height: 38px; }
+}
 
 /* ============================================================
    BENEFITS — ticket-style cards

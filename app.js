@@ -699,10 +699,94 @@ const stickyBuy = document.getElementById('stickyBuy');
 })();
 
 // ============================================
+// CAP PICKER PACK — pick 2 cap colors for the El Once Inicial pack.
+// FIFO replace if user clicks a 3rd unselected option. CTA stays in
+// .is-disabled state until exactly 2 are picked, then unlocks with
+// the colors injected into the WhatsApp message.
+// ============================================
+(function initCapPickerPack() {
+  const root    = document.getElementById('capPickerPack');
+  const cta     = document.getElementById('bundleCta');
+  const label   = document.getElementById('bundleCtaLabel');
+  const counter = document.getElementById('cppCount');
+  if (!root || !cta || !label || !counter) return;
+
+  const BASE_MSG = '¡Hola! Quiero el pack El Once Inicial (4 ediciones + 2 gorras GRATIS';
+  const READY_LABEL = 'Lo Quiero Completo';
+  const PENDING_LABEL = 'Elegí 2 gorras primero';
+  const selected = []; // ordered list of {color, labelText} — newest at the end
+
+  function render() {
+    // Keep DOM aria-pressed in sync with the selected[] order
+    root.querySelectorAll('.cpp-option').forEach((btn) => {
+      const c = btn.dataset.capColor;
+      btn.setAttribute('aria-pressed', selected.some((s) => s.color === c) ? 'true' : 'false');
+    });
+    counter.textContent = String(selected.length);
+    root.dataset.selectedCount = String(selected.length);
+
+    if (selected.length === 2) {
+      const colors = selected.map((s) => s.labelText).join(' + ');
+      const msg = `${BASE_MSG}: ${colors}) 🇨🇴`;
+      cta.dataset.waMsg = msg;
+      cta.href = buildWaUrl(msg);
+      cta.classList.remove('is-disabled');
+      cta.removeAttribute('aria-disabled');
+      label.textContent = READY_LABEL;
+    } else {
+      // Reset the WA message to the placeholder so accidental clicks
+      // (anchor still has a default href) don't ship a half-baked order.
+      const placeholderMsg = `${BASE_MSG}) 🇨🇴%0A%0AColores de gorra que quiero: `;
+      cta.dataset.waMsg = placeholderMsg;
+      cta.href = buildWaUrl(placeholderMsg);
+      cta.classList.add('is-disabled');
+      cta.setAttribute('aria-disabled', 'true');
+      label.textContent = PENDING_LABEL;
+    }
+  }
+
+  root.querySelectorAll('.cpp-option').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const color = btn.dataset.capColor;
+      const labelText = btn.dataset.capLabel || color;
+      const idx = selected.findIndex((s) => s.color === color);
+      if (idx >= 0) {
+        // Toggle off
+        selected.splice(idx, 1);
+      } else if (selected.length < 2) {
+        selected.push({ color, labelText });
+      } else {
+        // Already 2 picked → FIFO: drop the oldest, append the new one.
+        selected.shift();
+        selected.push({ color, labelText });
+      }
+      render();
+      if ('vibrate' in navigator) navigator.vibrate(6);
+    });
+  });
+
+  // Guard against clicks on the CTA while disabled — don't open WhatsApp
+  // with the placeholder message; gently nudge the user to pick first.
+  cta.addEventListener('click', (e) => {
+    if (cta.classList.contains('is-disabled')) {
+      e.preventDefault();
+      root.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      root.animate(
+        [{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' },
+         { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }],
+        { duration: 280, easing: 'ease-in-out' }
+      );
+    }
+  });
+
+  render();
+})();
+
+// ============================================
 // HAPTIC (mobile)
 // ============================================
 function vibrate(d = 8) { if ('vibrate' in navigator) navigator.vibrate(d); }
-document.querySelectorAll('.cta, .product-cta, .nav-cta, .bundle-cta, .card-cta, .sb-cta')
+document.querySelectorAll('.cta, .product-cta, .nav-cta, .bundle-cta, .card-cta, .sb-cta, .cpp-option')
   .forEach((b) => b.addEventListener('click', () => vibrate(8)));
 
 // ============================================
