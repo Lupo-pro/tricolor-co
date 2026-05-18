@@ -1,6 +1,10 @@
 User-agent: *
 Allow: /
 
+# Public pages (covered by the broad `Allow: /` above; listed for clarity)
+Allow: /tribu
+Allow: /mundial
+
 # Private paths — keep crawlers out of API, admin tooling, and the
 # raw outreach toolchain. The audio file is also disallowed so search
 # crawlers don't waste budget on a 4MB media asset.

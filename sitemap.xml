@@ -22,4 +22,14 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://latricolor.co/mundial"/>
   </url>
 
+  <url>
+    <loc>https://latricolor.co/tribu</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es-CO" href="https://latricolor.co/tribu"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://latricolor.co/tribu"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://latricolor.co/tribu"/>
+  </url>
+
 </urlset>
