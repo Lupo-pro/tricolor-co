@@ -2472,212 +2472,27 @@ html.promo-active .promo-bar { display: flex; }
 }
 
 /* ============================================================
-   SIZE GUIDE — calculator
+   TALLA ÚNICA — discrete mention on product cards + bundle
    ============================================================ */
-.size-guide {
-  padding: 5rem var(--gutter);
-  background: var(--bg);
-  position: relative;
-}
-.sg-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  max-width: var(--maxw);
-  margin: 0 auto;
-}
-.sg-form {
-  background: var(--bg-warm);
-  border: var(--border);
-  padding: 1.6rem 1.4rem 1.4rem;
-  box-shadow: var(--shadow-soft);
-}
-.sg-intro {
-  font-size: 0.92rem;
-  color: var(--ink-soft);
-  line-height: 1.55;
-  margin-bottom: 1.2rem;
-}
-.sg-fields {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.8rem;
-  margin-bottom: 1.4rem;
-}
-.sg-field {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background: var(--bg);
-  border: var(--border);
-  transition: background 0.15s, transform 0.12s;
-}
-.sg-field:focus-within {
-  background: var(--yellow);
-  transform: translate(-1px, -1px);
-  box-shadow: var(--shadow-mini);
-}
-.sg-field-label {
-  font-family: 'Anton', sans-serif;
-  font-size: 0.95rem;
+.talla-unica {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 0.85rem 1rem;
-  border-right: 2px solid var(--ink);
-  background: var(--ink);
-  color: var(--yellow);
-  flex-shrink: 0;
-  min-width: 110px;
-  text-align: center;
+  color: var(--ink-mid);
+  margin-top: 0.35rem;
 }
-.sg-field input {
-  flex: 1;
-  background: transparent;
-  border: 0;
-  padding: 0.85rem 1rem;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.4rem;
-  letter-spacing: 0.05em;
-  color: var(--ink);
-  outline: none;
-  min-width: 0;
-}
-.sg-field input::placeholder { color: rgba(10,10,10,0.35); }
-.sg-field-unit {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.95rem;
-  letter-spacing: 0.15em;
-  color: rgba(10,10,10,0.5);
-  padding-right: 1rem;
-  text-transform: uppercase;
-}
-.sg-chart {
-  width: 100%;
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.06em;
-  font-size: 0.95rem;
-  margin-bottom: 0.8rem;
-  border: var(--border-thin);
-}
-.sg-chart th, .sg-chart td {
-  padding: 0.55rem 0.7rem;
-  border: 1px solid rgba(10,10,10,0.15);
-  text-align: left;
-}
-.sg-chart thead th {
-  background: var(--ink);
-  color: var(--yellow);
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-size: 0.78rem;
-}
-.sg-chart tbody td:first-child {
-  background: var(--yellow);
+.talla-unica strong {
   color: var(--ink);
   font-weight: 700;
+  letter-spacing: 0.14em;
 }
-.sg-note {
-  font-size: 0.8rem;
-  color: var(--ink-mid);
-  font-style: italic;
-}
-.sg-note strong { color: var(--red); }
-
-.sg-result {
-  background: var(--ink);
-  color: var(--bg);
-  border: var(--border);
-  padding: 1.6rem 1.4rem;
-  box-shadow: 5px 5px 0 var(--red);
-  position: relative;
-  overflow: hidden;
-}
-.sg-result::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 6px;
-  background: linear-gradient(90deg,
-    var(--yellow) 0%, var(--yellow) 33.33%,
-    var(--blue) 33.33%, var(--blue) 66.66%,
-    var(--red) 66.66%, var(--red) 100%);
-}
-.sc-result-empty { padding-top: 0.5rem; }
-.sg-flag {
-  display: flex;
-  width: 80px; height: 44px;
-  border: 2px solid var(--bg);
-  margin-bottom: 1rem;
-}
-.sg-flag span { flex: 1; }
-.sg-flag span:nth-child(1) { background: var(--yellow); }
-.sg-flag span:nth-child(2) { background: var(--blue); }
-.sg-flag span:nth-child(3) { background: var(--red); }
-.sc-result-empty h4 {
-  font-family: 'Anton', sans-serif;
-  font-size: 1.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  margin-bottom: 0.4rem;
-}
-.sc-result-empty p {
-  font-size: 0.92rem;
-  line-height: 1.55;
-  color: rgba(240,235,224,0.72);
-}
-
-.sg-recommend {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-  margin-bottom: 0.8rem;
-  padding-top: 0.5rem;
-}
-.sg-recommend-label {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.85rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(240,235,224,0.55);
-}
-.sg-recommend strong {
-  font-family: 'Anton', sans-serif;
-  font-size: 4.5rem;
-  color: var(--yellow);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  text-shadow: 4px 4px 0 var(--red);
-}
-.sg-detail {
-  font-size: 0.95rem;
-  line-height: 1.55;
-  color: rgba(240,235,224,0.85);
-  margin-bottom: 1rem;
-}
-.sg-detail em { color: var(--yellow); font-style: italic; font-family: 'Bebas Neue', sans-serif; }
-.sg-detail strong { color: var(--yellow); }
-.sg-ranges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 1.2rem;
-}
-.sc-range-pill {
-  font-family: 'Bebas Neue', sans-serif;
+.talla-unica-bundle {
+  margin-top: 0.7rem;
+  margin-bottom: 0.3rem;
   font-size: 0.78rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  background: rgba(255,211,0,0.15);
-  color: var(--yellow);
-  border: 1.5px solid rgba(255,211,0,0.4);
-  padding: 0.3rem 0.6rem;
 }
-.sc-range-pill.mismatch {
-  background: rgba(230,57,70,0.18);
-  color: var(--red-warm);
-  border-color: rgba(230,57,70,0.5);
-}
-.sg-result .cta { width: 100%; }
 
 /* ============================================================
    TESTIMONIOS — fanzine grid, cream cream w/ red drop shadow
@@ -3733,44 +3548,37 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
   letter-spacing: 0.12em;
 }
 
-.modal-sizes { margin-top: 0.3rem; }
-.size-label {
+.modal-talla {
+  margin-top: 0.4rem;
+  padding: 0.8rem 1rem;
+  background: var(--bg-warm);
+  border: var(--border-thin);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  align-items: center;
+  text-align: center;
+}
+.modal-talla-label {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  margin-bottom: 0.5rem;
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  color: var(--ink-mid);
 }
-.size-help {
-  font-size: 0.78rem;
-  color: var(--red);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.size-row { display: flex; gap: 0.5rem; }
-.size-btn {
-  flex: 1;
-  padding: 0.85rem 0;
+.modal-talla-value {
   font-family: 'Anton', sans-serif;
-  font-size: 1.1rem;
-  letter-spacing: 0.04em;
-  border: 2px solid var(--ink);
-  background: var(--bg);
+  font-size: 1.25rem;
+  letter-spacing: 0.1em;
   color: var(--ink);
-  transition: background 0.15s, color 0.15s, transform 0.12s;
-  cursor: pointer;
-  touch-action: manipulation;
+  line-height: 1;
 }
-.size-btn:hover { background: var(--yellow); }
-.size-btn.active {
-  background: var(--ink);
-  color: var(--yellow);
-  box-shadow: 3px 3px 0 var(--red);
-  transform: translate(-1px, -1px);
+.modal-talla-note {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  font-style: italic;
 }
 
 /* ============================================================
@@ -4865,11 +4673,6 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
     grid-template-columns: repeat(3, 1fr);
   }
   .step { flex-direction: column; }
-  .sg-grid {
-    grid-template-columns: 1.4fr 1fr;
-    align-items: start;
-    gap: 2rem;
-  }
   .review { flex: 0 0 320px; }
 
   .footer-grid {
@@ -4992,7 +4795,6 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
   .manifesto  { padding: 3.5rem var(--gutter); }
   .benefits   { padding: 3rem var(--gutter) 3.5rem; }
   .how        { padding: 3.5rem var(--gutter); }
-  .size-guide { padding: 3.5rem var(--gutter); }
   .tribuna    { padding: 3.5rem var(--gutter); }
   .faq        { padding: 3.5rem var(--gutter); }
   .cta-final  { padding: 4rem var(--gutter) 3.5rem; }
