@@ -2290,6 +2290,17 @@ html.promo-active .promo-bar { display: flex; }
 .mini-3 { background: radial-gradient(circle at 30% 30%, #3a3a36, #0A0A0A); color: rgba(201,169,97,0.55); }
 .mini-4 { background: radial-gradient(circle at 30% 30%, var(--red-warm), var(--red-deep)); color: rgba(0,0,0,0.55); }
 
+/* Cap minis — second row of the bundle visual: 2 caps spanning
+   2 cols each, themed yellow + red to evoke the tricolor pair. */
+.mini-cap {
+  aspect-ratio: 4 / 3;
+  grid-column: span 2;
+  padding: 0.7rem;
+}
+.mini-cap svg { width: 88%; height: auto; }
+.mini-cap-y { background: radial-gradient(circle at 30% 30%, #FFF8D8, var(--yellow-warm)); color: var(--yellow); }
+.mini-cap-r { background: radial-gradient(circle at 30% 30%, var(--red-warm), var(--red-deep)); color: var(--red); }
+
 /* ============================================================
    BENEFITS — ticket-style cards
    ============================================================ */
