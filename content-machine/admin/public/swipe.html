@@ -34,8 +34,7 @@
   </label>
   <button class="bar-btn alt" id="btnBuildDay" type="button" title="Generate drafts for today">↻ Build day</button>
   <button class="bar-btn alt" id="btnBuildWeek" type="button" title="Generate drafts for the next 7 days">📅 Build week</button>
-  <button class="bar-btn alt" id="btnBuildMonth" type="button" title="Generate drafts for the next 30 days (asks confirmation)">📅📅 Build month</button>
-  <button class="bar-btn" id="btnPack" type="button">📦 Build pack</button>
+  <button class="bar-btn" id="btnBuildSprint" type="button" title="Generate every day of the full Mundial sprint (May 17 → Jun 30) in one shot">📅📅 Build sprint</button>
 </header>
 
 <div id="confirmOverlay" class="progress-overlay" hidden>
@@ -91,10 +90,9 @@
   const $cPending  = document.getElementById('cPending');
   const $cApproved = document.getElementById('cApproved');
   const $cRejected = document.getElementById('cRejected');
-  const $btnBuildDay   = document.getElementById('btnBuildDay');
-  const $btnBuildWeek  = document.getElementById('btnBuildWeek');
-  const $btnBuildMonth = document.getElementById('btnBuildMonth');
-  const $btnPack       = document.getElementById('btnPack');
+  const $btnBuildDay    = document.getElementById('btnBuildDay');
+  const $btnBuildWeek   = document.getElementById('btnBuildWeek');
+  const $btnBuildSprint = document.getElementById('btnBuildSprint');
   const $confirmOverlay = document.getElementById('confirmOverlay');
   const $confirmTitle   = document.getElementById('confirmTitle');
   const $confirmBody    = document.getElementById('confirmBody');
@@ -495,7 +493,7 @@
     }
     if (cards === 0 && seenSequences.size === 0) {
       $empty.innerHTML = `<strong>Todo aprobado · ${state.approvedIds.size}</strong>
-        Hacé click en <code>📦 Build pack</code> para preparar el ZIP del día.`;
+        El flujo de publicación corre en <a href="/stockpile">/stockpile</a> ahora — marca ⭐ los items que quieras y baja el ZIP de favoritos.`;
       $queue.appendChild($empty);
     }
   }
@@ -772,14 +770,25 @@
     runBuildBatch(7, claude, { startDate, titleSuffix });
   });
 
-  $btnBuildMonth.addEventListener('click', async () => {
+  $btnBuildSprint.addEventListener('click', async () => {
     const claude = !!$useClaude.checked;
-    const ok = await confirmModal('Build month · 30 days',
+    // Read the sprint window (May 17 → Jun 30) from the server so the
+    // count + start date come from one source of truth (calendar.json).
+    let sprint;
+    try {
+      const r = await fetch('/api/sprint-window');
+      sprint = await r.json();
+      if (!sprint.ok) throw new Error(sprint.error || 'no sprint window');
+    } catch (e) {
+      toastError('Sprint window unavailable: ' + e.message);
+      return;
+    }
+    const ok = await confirmModal(`Build sprint · ${sprint.days} days`,
       claude
-        ? '30 days × ~12 items = ~360 Claude calls. Estimated cost ≈ $0.36. This takes 5-10 minutes. Proceed?'
-        : '30 days × ~12 items = ~360 drafts (no Claude, no API cost). Takes ~3 minutes. Proceed?');
+        ? `${sprint.days} days × ~10 items = ~${sprint.days * 10} Claude calls (start ${sprint.start} · end ${sprint.end}). Estimated cost ≈ $${(sprint.days * 0.012).toFixed(2)}. 10-20 minutes. Proceed?`
+        : `${sprint.days} days × ~10 items = ~${sprint.days * 10} drafts (no Claude, no API cost). Start ${sprint.start} · end ${sprint.end}. Takes ~${Math.round(sprint.days / 4)} minutes. Already-built days will be skipped. Proceed?`);
     if (!ok) return;
-    runBuildBatch(30, claude);
+    runBuildBatch(sprint.days, claude, { startDate: sprint.start, titleSuffix: ' · sprint' });
   });
 
   $btnBuildDay.addEventListener('click', async () => {
@@ -807,21 +816,9 @@
     }
   });
 
-  $btnPack.addEventListener('click', async () => {
-    $btnPack.disabled = true;
-    $btnPack.textContent = '⏳ Packing...';
-    try {
-      const r = await fetch('/api/build-pack', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
-      const data = await r.json();
-      if (data.ok) {
-        toast('✓ Pack ready · descargando');
-        window.location.href = data.zipUrl;
-      } else {
-        toast('Error · ' + (data.error || 'unknown'));
-      }
-    } catch (e) { toast('Error · ' + e.message); }
-    finally { $btnPack.disabled = false; $btnPack.textContent = '📦 Build pack'; }
-  });
+  // Per-day "Build pack" is deprecated — the publishing flow now runs
+  // through /stockpile (⭐ → 📦 Download favorites). Old daily zips
+  // can still be built via the CLI `node src/build-pack.js`.
 
   await loadStatus();
   await load();

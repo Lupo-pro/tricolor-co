@@ -190,6 +190,24 @@ app.get('/api/status', async (_req, res) => {
   });
 });
 
+// Sprint window — read calendar.json _meta.start/end and report the
+// total day count. Used by the "Build sprint" button so it always
+// covers the full Mundial window instead of a rolling 30 days.
+app.get('/api/sprint-window', async (_req, res) => {
+  try {
+    const calPath = join(ROOT, 'src', 'strategy', 'calendar.json');
+    const cal = await readJson(calPath);
+    const start = cal._meta?.start || todayKey();
+    const end   = cal._meta?.end   || start;
+    const startMs = Date.parse(start);
+    const endMs   = Date.parse(end);
+    const days = Math.max(1, Math.round((endMs - startMs) / 86400000) + 1);
+    res.json({ ok: true, start, end, days });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
 // SSE streaming batch builder — used by Build week (7) and Build
 // month (30). Each line emits a JSON event the client renders into a
 // progress panel. Days run sequentially so a slow Claude doesn't pile

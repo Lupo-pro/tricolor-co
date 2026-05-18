@@ -17,7 +17,7 @@
 // individually OR approve an entire sequence in one click.
 // ============================================
 
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, copyFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -210,6 +210,26 @@ async function main() {
   const outDir = join(DATA_DIR, 'drafts', date);
   await mkdir(outDir, { recursive: true });
 
+  // Flat-by-type mirror — every PNG also lands under
+  // data/stockpile/{stories,posts,carousels}/<date>__<id>.png so the
+  // operator can browse the whole pile by type on the filesystem
+  // (and tools like Finder / image-viewer plugins work without
+  // crawling per-day directories). The per-day manifest.json under
+  // data/drafts stays the source of metadata; the stockpile dirs are
+  // just file mirrors.
+  const stockDirs = {
+    story:    join(DATA_DIR, 'stockpile', 'stories'),
+    post:     join(DATA_DIR, 'stockpile', 'posts'),
+    carousel: join(DATA_DIR, 'stockpile', 'carousels'),
+  };
+  for (const p of Object.values(stockDirs)) await mkdir(p, { recursive: true });
+  async function mirror(kind, filename, captionKey) {
+    const src = join(outDir, filename);
+    const dst = join(stockDirs[kind], `${date}__${filename}`);
+    try { await copyFile(src, dst); }
+    catch (e) { console.warn(`  ⚠ mirror failed (${dst}):`, e.message); }
+  }
+
   // Pull the current flagged set so the generator can avoid hooks /
   // layouts that have been rejected enough times to count as signal.
   const flagged = await flaggedSet();
@@ -256,6 +276,7 @@ async function main() {
       const png = await renderStory(story);
       const filename = `${id}.png`;
       await writeFile(join(outDir, filename), png);
+      await mirror('story', filename);
       const promptName = seq.name === 'match-day' ? 'matchDay' : seq.name.replace(/-(\w)/g, (_, c) => c.toUpperCase());
       const seed = `${date}:${seq.name}:${story.step}`;
       const angle = nextAngle();
@@ -287,6 +308,7 @@ async function main() {
     const png = await renderPost({ ...p.post, compositionSeed: `${id}:${angle}` });
     const filename = `${id}.png`;
     await writeFile(join(outDir, filename), png);
+    await mirror('post', filename);
     const seed = `${date}:post:${postKey}`;
     const { hook, hookCategory } = resolveHook({ promptName: p.promptName, seed, flagged });
     const caption = await maybeCaption({ promptName: p.promptName, promptArgs: p.promptArgs, angle }, options, seed);
@@ -307,6 +329,7 @@ async function main() {
     for (let i = 0; i < buffers.length; i++) {
       const fn = `${id}-${String(i + 1).padStart(2, '0')}.png`;
       await writeFile(join(outDir, fn), buffers[i]);
+      await mirror('carousel', fn);
       fileNames.push(fn);
     }
     const seed = `${date}:carousel:${plan.carousel}`;
