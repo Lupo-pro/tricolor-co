@@ -267,8 +267,14 @@
   <div class="filters" id="filters"></div>
 
   <div class="toolbar">
-    <div><strong id="resultCount">0</strong> resultados · <span id="totalCount">0</span> en la pila</div>
-    <div id="bulkActions"></div>
+    <div>
+      <strong id="resultCount">0</strong> resultados · <span id="totalCount">0</span> en la pila ·
+      <span id="favCount">0</span> ⭐
+    </div>
+    <div id="bulkActions" style="display:flex; gap:0.5rem;">
+      <button class="bar-btn alt" id="btnFavOnly" type="button">⭐ Solo favoritos</button>
+      <a class="bar-btn" id="btnFavDownload" href="/api/favorites/zip">📦 Download favorites</a>
+    </div>
   </div>
 
   <div class="grid" id="grid">
@@ -292,7 +298,10 @@
   const $grid       = document.getElementById('grid');
   const $resultCt   = document.getElementById('resultCount');
   const $totalCt    = document.getElementById('totalCount');
+  const $favCt      = document.getElementById('favCount');
   const $btnRefresh = document.getElementById('btnRefresh');
+  const $btnFavOnly = document.getElementById('btnFavOnly');
+  const $btnFavDl   = document.getElementById('btnFavDownload');
   const $toast      = document.getElementById('toast');
   const $detailOver = document.getElementById('detailOverlay');
   const $detailPre  = document.getElementById('detailPreview');
@@ -300,10 +309,11 @@
   const $detailClose= document.getElementById('detailClose');
 
   const state = {
-    filters: { kind: null, angle: null, edition: null, color: null },
+    filters: { kind: null, angle: null, edition: null, color: null, favorites: false },
     items: [],
     facets: { kind: [], angle: [], edition: [], color: [] },
     total: 0,
+    favoritesTotal: 0,
   };
 
   function toast(msg, ms = 1800) {
@@ -362,9 +372,11 @@
     const headline = (item.headline || item.theme || item.id || '').toString().slice(0, 60);
     const kindClass = `kind-tag ${item.kind}`;
     const tileClass = `tile ${item.kind}`;
+    const starClass = `star ${item.favorite ? 'active' : ''}`;
     return `<article class="${tileClass}" data-id="${item.globalId}">
       <img loading="lazy" src="${pngUrl(item)}" alt="${headline}">
       <span class="${kindClass}">${item.kind}</span>
+      <button class="${starClass}" type="button" data-fav-id="${item.globalId}" title="Toggle favorite">⭐</button>
       <div class="meta">
         <span>${item.angle || ''}</span>
         <span>${item.date.slice(5)}</span>
@@ -379,13 +391,42 @@
     }
     $grid.innerHTML = state.items.map(tileHtml).join('');
     for (const tile of $grid.querySelectorAll('.tile')) {
-      tile.addEventListener('click', () => openDetail(tile.dataset.id));
+      tile.addEventListener('click', (e) => {
+        // Don't open the detail panel when the star was clicked —
+        // toggling a favorite shouldn't navigate away from the grid.
+        if (e.target.closest('.star')) return;
+        openDetail(tile.dataset.id);
+      });
+    }
+    for (const star of $grid.querySelectorAll('.star[data-fav-id]')) {
+      star.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const id = star.dataset.favId;
+        try {
+          const r = await fetch('/api/favorites/toggle', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ globalId: id }),
+          });
+          const d = await r.json();
+          if (!d.ok) throw new Error(d.error || 'toggle failed');
+          star.classList.toggle('active', d.favorite);
+          // Mutate the in-memory item so re-renders keep state.
+          const it = state.items.find((x) => x.globalId === id);
+          if (it) it.favorite = d.favorite;
+          state.favoritesTotal += d.favorite ? 1 : -1;
+          $favCt.textContent = Math.max(0, state.favoritesTotal);
+        } catch (err) { toast('Error · ' + err.message); }
+      });
     }
   }
 
   async function load() {
     const params = new URLSearchParams();
-    for (const [k, v] of Object.entries(state.filters)) if (v) params.set(k, v);
+    for (const [k, v] of Object.entries(state.filters)) {
+      if (k === 'favorites') { if (v) params.set('favorites', '1'); continue; }
+      if (v) params.set(k, v);
+    }
     try {
       const r = await fetch(`/api/stockpile?${params.toString()}`);
       const d = await r.json();
@@ -393,8 +434,12 @@
       state.items = d.items;
       state.facets = d.facets;
       state.total = d.total;
+      state.favoritesTotal = d.favorites_total || 0;
       $resultCt.textContent = d.shown;
       $totalCt.textContent  = d.total;
+      $favCt.textContent    = state.favoritesTotal;
+      $btnFavOnly.classList.toggle('active', !!state.filters.favorites);
+      $btnFavOnly.style.background = state.filters.favorites ? 'var(--yellow)' : '';
       renderFilters();
       renderGrid();
     } catch (e) {
@@ -402,6 +447,18 @@
       $grid.innerHTML = `<div class="empty">Error: ${e.message}</div>`;
     }
   }
+
+  $btnFavOnly.addEventListener('click', () => {
+    state.filters.favorites = !state.filters.favorites;
+    load();
+  });
+
+  $btnFavDl.addEventListener('click', (e) => {
+    if (state.favoritesTotal === 0) {
+      e.preventDefault();
+      toast('No favorites yet — star some items first.');
+    }
+  });
 
   // ───── Detail panel ─────
   async function openDetail(globalId) {
@@ -472,6 +529,7 @@
         ${downloadHref ? `<a class="bar-btn" href="${downloadHref}" ${downloadAttr} target="_blank">📥 Download PNG</a>` : ''}
         ${isCarousel ? files.map((f, i) => `<a class="bar-btn alt" href="/assets/png/${item.date}/${f}" download="${item.id}-${String(i+1).padStart(2,'0')}.png" target="_blank">${i + 1}</a>`).join('') : ''}
         <button class="bar-btn alt" id="copyCaption" type="button">📋 Copy caption</button>
+        <button class="bar-btn alt" id="detailFav" type="button">${item.favorite ? '⭐ Quitar de favoritos' : '☆ Marcar favorito'}</button>
       </div>
     `;
 
@@ -479,6 +537,28 @@
     if ($copy) $copy.addEventListener('click', async () => {
       try { await navigator.clipboard.writeText(item.caption || ''); toast('✓ Caption copied'); }
       catch (e) { toast('Error · ' + e.message); }
+    });
+
+    const $fav = document.getElementById('detailFav');
+    if ($fav) $fav.addEventListener('click', async () => {
+      try {
+        const r = await fetch('/api/favorites/toggle', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ globalId: item.globalId }),
+        });
+        const d = await r.json();
+        if (!d.ok) throw new Error(d.error || 'toggle failed');
+        item.favorite = d.favorite;
+        $fav.textContent = d.favorite ? '⭐ Quitar de favoritos' : '☆ Marcar favorito';
+        // Sync the grid star + counter.
+        const gridStar = document.querySelector(`.star[data-fav-id="${item.globalId}"]`);
+        if (gridStar) gridStar.classList.toggle('active', d.favorite);
+        const it = state.items.find((x) => x.globalId === item.globalId);
+        if (it) it.favorite = d.favorite;
+        state.favoritesTotal += d.favorite ? 1 : -1;
+        $favCt.textContent = Math.max(0, state.favoritesTotal);
+        toast(d.favorite ? '✓ Añadido a favoritos' : '✓ Quitado de favoritos');
+      } catch (e) { toast('Error · ' + e.message); }
     });
   }
 

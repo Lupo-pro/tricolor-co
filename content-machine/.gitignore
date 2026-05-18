@@ -21,6 +21,7 @@ data/daily-packs/**
 data/published.json
 data/failed.json
 data/preferences.json
+data/favorites.json
 
 # Secret backups
 .env.save

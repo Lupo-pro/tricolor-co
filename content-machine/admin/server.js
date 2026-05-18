@@ -28,7 +28,12 @@ import { fileURLToPath } from 'node:url';
 
 import { recordEvent, getInsights } from '../src/strategy/preferences.js';
 import { planForDay } from '../src/strategy/content-mix.js';
-import { listStockpile, itemFacets, getItem } from '../src/stockpile/index.js';
+import { listStockpile, itemFacets, getItem, pngPath } from '../src/stockpile/index.js';
+import { loadFavorites, toggleFavorite, isFavorite } from '../src/stockpile/favorites.js';
+import { createRequire } from 'node:module';
+import { createReadStream } from 'node:fs';
+const _require = createRequire(import.meta.url);
+const archiver = _require('archiver');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -482,6 +487,7 @@ app.get('/api/insights', async (_req, res) => {
 // always show every option, with current-filter counts in `subset`.
 app.get('/api/stockpile', async (req, res) => {
   try {
+    const favoritesOnly = req.query.favorites === '1' || req.query.favorites === 'true';
     const filters = {
       kind:    req.query.kind    || null,
       angle:   req.query.angle   || null,
@@ -489,12 +495,17 @@ app.get('/api/stockpile', async (req, res) => {
       color:   req.query.color   || null,
     };
     const all = await listStockpile({});
-    const filtered = await listStockpile({ filters });
+    let filtered = await listStockpile({ filters });
+    const favs = new Set(await loadFavorites());
+    if (favoritesOnly) filtered = filtered.filter((it) => favs.has(it.globalId));
+    // Inline the favorite flag so the grid doesn't need a second round-trip
+    for (const it of filtered) it.favorite = favs.has(it.globalId);
     res.json({
       ok: true,
       total: all.length,
       shown: filtered.length,
-      filters,
+      favorites_total: favs.size,
+      filters: { ...filters, favorites: favoritesOnly },
       facets: itemFacets(all),
       items: filtered,
     });
@@ -511,9 +522,77 @@ app.get('/api/stockpile/item/:globalId(*)', async (req, res) => {
   try {
     const it = await getItem(req.params.globalId);
     if (!it) return res.status(404).json({ ok: false, error: 'not found' });
+    const favs = new Set(await loadFavorites());
+    it.favorite = favs.has(it.globalId);
     res.json({ ok: true, item: it });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// ───── Favorites ─────
+// Toggle is POST (state change), list is GET. The toggle endpoint
+// returns the new boolean so the UI doesn't need to refetch.
+app.get('/api/favorites', async (_req, res) => {
+  try { res.json({ ok: true, ids: await loadFavorites() }); }
+  catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+app.post('/api/favorites/toggle', async (req, res) => {
+  const { globalId } = req.body || {};
+  if (!globalId || typeof globalId !== 'string') {
+    return res.status(400).json({ ok: false, error: 'globalId required' });
+  }
+  try {
+    const favorite = await toggleFavorite(globalId);
+    res.json({ ok: true, globalId, favorite });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// Stream a ZIP of every favorited PNG (+ caption .txt) so the
+// operator can drop the whole pile into their publishing tool. ZIP
+// entries are named "<kind>/<safe-id>.png" + ".txt" so they're
+// organized by type inside the archive.
+app.get('/api/favorites/zip', async (_req, res) => {
+  try {
+    const ids = await loadFavorites();
+    if (ids.length === 0) {
+      return res.status(404).json({ ok: false, error: 'No favorites to download yet.' });
+    }
+    res.set({
+      'Content-Type': 'application/zip',
+      'Content-Disposition': `attachment; filename="latricolor-favorites-${todayKey()}.zip"`,
+    });
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    archive.on('warning', (w) => console.warn('zip warning:', w.message));
+    archive.on('error', (e) => { console.error('zip error:', e); try { res.status(500).end(); } catch {} });
+    archive.pipe(res);
+
+    for (const globalId of ids) {
+      const it = await getItem(globalId);
+      if (!it) continue;
+      const safe = it.id.replace(/[^a-z0-9_-]/gi, '_');
+      const subdir = it.kind === 'carousel' ? 'carousels' : `${it.kind}s`;
+
+      if (it.kind === 'carousel' && Array.isArray(it.files)) {
+        for (let i = 0; i < it.files.length; i++) {
+          const p = pngPath(it, i);
+          archive.append(createReadStream(p), { name: `${subdir}/${safe}/${String(i + 1).padStart(2, '0')}.png` });
+        }
+      } else if (it.file) {
+        archive.append(createReadStream(pngPath(it)), { name: `${subdir}/${safe}.png` });
+      }
+
+      if (it.caption) {
+        archive.append(it.caption, { name: `${subdir}/${safe}.txt` });
+      }
+    }
+    await archive.finalize();
+  } catch (e) {
+    console.error('favorites zip error:', e);
+    try { res.status(500).json({ ok: false, error: e.message }); } catch {}
   }
 });
 
