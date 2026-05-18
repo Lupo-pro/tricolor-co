@@ -248,7 +248,7 @@ const productData = {
     name: 'La Capitana',
     desc: 'El amarillo eterno de la Tricolor. Titular #10, edición Home Mundial 2026. Tela técnica AEROREADY, costuras planas reforzadas, detalles bordados exclusivos. La pieza icónica que toda cafetera necesita.',
     tag: 'Home · Titular #10',
-    price: '$99.000',
+    price: '$89.000',
     old: '$149.000',
     color: 'capitana',
   },
@@ -256,7 +256,7 @@ const productData = {
     name: 'La Portera',
     desc: 'Arquera #01, edición Away con estética vintage de los 90s reinterpretada. Azul retro con detalles geométricos exclusivos. Stock muy limitado, solo para las que entienden.',
     tag: 'Away · Arquera #01',
-    price: '$99.000',
+    price: '$89.000',
     old: '$149.000',
     color: 'portera',
   },
@@ -264,7 +264,7 @@ const productData = {
     name: 'Oro Negro',
     desc: 'Estrella #07, edición Premium en negro absoluto con detalles dorados. Para la mujer que no necesita pedir permiso. Máxima elegancia, mínimo esfuerzo.',
     tag: 'Premium · Estrella #07',
-    price: '$99.000',
+    price: '$89.000',
     old: '$149.000',
     color: 'oronegro',
   },
@@ -272,7 +272,7 @@ const productData = {
     name: 'La Cafetera',
     desc: 'Goleadora #09, edición Alterna con la energía y pasión cafetera. Rojo vibrante que captura la atención. Para las que sienten la Tricolor a flor de piel.',
     tag: 'Alterna · Goleadora #09',
-    price: '$99.000',
+    price: '$89.000',
     old: '$149.000',
     color: 'cafetera',
   },
@@ -644,13 +644,13 @@ faqItems.forEach((item) => {
 // inline-CTA observer: one prominent WhatsApp CTA at a time.
 // ============================================
 const STICKY_BAR_PRODUCTS = {
-  capitana: { name: 'La Capitana', price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa La Capitana 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
-  portera:  { name: 'La Portera',  price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa La Portera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
-  oronegro: { name: 'Oro Negro',   price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa Oro Negro 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
-  cafetera: { name: 'La Cafetera', price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa La Cafetera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  capitana: { name: 'La Capitana', price: '$89.000', old: '$149.000', msg: '¡Hola! Me interesa La Capitana 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  portera:  { name: 'La Portera',  price: '$89.000', old: '$149.000', msg: '¡Hola! Me interesa La Portera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  oronegro: { name: 'Oro Negro',   price: '$89.000', old: '$149.000', msg: '¡Hola! Me interesa Oro Negro 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  cafetera: { name: 'La Cafetera', price: '$89.000', old: '$149.000', msg: '¡Hola! Me interesa La Cafetera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
 };
 const STICKY_BAR_DEFAULT = {
-  name: 'Desde $99K · 🎁 Gorra gratis con 2+',
+  name: 'Desde $89K · 🎁 Gorra gratis con 2+',
   price: '',           // empty → JS collapses the price column
   old: '',
   msg: '¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴',
@@ -682,7 +682,7 @@ const stickyBuy = document.getElementById('stickyBuy');
     sbName.textContent = p.name;
     sbPrice.textContent = p.price || '';
     sbOld.textContent = p.old || '';
-    // When no price (default "Desde $99K · 🎁 Gorra gratis..." state),
+    // When no price (default "Desde $89K · 🎁 Gorra gratis..." state),
     // collapse the price column so the name has the whole row.
     const priceWrap = sbPrice.parentElement;
     if (priceWrap) priceWrap.style.display = p.price ? '' : 'none';

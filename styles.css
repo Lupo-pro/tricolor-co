@@ -2058,6 +2058,213 @@ html.promo-active .promo-bar { display: flex; }
   margin-right: 0.2em;
   text-shadow: 2px 2px 0 var(--red);
 }
+.bundle-compare .bc-subtotal {
+  background: rgba(10,10,10,0.04);
+  border-top: 1.5px solid rgba(10,10,10,0.18);
+  border-bottom: 1.5px solid rgba(10,10,10,0.18);
+}
+.bundle-compare .bc-subtotal th {
+  font-family: 'Anton', sans-serif;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+.bundle-compare .bc-subtotal td {
+  color: var(--ink-mid);
+}
+.bundle-compare small {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 500;
+  color: var(--ink-mid);
+  letter-spacing: 0.04em;
+  text-transform: none;
+  margin-top: 0.1rem;
+}
+
+/* ============================================================
+   GORRAS — paid product, also free in pack
+   ============================================================ */
+.gorras {
+  margin: 3.5rem auto 0;
+  max-width: var(--maxw);
+  padding: 0 var(--gutter);
+  position: relative;
+}
+.gorras .section-head { margin-bottom: 2rem; }
+.gorras-sub {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-mid);
+  margin-top: 0.4rem;
+  text-transform: uppercase;
+}
+.gorras-sub strong {
+  color: var(--ink);
+  background: var(--yellow);
+  padding: 0 0.35em;
+  letter-spacing: 0.1em;
+}
+.gorras-sub-dot { color: var(--red); margin: 0 0.2em; }
+
+.gorras-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem 1rem;
+}
+
+.gorra-card {
+  background: var(--bg);
+  border: var(--border);
+  box-shadow: var(--shadow-soft);
+  padding: 1rem 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.gorra-card:hover,
+.gorra-card:focus-within {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--red);
+}
+
+.gorra-visual {
+  background: var(--bg-warm);
+  border: 2px solid var(--ink);
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.7rem;
+  padding: 0.6rem;
+  position: relative;
+}
+.gorra-visual svg {
+  width: 80%;
+  height: 80%;
+  filter: drop-shadow(2px 2px 0 rgba(10,10,10,0.18));
+}
+
+/* Color theming for the cap (fills the path that uses currentColor) */
+.gorra-amarilla .gorra-visual { color: var(--yellow); }
+.gorra-amarilla .gorra-visual { background: #FFF8D8; }
+.gorra-roja     .gorra-visual { color: var(--red);    background: #FBE2E5; }
+.gorra-azul     .gorra-visual { color: var(--blue);   background: #DDE3F2; }
+.gorra-blanca   .gorra-visual { color: #FAF7F2;       background: var(--bg-deep); }
+
+.gorra-name {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.35rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 0.15rem;
+}
+.gorra-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-mid);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.gorra-price {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-bottom: 0.7rem;
+}
+.gorra-price .now {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  line-height: 1;
+}
+.gorra-free {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--red);
+  text-transform: uppercase;
+}
+
+.gorra-cta {
+  margin-top: auto;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 0.7rem 0.9rem;
+  font-family: 'Anton', sans-serif;
+  font-size: 0.92rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  border: 2px solid var(--ink);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.gorra-cta:hover,
+.gorra-cta:focus-visible {
+  background: var(--yellow);
+  color: var(--ink);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--red);
+}
+.gorra-cta:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+/* ============================================================
+   CARD UPSELL — discrete cross-sell to the pack on each body card
+   ============================================================ */
+.card-upsell {
+  display: block;
+  margin-top: 0.4rem;
+  padding: 0.45rem 0.55rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink-mid);
+  background: rgba(255,211,0,0.16);
+  border-left: 3px solid var(--yellow);
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+  line-height: 1.35;
+}
+.card-upsell em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--ink);
+}
+.card-upsell:hover,
+.card-upsell:focus-visible {
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+@media (min-width: 720px) {
+  .gorras-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gorras-sub { font-size: 0.95rem; }
+  .gorra-name { font-size: 1.2rem; }
+  .gorra-price .now { font-size: 1.4rem; }
+}
 
 .bundle-cta {
   background: var(--yellow);
