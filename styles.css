@@ -1545,14 +1545,20 @@ html.promo-active .promo-bar { display: flex; }
   );
   z-index: 1;
 }
-.card-visual .body-svg {
-  width: 56%;
-  filter: drop-shadow(0 18px 26px rgba(0,0,0,0.45));
-  position: relative;
+.card-visual .card-photo,
+.card-visual .card-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 2;
+}
+.card-visual .card-photo img {
+  object-fit: cover;
+  object-position: center;
   transition: transform 0.3s cubic-bezier(.22,.61,.36,1);
 }
-.player-card:hover .body-svg { transform: scale(1.04) translateY(-3px); }
+.player-card:hover .card-photo img { transform: scale(1.04); }
 .card-watermark {
   position: absolute;
   bottom: 0.6rem;
@@ -1560,23 +1566,18 @@ html.promo-active .promo-bar { display: flex; }
   font-family: 'Anton', sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.18em;
-  color: rgba(255,255,255,0.45);
-  z-index: 2;
+  color: rgba(255,255,255,0.7);
+  z-index: 3;
   mix-blend-mode: overlay;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
 }
 
-/* Per-edition fills */
+/* Per-edition gradient backgrounds — kept as a tinted fallback while
+   the photo loads (or if it fails to load). */
 .card-amarilla .card-visual { background: radial-gradient(circle at 30% 30%, var(--yellow-warm), var(--yellow) 55%, var(--yellow-deep)); }
-.card-amarilla .body-svg     { color: rgba(0,0,0,0.62); fill: currentColor; }
-
-.card-azul .card-visual      { background: radial-gradient(circle at 30% 30%, var(--blue-light), var(--blue) 55%, var(--blue-deep)); }
-.card-azul .body-svg         { color: rgba(255,211,0,0.78); fill: currentColor; }
-
-.card-negro .card-visual     { background: radial-gradient(circle at 30% 28%, #3a3a36, #1A1A1A 55%, #0A0A0A); }
-.card-negro .body-svg        { color: rgba(201,169,97,0.55); fill: currentColor; }
-
-.card-rojo .card-visual      { background: radial-gradient(circle at 30% 30%, var(--red-warm), var(--red) 55%, var(--red-deep)); }
-.card-rojo .body-svg         { color: rgba(0,0,0,0.55); fill: currentColor; }
+.card-azul     .card-visual { background: radial-gradient(circle at 30% 30%, var(--blue-light), var(--blue) 55%, var(--blue-deep)); }
+.card-negro    .card-visual { background: radial-gradient(circle at 30% 28%, #3a3a36, #1A1A1A 55%, #0A0A0A); }
+.card-rojo     .card-visual { background: radial-gradient(circle at 30% 30%, var(--red-warm), var(--red) 55%, var(--red-deep)); }
 
 .card-info {
   padding: 1rem 1.1rem;
