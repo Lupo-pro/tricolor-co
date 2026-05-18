@@ -2085,25 +2085,27 @@ html.promo-active .promo-bar { display: flex; }
   background: var(--bg-warm);
   border: 2px solid var(--ink);
   aspect-ratio: 4 / 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin-bottom: 0.7rem;
-  padding: 0.6rem;
   position: relative;
+  overflow: hidden;
 }
-.gorra-visual svg {
-  width: 80%;
-  height: 80%;
-  filter: drop-shadow(2px 2px 0 rgba(10,10,10,0.18));
+.gorra-visual picture,
+.gorra-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.gorra-visual img {
+  object-fit: cover;
+  object-position: center;
 }
 
-/* Color theming for the cap (fills the path that uses currentColor) */
-.gorra-amarilla .gorra-visual { color: var(--yellow); }
+/* Light tinted fallback while the photo loads (or if a future card
+   lacks one). Photos themselves carry the colour story. */
 .gorra-amarilla .gorra-visual { background: #FFF8D8; }
-.gorra-roja     .gorra-visual { color: var(--red);    background: #FBE2E5; }
-.gorra-azul     .gorra-visual { color: var(--blue);   background: #DDE3F2; }
-.gorra-blanca   .gorra-visual { color: #FAF7F2;       background: var(--bg-deep); }
+.gorra-roja     .gorra-visual { background: #FBE2E5; }
+.gorra-azul     .gorra-visual { background: #DDE3F2; }
+.gorra-blanca   .gorra-visual { background: var(--bg-deep); }
 
 .gorra-name {
   font-family: 'Anton', sans-serif;
