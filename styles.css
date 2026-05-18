@@ -1525,7 +1525,10 @@ html.promo-active .promo-bar { display: flex; }
 }
 
 .card-visual {
-  aspect-ratio: 1 / 1;
+  /* 4:5 matches the source product photography (1122×1402); the one
+     2:3 outlier crops a small slice off the legs but keeps the face
+     visible thanks to object-position: center top below. */
+  aspect-ratio: 4 / 5;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1555,7 +1558,7 @@ html.promo-active .promo-bar { display: flex; }
 }
 .card-visual .card-photo img {
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
   transition: transform 0.3s cubic-bezier(.22,.61,.36,1);
 }
 .player-card:hover .card-photo img { transform: scale(1.04); }
