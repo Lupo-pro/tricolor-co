@@ -2680,6 +2680,177 @@ html.promo-active .promo-bar { display: flex; }
 .sg-result .cta { width: 100%; }
 
 /* ============================================================
+   TESTIMONIOS — fanzine grid, cream cream w/ red drop shadow
+   ============================================================ */
+.testimonios {
+  padding: 5rem var(--gutter);
+  background: #F5EFE0;
+  position: relative;
+  overflow: hidden;
+}
+.testimonios::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(230,57,70,0.05) 0, transparent 28%),
+    radial-gradient(circle at 88% 82%, rgba(0,51,160,0.04) 0, transparent 30%);
+  pointer-events: none;
+}
+.testimonios > * { position: relative; }
+
+.testimonios-sub {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.14em;
+  color: var(--red);
+  margin-top: 0.4rem;
+  text-transform: uppercase;
+}
+
+.testimonios-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.4rem 2rem;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.testimonio-card {
+  background: var(--bg);
+  border: var(--border);
+  padding: 1.1rem 1.1rem 1.2rem;
+  box-shadow: 8px 8px 0 var(--red);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  position: relative;
+  transform: rotate(-0.6deg);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.testimonio-card:nth-child(2) { transform: rotate(0.8deg); box-shadow: -8px 8px 0 var(--red); }
+.testimonio-card:nth-child(3) { transform: rotate(0.5deg); box-shadow: 8px -8px 0 var(--red); }
+.testimonio-card:nth-child(4) { transform: rotate(-0.9deg); box-shadow: -8px -8px 0 var(--red); }
+.testimonio-card:hover {
+  transform: rotate(0);
+  box-shadow: 10px 10px 0 var(--red);
+}
+.testimonio-card:nth-child(2):hover { box-shadow: -10px 10px 0 var(--red); }
+.testimonio-card:nth-child(3):hover { box-shadow: 10px -10px 0 var(--red); }
+.testimonio-card:nth-child(4):hover { box-shadow: -10px -10px 0 var(--red); }
+
+.testimonio-photo {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--bg-warm);
+  border: var(--border-thin);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.testimonio-photo::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Anton', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-mid);
+  background:
+    repeating-linear-gradient(45deg,
+      var(--bg-warm) 0 14px,
+      var(--bg-deep) 14px 28px);
+  text-align: center;
+  padding: 0.5rem;
+  text-transform: uppercase;
+}
+.testimonio-photo img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.testimonio-card blockquote {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  font-style: italic;
+  padding: 0 0.1rem;
+}
+
+.testimonio-card figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  border-top: 2px solid var(--ink);
+  padding-top: 0.6rem;
+  margin-top: auto;
+}
+.testimonio-name {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  line-height: 1;
+  text-transform: uppercase;
+}
+.testimonio-city {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}
+
+.testimonios-disclaimer {
+  max-width: 980px;
+  margin: 2.4rem auto 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 0.02em;
+  font-style: italic;
+}
+
+@media (max-width: 720px) {
+  .testimonios { padding: 3.5rem var(--gutter); }
+  .testimonios-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 420px;
+  }
+  .testimonio-card,
+  .testimonio-card:nth-child(2),
+  .testimonio-card:nth-child(3),
+  .testimonio-card:nth-child(4) {
+    box-shadow: 6px 6px 0 var(--red);
+    transform: rotate(-0.4deg);
+  }
+  .testimonio-card:nth-child(even),
+  .testimonio-card:nth-child(even):hover { transform: rotate(0.6deg); }
+  .testimonio-name { font-size: 1.2rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonio-card,
+  .testimonio-card:hover {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ============================================================
    LA TRIBUNA — reviews marquee
    ============================================================ */
 .tribuna {
