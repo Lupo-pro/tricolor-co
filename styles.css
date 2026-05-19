@@ -930,6 +930,25 @@ html.promo-active .promo-bar { display: flex; }
       );
   }
 }
+/* Desktop (>=1024px) swaps in the landscape hero shot. Same dark
+   gradient overlay; mobile keeps the portrait hero-moto. */
+@media (min-width: 1024px) {
+  .hero {
+    background-image:
+      linear-gradient(rgba(10, 10, 10, 0.48), rgba(10, 10, 10, 0.36)),
+      url('/images/hero/hero-desktop.jpg');
+  }
+  @supports (background-image: image-set('x' type('image/webp'))) {
+    .hero {
+      background-image:
+        linear-gradient(rgba(10, 10, 10, 0.48), rgba(10, 10, 10, 0.36)),
+        image-set(
+          url('/images/hero/hero-desktop.webp') type('image/webp'),
+          url('/images/hero/hero-desktop.jpg') type('image/jpeg')
+        );
+    }
+  }
+}
 .stadium-bg {
   position: absolute;
   inset: 0;
