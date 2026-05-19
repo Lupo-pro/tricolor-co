@@ -1070,6 +1070,34 @@ html.promo-active .promo-bar { display: flex; }
   animation-delay: -3.5s;
 }
 
+/* CTA-flavoured banderola — used in place of banderola-2 to make
+   the left sticker a real button ('VER LAS 4 EDICIONES →'). Inherits
+   sticker geometry from .banderola + position from .banderola-2;
+   overrides the blue/yellow colour pair with yellow/ink + a red
+   hard-shadow to match the existing .cta-yellow pattern. Sway is
+   disabled — CTAs sit still so hover lift reads cleanly. */
+.banderola-cta {
+  background: var(--yellow);
+  color: var(--ink);
+  box-shadow: 5px 5px 0 var(--red);
+  text-decoration: none;
+  cursor: pointer;
+  animation: none;
+  transform: rotate(-1deg);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s;
+}
+.banderola-cta:hover,
+.banderola-cta:focus-visible {
+  outline: none;
+  transform: rotate(-1deg) translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--red);
+  background: var(--bg);
+}
+.banderola-cta:active {
+  transform: rotate(-1deg) translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--red);
+}
+
 /* Huge vibrating title — light on the dark hero-photo backdrop.
    Mobile (<1024px) gets a smaller clamp so the headline doesn't
    spill across the women's faces; desktop overrides below. */
