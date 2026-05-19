@@ -2413,11 +2413,16 @@ html.promo-active .promo-bar { display: flex; }
 .cap-picker-pack[data-selected-count="2"] .cpp-counter strong { color: var(--red); }
 
 .cpp-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
+  /* Flex (not grid) with fixed-width options keeps each cap a small
+     thumbnail at every viewport — grid stretched the photos to 200px
+     when the bundle is single-column at 640-1023px. */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem;
 }
 .cpp-option {
+  flex: 0 0 100px;
   background: var(--bg);
   border: 2px solid var(--ink);
   padding: 0.4rem 0.4rem 0.5rem;
@@ -2515,7 +2520,9 @@ html.promo-active .promo-bar { display: flex; }
 .bundle-cta:not(.is-disabled):hover .bundle-cta-arrow { transform: translateX(3px); }
 
 @media (max-width: 520px) {
-  .cpp-grid { grid-template-columns: repeat(2, 1fr); gap: 0.55rem; }
+  /* Smaller thumb on narrow phones — 4×84px + gaps still fits in a row
+     down to ~360px; below that flex-wrap moves to 2 rows of 2. */
+  .cpp-option { flex-basis: 84px; }
   .cpp-label { font-size: 0.85rem; }
 }
 
@@ -4706,7 +4713,10 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
 
   .hero { padding-top: calc(var(--offset) + 4rem); }
 
-  .cards-grid { grid-template-columns: repeat(4, 1fr); }
+  /* minmax(0, 1fr) instead of 1fr — the implicit `auto` min lets grid
+     items refuse to shrink below intrinsic content min-width, which was
+     pushing the 4th card past the container at certain widths. */
+  .cards-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
   .bundle {
     grid-template-columns: 1.3fr 1fr;
