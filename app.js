@@ -243,6 +243,14 @@ if (prefersReducedMotion) {
 // Color keys stay semantic (capitana/portera/oronegro/cafetera) so app.js
 // stays decoupled from CSS class renames.
 // ============================================
+// Map of color key → product photo basename. Filenames differ from
+// color keys for oronegro (kebab-case on disk: product-oro-negro.*).
+const MODAL_PHOTO_FILES = {
+  capitana: 'product-capitana',
+  portera: 'product-portera',
+  oronegro: 'product-oro-negro',
+  cafetera: 'product-cafetera',
+};
 const productData = {
   capitana: {
     name: 'La Capitana',
@@ -322,9 +330,16 @@ function openModal(color, returnTo) {
   if (!data) return;
   modalReturnFocus = returnTo || document.activeElement;
   modalVisual.className = 'modal-visual color-' + data.color;
-  if (!modalVisual.querySelector('svg')) {
-    modalVisual.innerHTML = '<svg class="body-svg" viewBox="0 0 200 280" aria-hidden="true"><use href="#body-shape"/></svg>';
-  }
+  // Swap in the real product photo every open (was an SVG silhouette).
+  // The color-X class on .modal-visual keeps the per-edition gradient as
+  // a tinted fallback while the photo loads / if it 404s.
+  const file = MODAL_PHOTO_FILES[data.color] || MODAL_PHOTO_FILES.capitana;
+  const alt = `${data.name} — ${data.tag}`;
+  modalVisual.innerHTML =
+    '<picture class="modal-photo">' +
+      '<source type="image/webp" srcset="/images/products/' + file + '.webp">' +
+      '<img src="/images/products/' + file + '.jpg" alt="' + alt + '" decoding="async">' +
+    '</picture>';
   modalTitle.textContent = data.name;
   modalDesc.textContent = data.desc;
   modalTag.textContent = data.tag;
