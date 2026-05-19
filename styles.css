@@ -908,8 +908,27 @@ html.promo-active .promo-bar { display: flex; }
   flex-direction: column;
   justify-content: center;
   position: relative;
-  background: var(--bg);
+  /* Cream fallback under the photo (and visible if the image 404s). */
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(10, 10, 10, 0.48), rgba(10, 10, 10, 0.36)),
+    url('/images/hero/hero-moto.jpg');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
   overflow: hidden;
+}
+/* Prefer WebP on browsers that support image-set with type() — about
+   half the JPG bytes for the same LCP frame. */
+@supports (background-image: image-set('x' type('image/webp'))) {
+  .hero {
+    background-image:
+      linear-gradient(rgba(10, 10, 10, 0.48), rgba(10, 10, 10, 0.36)),
+      image-set(
+        url('/images/hero/hero-moto.webp') type('image/webp'),
+        url('/images/hero/hero-moto.jpg') type('image/jpeg')
+      );
+  }
 }
 .stadium-bg {
   position: absolute;
@@ -967,18 +986,19 @@ html.promo-active .promo-bar { display: flex; }
   animation-delay: -3.5s;
 }
 
-/* Huge vibrating title */
+/* Huge vibrating title — light on the dark hero-photo backdrop. */
 .huge {
   font-family: 'Anton', sans-serif;
   font-size: clamp(4rem, 18vw, 13rem);
   line-height: 0.82;
   letter-spacing: -0.01em;
-  color: var(--ink);
+  color: var(--bg);
   text-transform: uppercase;
   text-align: center;
   margin: 1.5rem 0;
   position: relative;
   z-index: 1;
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.55);
 }
 .huge .l1, .huge .l2, .huge .l3 { display: block; }
 .huge .l1 { animation: vibrate 0.55s ease-in-out infinite; }
@@ -1028,7 +1048,8 @@ html.promo-active .promo-bar { display: flex; }
   align-items: center;
   margin-top: 1.5rem;
   padding-top: 1.3rem;
-  border-top: var(--border);
+  /* Was solid black; light-translucent so it reads on the photo. */
+  border-top: 2px solid rgba(240, 235, 224, 0.4);
   flex-wrap: wrap;
   gap: 1.2rem;
   position: relative;
@@ -1050,19 +1071,20 @@ html.promo-active .promo-bar { display: flex; }
   font-size: 0.6rem;
   letter-spacing: 0.22em;
   font-weight: 600;
-  color: rgba(10,10,10,0.55);
+  color: rgba(240, 235, 224, 0.72);
   text-transform: uppercase;
   margin-bottom: 0.1rem;
 }
 .hero-stats strong {
   font-size: 1.7rem;
-  color: var(--ink);
+  color: var(--bg);
   letter-spacing: 0.04em;
   line-height: 1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
 }
 .hero-stats strong small {
   font-size: 0.55em;
-  color: rgba(10,10,10,0.4);
+  color: rgba(240, 235, 224, 0.55);
   margin-left: 0.1em;
 }
 
@@ -1080,7 +1102,8 @@ html.promo-active .promo-bar { display: flex; }
   font-size: 0.92rem;
   letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: rgba(240, 235, 224, 0.9);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
   position: relative;
   z-index: 1;
 }
