@@ -1608,11 +1608,24 @@ html.promo-active .promo-bar { display: flex; }
 .card-info {
   padding: 1rem 1.1rem;
   display: flex;
+  /* talla-unica + card-upsell are siblings of name-block + price now;
+     wrap so the long upsell text drops to its own full-width row and
+     stops pushing horizontal overflow past the card edge. */
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem 1rem;
   border-top: 3px solid var(--yellow);
   background: var(--ink);
+  overflow: hidden;
+}
+.card-info .card-name-block { flex: 1 1 60%; min-width: 0; }
+.card-info .card-price { flex: 0 0 auto; }
+.card-info .talla-unica,
+.card-info .card-upsell {
+  flex: 1 1 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .card-name-block .pos {
   font-family: 'Bebas Neue', sans-serif;
@@ -1676,10 +1689,14 @@ html.promo-active .promo-bar { display: flex; }
    "Stickers collés à la main" sur les cartes Panini.
    ============================================================ */
 
-/* OFERTA sticker — top-right corner, sticks out past the card */
+/* OFERTA sticker — anchored just BELOW the yellow card-top band so
+   it overlays the product photo's top-right corner instead of the
+   `TITULAR / ARQUERA / ESTRELLA / GOLEADORA` label that lives in the
+   header. Used to be top:-10px which made the rotated badge cover
+   the right end of card-top. */
 .card-sticker {
   position: absolute;
-  top: -10px;
+  top: 3.6rem;
   right: -10px;
   z-index: 5;
   background: var(--red);
@@ -2314,59 +2331,26 @@ html.promo-active .promo-bar { display: flex; }
   z-index: 2;
   fill: currentColor;
 }
+/* Real product photos replacing the SVG silhouettes — fill the tile,
+   keep the cropping consistent with the body cards above. */
+.mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  position: relative;
+  z-index: 2;
+  display: block;
+}
+/* The diagonal-stripe overlay is fine over a flat gradient but mucks
+   up a photographic image. Suppress it on the body minis. */
+.mini-body::before { display: none; }
+/* Gradient backgrounds kept as tinted fallbacks while photos load
+   (or if they 404). */
 .mini-1 { background: radial-gradient(circle at 30% 30%, var(--yellow-warm), var(--yellow-deep)); color: rgba(0,0,0,0.6); }
 .mini-2 { background: radial-gradient(circle at 30% 30%, var(--blue-light), var(--blue-deep)); color: rgba(255,211,0,0.78); }
 .mini-3 { background: radial-gradient(circle at 30% 30%, #3a3a36, #0A0A0A); color: rgba(201,169,97,0.55); }
 .mini-4 { background: radial-gradient(circle at 30% 30%, var(--red-warm), var(--red-deep)); color: rgba(0,0,0,0.55); }
-
-/* Bundle caps preview — second row of the bundle visual: a single
-   strip with all 4 real cap photos as thumbnails + the picker hint.
-   Spans the full grid width below the 4 mini-bodies. */
-.bundle-caps-strip {
-  grid-column: 1 / -1;
-  background: var(--bg);
-  border: 2px solid var(--bg);
-  padding: 0.55rem 0.7rem 0.55rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.35rem;
-}
-.bcs-thumbs {
-  display: flex;
-  gap: 0.4rem;
-  justify-content: center;
-  width: 100%;
-}
-.bcs-thumbs picture,
-.bcs-thumbs img {
-  display: block;
-  width: 44px;
-  height: 44px;
-  border: 1.5px solid var(--ink);
-  border-radius: 2px;
-  background: var(--bg-warm);
-  object-fit: cover;
-}
-.bcs-hint {
-  font-family: 'Anton', sans-serif;
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  color: var(--ink);
-  text-transform: uppercase;
-  line-height: 1.1;
-  text-align: center;
-}
-.bcs-hint span {
-  display: block;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--ink-mid);
-  text-transform: none;
-  margin-top: 0.1rem;
-}
 
 /* ============================================================
    CAP PICKER PACK — interactive 4→2 color selector inside the
@@ -2547,11 +2531,6 @@ html.promo-active .promo-bar { display: flex; }
      down to ~360px; below that flex-wrap moves to 2 rows of 2. */
   .cpp-option { flex-basis: 84px; }
   .cpp-label { font-size: 0.85rem; }
-}
-
-@media (max-width: 360px) {
-  .bcs-thumbs picture,
-  .bcs-thumbs img { width: 38px; height: 38px; }
 }
 
 /* ============================================================
