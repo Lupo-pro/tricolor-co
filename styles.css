@@ -930,23 +930,55 @@ html.promo-active .promo-bar { display: flex; }
       );
   }
 }
-/* Desktop (>=1024px) swaps in the landscape hero shot. Same dark
-   gradient overlay; mobile keeps the portrait hero-moto. */
+/* Desktop (>=1024px) — editorial 90s-magazine layout:
+   - landscape hero photo with subjects pushed toward the right
+   - horizontal gradient (dark on the left, near-clear on the right)
+     so the headline reads cleanly while the photo can breathe
+   - .huge headline anchored left, capped at ~55% of viewport
+   Mobile (<1024px) keeps the portrait hero-moto + uniform overlay. */
 @media (min-width: 1024px) {
   .hero {
+    background-position: 70% center;
     background-image:
-      linear-gradient(rgba(10, 10, 10, 0.48), rgba(10, 10, 10, 0.36)),
+      linear-gradient(to right,
+        rgba(0, 0, 0, 0.65) 0%,
+        rgba(0, 0, 0, 0.40) 40%,
+        rgba(0, 0, 0, 0.15) 70%,
+        rgba(0, 0, 0, 0.10) 100%),
       url('/images/hero/hero-desktop.jpg');
   }
   @supports (background-image: image-set('x' type('image/webp'))) {
     .hero {
       background-image:
-        linear-gradient(rgba(10, 10, 10, 0.48), rgba(10, 10, 10, 0.36)),
+        linear-gradient(to right,
+          rgba(0, 0, 0, 0.65) 0%,
+          rgba(0, 0, 0, 0.40) 40%,
+          rgba(0, 0, 0, 0.15) 70%,
+          rgba(0, 0, 0, 0.10) 100%),
         image-set(
           url('/images/hero/hero-desktop.webp') type('image/webp'),
           url('/images/hero/hero-desktop.jpg') type('image/jpeg')
         );
     }
+  }
+
+  /* Headline pulled to the left half — poster-style. */
+  .hero .huge {
+    text-align: left;
+    max-width: 55%;
+    margin-left: 0;
+    margin-right: auto;
+    padding-left: clamp(2rem, 5vw, 5rem);
+    font-size: clamp(4rem, 9vw, 11rem);
+  }
+
+  /* Banderola-2 sat on the right edge of the hero, smack over the
+     photo subjects. Pin it to the top dark strip so the moto +
+     women stay clean. */
+  .banderola-2 {
+    top: calc(var(--offset) + 1.2rem);
+    right: auto;
+    left: calc(50% + 2rem);
   }
 }
 .stadium-bg {
