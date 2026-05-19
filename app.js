@@ -243,14 +243,11 @@ if (prefersReducedMotion) {
 // Color keys stay semantic (capitana/portera/oronegro/cafetera) so app.js
 // stays decoupled from CSS class renames.
 // ============================================
-// Map of color key → product photo basename. Filenames differ from
-// color keys for oronegro (kebab-case on disk: product-oro-negro.*).
-const MODAL_PHOTO_FILES = {
-  capitana: 'product-capitana',
-  portera: 'product-portera',
-  oronegro: 'product-oro-negro',
-  cafetera: 'product-cafetera',
-};
+// Each product carries an ordered `photos` array of file basenames
+// under /images/products/ (without extension). The modal renders a
+// <picture> per photo (WebP + JPG) and exposes prev/next arrows + dots
+// when length > 1. To add a second / third angle later, just push the
+// new basename onto the array — no JS or HTML changes required.
 const productData = {
   capitana: {
     name: 'La Capitana',
@@ -259,6 +256,7 @@ const productData = {
     price: '$89.000',
     old: '$149.000',
     color: 'capitana',
+    photos: ['product-capitana'],
   },
   portera: {
     name: 'La Portera',
@@ -267,6 +265,7 @@ const productData = {
     price: '$89.000',
     old: '$149.000',
     color: 'portera',
+    photos: ['product-portera'],
   },
   oronegro: {
     name: 'Oro Negro',
@@ -275,6 +274,7 @@ const productData = {
     price: '$89.000',
     old: '$149.000',
     color: 'oronegro',
+    photos: ['product-oro-negro'],
   },
   cafetera: {
     name: 'La Cafetera',
@@ -283,6 +283,7 @@ const productData = {
     price: '$89.000',
     old: '$149.000',
     color: 'cafetera',
+    photos: ['product-cafetera'],
   },
 };
 
@@ -325,21 +326,101 @@ function trapFocus(e) {
   }
 }
 
+// Carousel state — the modal renders one product's photos at a time.
+// Reset every openModal(); arrows + dots only show when length > 1.
+let modalPhotos = [];
+let modalPhotoIdx = 0;
+const modalNavPrev = document.getElementById('modalNavPrev');
+const modalNavNext = document.getElementById('modalNavNext');
+const modalDots    = document.getElementById('modalDots');
+
+function renderModalPhoto() {
+  if (!modalPhotos.length) return;
+  const file = modalPhotos[modalPhotoIdx];
+  const picture = modalVisual.querySelector('.modal-photo');
+  if (!picture) return;
+  const source = picture.querySelector('source');
+  const img    = picture.querySelector('img');
+  if (source) source.srcset = '/images/products/' + file + '.webp';
+  if (img)    img.src       = '/images/products/' + file + '.jpg';
+  if (modalDots) {
+    modalDots.querySelectorAll('.modal-dot').forEach((d, i) => {
+      const active = i === modalPhotoIdx;
+      d.setAttribute('aria-selected', active ? 'true' : 'false');
+      d.classList.toggle('active', active);
+    });
+  }
+}
+
+function renderModalDots(count) {
+  if (!modalDots) return;
+  modalDots.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'modal-dot';
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('aria-label', 'Foto ' + (i + 1) + ' de ' + count);
+    btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    if (i === 0) btn.classList.add('active');
+    btn.addEventListener('click', () => { modalPhotoIdx = i; renderModalPhoto(); });
+    modalDots.appendChild(btn);
+  }
+}
+
+function cyclePhoto(delta) {
+  if (modalPhotos.length < 2) return;
+  modalPhotoIdx = (modalPhotoIdx + delta + modalPhotos.length) % modalPhotos.length;
+  renderModalPhoto();
+}
+
+// Bind carousel controls once at boot — handlers are no-ops when
+// modalPhotos has fewer than 2 entries.
+if (modalNavPrev) modalNavPrev.addEventListener('click', (e) => { e.stopPropagation(); cyclePhoto(-1); });
+if (modalNavNext) modalNavNext.addEventListener('click', (e) => { e.stopPropagation(); cyclePhoto(1); });
+
+// Swipe support — pointerType=touch only so desktop mouse drags don't
+// fire it. 50px threshold, single-axis.
+let touchStartX = null;
+modalVisual.addEventListener('pointerdown', (e) => {
+  if (e.pointerType !== 'touch') return;
+  touchStartX = e.clientX;
+});
+modalVisual.addEventListener('pointerup', (e) => {
+  if (touchStartX === null) return;
+  const dx = e.clientX - touchStartX;
+  touchStartX = null;
+  if (Math.abs(dx) > 50) cyclePhoto(dx < 0 ? 1 : -1);
+});
+
 function openModal(color, returnTo) {
   const data = productData[color];
   if (!data) return;
   modalReturnFocus = returnTo || document.activeElement;
   modalVisual.className = 'modal-visual color-' + data.color;
-  // Swap in the real product photo every open (was an SVG silhouette).
-  // The color-X class on .modal-visual keeps the per-edition gradient as
-  // a tinted fallback while the photo loads / if it 404s.
-  const file = MODAL_PHOTO_FILES[data.color] || MODAL_PHOTO_FILES.capitana;
-  const alt = `${data.name} — ${data.tag}`;
+  // Build the carousel content fresh on every open. The color-X class
+  // keeps the per-edition radial-gradient as a tinted fallback while
+  // the photo loads / if it 404s.
+  modalPhotos = (data.photos && data.photos.length) ? data.photos.slice() : [];
+  modalPhotoIdx = 0;
+  const alt = data.name + ' — ' + data.tag;
+  const first = modalPhotos[0] || 'product-capitana';
   modalVisual.innerHTML =
     '<picture class="modal-photo">' +
-      '<source type="image/webp" srcset="/images/products/' + file + '.webp">' +
-      '<img src="/images/products/' + file + '.jpg" alt="' + alt + '" decoding="async">' +
+      '<source type="image/webp" srcset="/images/products/' + first + '.webp">' +
+      '<img src="/images/products/' + first + '.jpg" alt="' + alt + '" decoding="async">' +
     '</picture>';
+  // Re-attach the carousel controls inside .modal-visual every time —
+  // innerHTML wipe above removes them otherwise. They live in the
+  // static index.html as siblings of <picture>, so we re-append them.
+  if (modalNavPrev) modalVisual.appendChild(modalNavPrev);
+  if (modalNavNext) modalVisual.appendChild(modalNavNext);
+  if (modalDots)    modalVisual.appendChild(modalDots);
+  const multi = modalPhotos.length > 1;
+  if (modalNavPrev) modalNavPrev.hidden = !multi;
+  if (modalNavNext) modalNavNext.hidden = !multi;
+  if (modalDots)    modalDots.hidden    = !multi;
+  if (multi) renderModalDots(modalPhotos.length);
   modalTitle.textContent = data.name;
   modalDesc.textContent = data.desc;
   modalTag.textContent = data.tag;
@@ -405,131 +486,14 @@ document.querySelectorAll('.product-cta, [data-product]').forEach((btn) => {
 modalClose.addEventListener('click', closeModal);
 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', (e) => {
-  // Don't intercept ESC when the lightbox is active — it owns ESC first and
-  // closes itself, leaving the modal context intact for the user to continue.
-  const lb = document.getElementById('lightbox');
-  if (lb && lb.classList.contains('active')) return;
-  if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+  if (!modal.classList.contains('active')) return;
+  if (e.key === 'Escape')     { closeModal(); }
+  else if (e.key === 'ArrowRight') { cyclePhoto(1); }
+  else if (e.key === 'ArrowLeft')  { cyclePhoto(-1); }
 });
 
 
 }  // end if (modal)
-
-// ============================================
-// LIGHTBOX (product photo gallery — SVG placeholders for now)
-// Three views per product (front, side, detail) shown as thumbnails + a
-// swipeable main viewer. Triggered from the modal so users can keep their
-// current product context (color/edition) when they zoom in.
-// ============================================
-const VIEW_NAMES = ['Front', 'Side', 'Detalle'];
-
-(function initLightbox() {
-  const lb = document.getElementById('lightbox');
-  if (!lb) return;
-  const overlay = document.getElementById('lbOverlay');
-  const closeBtn = document.getElementById('lbClose');
-  const thumbs = lb.querySelectorAll('.lb-thumb');
-  const slides = document.getElementById('lbSlides');
-  const prev = document.getElementById('lbPrev');
-  const next = document.getElementById('lbNext');
-  const titleEl = document.getElementById('lbTitle');
-  const viewNameEl = document.getElementById('lbViewName');
-  const trigger = document.getElementById('modalGalleryBtn');
-
-  let currentIndex = 0;
-  let returnFocus = null;
-
-  function goTo(index, animate = true) {
-    currentIndex = (index + 3) % 3;
-    slides.style.transition = animate ? '' : 'none';
-    slides.style.transform = `translateX(-${currentIndex * (100 / 3)}%)`;
-    if (!animate) requestAnimationFrame(() => { slides.style.transition = ''; });
-    thumbs.forEach((t, i) => t.setAttribute('aria-selected', String(i === currentIndex)));
-    viewNameEl.textContent = `${VIEW_NAMES[currentIndex]} · ${currentIndex + 1} / 3`;
-  }
-
-  function setProduct(color, name) {
-    lb.dataset.color = color || 'capitana';
-    titleEl.textContent = name || 'TRICOLOR';
-  }
-
-  function open() {
-    // The currently active modal product tells the lightbox which color +
-    // name to render. Fall back to La Capitana if opened in isolation.
-    const color = (document.querySelector('.modal-visual') || {}).classList?.value.match(/color-(\w+)/)?.[1] || 'capitana';
-    const name = modalTitle?.textContent || 'TRICOLOR';
-    setProduct(color, name);
-    goTo(0, false);
-    returnFocus = document.activeElement;
-    lb.inert = false;
-    lb.classList.add('active');
-    lb.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    document.addEventListener('keydown', onKey);
-    setTimeout(() => closeBtn.focus(), 50);
-  }
-
-  function close() {
-    lb.classList.remove('active');
-    lb.inert = true;
-    lb.setAttribute('aria-hidden', 'true');
-    document.removeEventListener('keydown', onKey);
-    // If the modal is still open behind the lightbox, scroll lock stays on it.
-    if (!modal.classList.contains('active')) document.body.style.overflow = '';
-    if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
-    returnFocus = null;
-  }
-
-  function onKey(e) {
-    if (e.key === 'Escape') { e.preventDefault(); close(); }
-    else if (e.key === 'ArrowRight') { e.preventDefault(); goTo(currentIndex + 1); }
-    else if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(currentIndex - 1); }
-    else if (e.key === 'Home') { e.preventDefault(); goTo(0); }
-    else if (e.key === 'End') { e.preventDefault(); goTo(2); }
-  }
-
-  thumbs.forEach((t, i) => t.addEventListener('click', () => goTo(i)));
-  prev.addEventListener('click', () => goTo(currentIndex - 1));
-  next.addEventListener('click', () => goTo(currentIndex + 1));
-  overlay.addEventListener('click', close);
-  closeBtn.addEventListener('click', close);
-
-  // Touch swipe (horizontal). Track delta and snap when released.
-  let touchStartX = null;
-  let touchDelta = 0;
-  slides.addEventListener('touchstart', (e) => {
-    if (e.touches.length !== 1) return;
-    touchStartX = e.touches[0].clientX;
-    touchDelta = 0;
-    slides.style.transition = 'none';
-  }, { passive: true });
-  slides.addEventListener('touchmove', (e) => {
-    if (touchStartX == null) return;
-    touchDelta = e.touches[0].clientX - touchStartX;
-    const base = -currentIndex * (100 / 3);
-    const pct = (touchDelta / window.innerWidth) * (100 / 3);
-    slides.style.transform = `translateX(${base + pct}%)`;
-  }, { passive: true });
-  slides.addEventListener('touchend', () => {
-    if (touchStartX == null) return;
-    slides.style.transition = '';
-    const threshold = 50;
-    if (touchDelta < -threshold) goTo(currentIndex + 1);
-    else if (touchDelta > threshold) goTo(currentIndex - 1);
-    else goTo(currentIndex);
-    touchStartX = null;
-    touchDelta = 0;
-  });
-
-  if (trigger) {
-    trigger.addEventListener('click', () => {
-      open();
-    });
-  }
-
-  // Expose for any other surfaces that want to open the gallery.
-  window.__lightboxOpen = open;
-})();
 
 // ============================================
 // SMOOTH SCROLL
