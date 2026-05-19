@@ -954,15 +954,16 @@ html.promo-active .promo-bar { display: flex; }
 @media (min-width: 1024px) {
   .hero {
     /* Restore centered stacking on desktop — the editorial layout
-       wants the headline mid-height in the left column, with photo
-       subjects breathing on the right. */
+       wants the headline mid-height, photo subjects breathing on
+       the opposite side. */
     justify-content: center;
-    /* New re-framed photo has proper headroom above the riders,
-       so the previous Y=0% workaround is no longer needed.
-       Centred crop now reads cleanly at wide-desktop viewports. */
-    background-position: 70% center;
+    /* New photo has the subjects on the LEFT half; anchor the photo
+       there with X=30% and let the right half receive the headline. */
+    background-position: 30% center;
     background-image:
-      linear-gradient(to right,
+      /* Horizontal gradient flipped: dark on the right (text column),
+         near-clear on the left (subjects column). */
+      linear-gradient(to left,
         rgba(0, 0, 0, 0.65) 0%,
         rgba(0, 0, 0, 0.40) 40%,
         rgba(0, 0, 0, 0.15) 70%,
@@ -972,7 +973,7 @@ html.promo-active .promo-bar { display: flex; }
   @supports (background-image: image-set('x' type('image/webp'))) {
     .hero {
       background-image:
-        linear-gradient(to right,
+        linear-gradient(to left,
           rgba(0, 0, 0, 0.65) 0%,
           rgba(0, 0, 0, 0.40) 40%,
           rgba(0, 0, 0, 0.15) 70%,
@@ -984,25 +985,31 @@ html.promo-active .promo-bar { display: flex; }
     }
   }
 
-  /* Headline pulled to the left half — poster-style. */
+  /* Headline pushed to the right half — poster-style. */
   .hero .huge {
-    text-align: left;
+    text-align: right;
     max-width: 55%;
-    margin-left: 0;
-    margin-right: auto;
-    padding-left: clamp(2rem, 5vw, 5rem);
+    margin: 0 0 0 auto;
+    padding-left: 0;
+    padding-right: clamp(2rem, 5vw, 5rem);
     font-size: clamp(4rem, 9vw, 11rem);
   }
 
-  /* Banderola-2 — mirror of banderola-1 in the top-right corner.
-     Selector bumped to .hero .banderola-2 (0,2,0) so it wins
-     against the base .banderola-2 (0,1,0) regardless of source
-     order. width:max-content + max-width:max-content lock it to
-     content-width so it stops stretching across the right side. */
-  .hero .banderola-2 {
+  /* Banderolas — swapped sides to match the flipped layout. Both
+     use the .hero prefix (specificity 0,2,0) so they win against
+     the base .banderola-{1,2} (0,1,0) regardless of source order.
+     width:max-content keeps each one sticker-sized. */
+  .hero .banderola-1 {
     top: calc(var(--offset) + 1rem);
     left: auto;
     right: clamp(2rem, 5vw, 5rem);
+    width: max-content;
+    max-width: max-content;
+  }
+  .hero .banderola-2 {
+    top: calc(var(--offset) + 1rem);
+    right: auto;
+    left: clamp(2rem, 5vw, 5rem);
     width: max-content;
     max-width: max-content;
   }
