@@ -955,9 +955,14 @@ html.promo-active .promo-bar { display: flex; }
        wants the headline mid-height in the left column, with photo
        subjects breathing on the right. */
     justify-content: center;
-    /* Y=25% keeps the moto-rider + women's heads inside the frame;
-       was 'center' (50%) which clipped foreheads. */
-    background-position: 70% 25%;
+    /* Y=0% anchors the image's top edge to the hero top. The
+       hair of both riders starts in the top ~3% of the source
+       frame, so any positive Y% — at wide-desktop viewports
+       where the image overflows vertically under cover — clips
+       into the hair. 0% gives them zero head-clip; the
+       trade-off is the asphalt/road at the bottom gets cropped,
+       which is fine — it's not the subject. */
+    background-position: 70% 0%;
     background-image:
       linear-gradient(to right,
         rgba(0, 0, 0, 0.65) 0%,
