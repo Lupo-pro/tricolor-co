@@ -4722,9 +4722,10 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
   /* Bundle keeps its stock-urgency variant — fewer cards there means
      the urgency message lands differently. */
 
-  /* Smaller hero title — was clamp(4rem, 18vw, 13rem). On 375px width
-     the 18vw size pushed the title close to the chrome edges. */
-  .huge { font-size: clamp(3.5rem, 14vw, 6rem); }
+  /* Hero title override removed — the new mobile base clamp(2.5rem,
+     10vw, 5rem) already fits comfortably at 375px without crowding
+     the chrome edges, so this 640px override would only enlarge it
+     back toward the old too-big value. */
 
   .hero { padding-bottom: 2.5rem; }
   .hero-info {
