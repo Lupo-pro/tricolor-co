@@ -903,7 +903,7 @@ html.promo-active .promo-bar { display: flex; }
    ============================================================ */
 .hero {
   min-height: 100dvh;
-  padding: calc(var(--offset) + 3.5rem) var(--gutter) 3rem;
+  padding: calc(var(--offset) + 3.5rem) var(--gutter) 2.4rem;
   display: flex;
   flex-direction: column;
   /* Mobile: anchor content to the bottom half so the big VAMOS title
@@ -914,17 +914,18 @@ html.promo-active .promo-bar { display: flex; }
   /* Cream fallback under the photo (and visible if the image 404s). */
   background-color: var(--bg);
   background-image:
-    /* Light at top so the women's faces stay visible, dark at the
-       bottom so the headline + CTAs stay legible. */
+    /* 4-stop vertical: faces visible at the top, harder dark at the
+       bottom so the headline and CTAs read on the dark band. */
     linear-gradient(to bottom,
-      rgba(0, 0, 0, 0.20) 0%,
-      rgba(0, 0, 0, 0.10) 40%,
-      rgba(0, 0, 0, 0.70) 100%),
+      rgba(0, 0, 0, 0.15) 0%,
+      rgba(0, 0, 0, 0.05) 30%,
+      rgba(0, 0, 0, 0.40) 70%,
+      rgba(0, 0, 0, 0.85) 100%),
     url('/images/hero/hero-moto.jpg');
   background-size: cover;
-  /* Y=25% pulls the subjects' heads down so the foreheads aren't
-     clipped by the top edge of the hero. */
-  background-position: center 25%;
+  /* Y=18% gives just enough top-clear for foreheads while keeping the
+     moto + asphalt visible in the lower band. */
+  background-position: center 18%;
   background-repeat: no-repeat;
   overflow: hidden;
 }
@@ -934,9 +935,10 @@ html.promo-active .promo-bar { display: flex; }
   .hero {
     background-image:
       linear-gradient(to bottom,
-        rgba(0, 0, 0, 0.20) 0%,
-        rgba(0, 0, 0, 0.10) 40%,
-        rgba(0, 0, 0, 0.70) 100%),
+        rgba(0, 0, 0, 0.15) 0%,
+        rgba(0, 0, 0, 0.05) 30%,
+        rgba(0, 0, 0, 0.40) 70%,
+        rgba(0, 0, 0, 0.85) 100%),
       image-set(
         url('/images/hero/hero-moto.webp') type('image/webp'),
         url('/images/hero/hero-moto.jpg') type('image/jpeg')
@@ -1066,13 +1068,17 @@ html.promo-active .promo-bar { display: flex; }
    spill across the women's faces; desktop overrides below. */
 .huge {
   font-family: 'Anton', sans-serif;
-  font-size: clamp(3rem, 12vw, 6rem);
-  line-height: 0.82;
+  /* Mobile clamp — smaller cap so the 3-line stack doesn't dominate
+     the screen. Desktop @media below overrides with its own clamp. */
+  font-size: clamp(2.5rem, 10vw, 5rem);
+  /* Tighter line-height so the 3-line headline reads as a compact
+     poster block (was 0.82). */
+  line-height: 0.78;
   letter-spacing: -0.01em;
   color: var(--bg);
   text-transform: uppercase;
   text-align: center;
-  margin: 1.5rem 0;
+  margin: 1.1rem 0 0;
   position: relative;
   z-index: 1;
   text-shadow: 0 3px 14px rgba(0, 0, 0, 0.55);
