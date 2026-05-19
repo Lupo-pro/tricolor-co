@@ -906,15 +906,25 @@ html.promo-active .promo-bar { display: flex; }
   padding: calc(var(--offset) + 3.5rem) var(--gutter) 3rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* Mobile: anchor content to the bottom half so the big VAMOS title
+     sits over the dark lower-overlay band instead of covering the
+     subjects' faces in the top of the photo. */
+  justify-content: flex-end;
   position: relative;
   /* Cream fallback under the photo (and visible if the image 404s). */
   background-color: var(--bg);
   background-image:
-    linear-gradient(rgba(10, 10, 10, 0.48), rgba(10, 10, 10, 0.36)),
+    /* Light at top so the women's faces stay visible, dark at the
+       bottom so the headline + CTAs stay legible. */
+    linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.20) 0%,
+      rgba(0, 0, 0, 0.10) 40%,
+      rgba(0, 0, 0, 0.70) 100%),
     url('/images/hero/hero-moto.jpg');
   background-size: cover;
-  background-position: center top;
+  /* Y=25% pulls the subjects' heads down so the foreheads aren't
+     clipped by the top edge of the hero. */
+  background-position: center 25%;
   background-repeat: no-repeat;
   overflow: hidden;
 }
@@ -923,7 +933,10 @@ html.promo-active .promo-bar { display: flex; }
 @supports (background-image: image-set('x' type('image/webp'))) {
   .hero {
     background-image:
-      linear-gradient(rgba(10, 10, 10, 0.48), rgba(10, 10, 10, 0.36)),
+      linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.20) 0%,
+        rgba(0, 0, 0, 0.10) 40%,
+        rgba(0, 0, 0, 0.70) 100%),
       image-set(
         url('/images/hero/hero-moto.webp') type('image/webp'),
         url('/images/hero/hero-moto.jpg') type('image/jpeg')
@@ -938,7 +951,13 @@ html.promo-active .promo-bar { display: flex; }
    Mobile (<1024px) keeps the portrait hero-moto + uniform overlay. */
 @media (min-width: 1024px) {
   .hero {
-    background-position: 70% center;
+    /* Restore centered stacking on desktop — the editorial layout
+       wants the headline mid-height in the left column, with photo
+       subjects breathing on the right. */
+    justify-content: center;
+    /* Y=25% keeps the moto-rider + women's heads inside the frame;
+       was 'center' (50%) which clipped foreheads. */
+    background-position: 70% 25%;
     background-image:
       linear-gradient(to right,
         rgba(0, 0, 0, 0.65) 0%,
@@ -972,13 +991,17 @@ html.promo-active .promo-bar { display: flex; }
     font-size: clamp(4rem, 9vw, 11rem);
   }
 
-  /* Banderola-2 sat on the right edge of the hero, smack over the
-     photo subjects. Pin it to the top dark strip so the moto +
-     women stay clean. */
-  .banderola-2 {
-    top: calc(var(--offset) + 1.2rem);
-    right: auto;
-    left: calc(50% + 2rem);
+  /* Banderola-2 — mirror of banderola-1 in the top-right corner.
+     Selector bumped to .hero .banderola-2 (0,2,0) so it wins
+     against the base .banderola-2 (0,1,0) regardless of source
+     order. width:max-content + max-width:max-content lock it to
+     content-width so it stops stretching across the right side. */
+  .hero .banderola-2 {
+    top: calc(var(--offset) + 1rem);
+    left: auto;
+    right: clamp(2rem, 5vw, 5rem);
+    width: max-content;
+    max-width: max-content;
   }
 }
 .stadium-bg {
@@ -1037,10 +1060,12 @@ html.promo-active .promo-bar { display: flex; }
   animation-delay: -3.5s;
 }
 
-/* Huge vibrating title — light on the dark hero-photo backdrop. */
+/* Huge vibrating title — light on the dark hero-photo backdrop.
+   Mobile (<1024px) gets a smaller clamp so the headline doesn't
+   spill across the women's faces; desktop overrides below. */
 .huge {
   font-family: 'Anton', sans-serif;
-  font-size: clamp(4rem, 18vw, 13rem);
+  font-size: clamp(3rem, 12vw, 6rem);
   line-height: 0.82;
   letter-spacing: -0.01em;
   color: var(--bg);
