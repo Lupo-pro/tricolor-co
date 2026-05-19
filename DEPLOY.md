@@ -126,21 +126,22 @@ Le numéro WhatsApp est centralisé dans **un seul endroit** : `app.js`, premiè
 
 ```js
 // app.js — ligne ~9
-const WHATSAPP_NUMBER = '573000000000';   // ← placeholder
+const WHATSAPP_NUMBER = '34604828758';
 ```
 
-Pour le remplacer :
+Pour le changer :
 
 1. Édite `app.js` localement
-2. Remplace `573000000000` par le vrai numéro au format **`57XXXXXXXXXX`** :
-   - Préfixe `57` (Colombie)
-   - 10 chiffres du numéro mobile (sans le `0` initial, sans le `+`, sans espaces)
-   - Ex. : un numéro `+57 300 123 4567` → `573001234567`
-3. Commit + push sur `main` :
+2. Remplace la valeur de `WHATSAPP_NUMBER` par le nouveau numéro au format `<indicatif><chiffres>` :
+   - Indicatif pays sans le `+` (ex. `34` pour Espagne, `57` pour Colombie)
+   - Chiffres du numéro mobile sans le `0` initial, sans le `+`, sans espaces
+   - Ex. : `+34 604 82 87 58` → `34604828758`
+3. Mets aussi à jour le lien WhatsApp en dur dans `tribu.html` (`href="https://wa.me/..."` sur le bouton social WhatsApp).
+4. Commit + push sur `main` :
 
 ```bash
-git add app.js
-git commit -m "config: set production WhatsApp number"
+git add app.js tribu.html
+git commit -m "config: update production WhatsApp number"
 git push
 ```
 
@@ -149,10 +150,10 @@ Vercel redéploie automatiquement en prod (~30 s).
 **Pour vérifier que c'est appliqué partout** :
 
 ```bash
-grep -nR "wa.me\|573000000000" index.html app.js styles.css
+grep -nR "wa.me\|WHATSAPP_NUMBER" index.html tribu.html mundial.html app.js styles.css
 ```
 
-Tu ne dois voir que **les deux lignes dans `app.js`** (la constante + la fonction `buildWaUrl`). Tous les liens HTML utilisent `data-wa` et `app.js` injecte le bon href au load.
+Tu ne dois voir que la constante dans `app.js`, son usage dans `buildWaUrl`, et le href en dur dans `tribu.html`. Tous les autres liens HTML utilisent `data-wa` et `app.js` injecte le bon href au load.
 
 > 🇨🇴 Bon à savoir : sur mobile, `wa.me/<numero>` ouvre directement l'app WhatsApp. Sur desktop, ça ouvre `web.whatsapp.com` ou Desktop selon ce que l'utilisateur a. Aucune config supplémentaire requise.
 

@@ -75,7 +75,7 @@ Pack complet : **El Once Inicial** (clin d'œil aux 11 titulaires), 4 éditions 
 - Haptique 8ms sur les boutons (`navigator.vibrate`)
 
 ## WhatsApp
-Single source of truth : `WHATSAPP_NUMBER = '573000000000'` dans `app.js` (⚠️ placeholder).
+Single source of truth : `WHATSAPP_NUMBER = '34604828758'` dans `app.js`.
 Tous les CTAs utilisent `data-wa data-wa-msg="..."` — `app.js` injecte le href au load.
 Messages pré-remplis selon le contexte (générique, produit, taille, pack, mayoreo).
 

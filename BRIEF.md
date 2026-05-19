@@ -234,8 +234,8 @@ Toujours **mixer un serif élégant + un sans-serif moderne**. Jamais 100% sans-
 | Generic action | **"Pedir el Mío"** |
 
 ### URLs WhatsApp
-Format : `https://wa.me/573000000000?text=ENCODED_MESSAGE`  
-⚠️ Numéro **573000000000** est un placeholder — sera remplacé plus tard.
+Format : `https://wa.me/34604828758?text=ENCODED_MESSAGE`  
+Numéro de prod : **+34 604 82 87 58** (centralisé dans `app.js` → `WHATSAPP_NUMBER = '34604828758'`).
 
 ### Messages pré-remplis selon contexte
 - **CTA général** : `¡Hola! Quiero pedir mi body Tricolor 🇨🇴`

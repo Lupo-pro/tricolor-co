@@ -6,7 +6,7 @@
 // Single source of truth for the WhatsApp number.
 // Format: 57 + 10-digit Colombian national number, no `+`, no spaces.
 // ⚠️ Placeholder — replace when the real line is ready.
-const WHATSAPP_NUMBER = '573000000000';
+const WHATSAPP_NUMBER = '34604828758';
 
 const DEFAULT_WA_MSG = '¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴';
 const PROMO_LINE = '🎁 Tengo código TRICOLOR10 (-10%)';
