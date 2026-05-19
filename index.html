@@ -1586,5 +1586,233 @@
   </div>
 </div>
 
+<!-- ============================================
+     EXIT INTENT MODAL — homepage only.
+     Triggered when the user signals they're leaving (mouseleave
+     upward on desktop, rapid scroll-up burst on mobile). Captures
+     email via /api/subscribe and unlocks TRICOLOR15 which replaces
+     TRICOLOR10 in every data-wa link (never stacks). One-shot per
+     visitor via a 30-day tricolor_exit_shown cookie.
+     ============================================ -->
+<div class="exit-intent" id="exitIntent" aria-hidden="true" inert>
+  <div class="ei-backdrop" id="eiBackdrop"></div>
+  <div class="ei-dialog" role="dialog" aria-labelledby="eiTitle" aria-modal="true">
+    <button class="ei-close" id="eiClose" type="button" aria-label="Cerrar">✕</button>
+
+    <div class="ei-state ei-state-form" id="eiStateForm">
+      <p class="ei-tag">¡EH, TRICOLOR!</p>
+      <h2 class="ei-title" id="eiTitle">¿Te vas <em>sin tu body</em>?</h2>
+      <p class="ei-lead">Última oportunidad: <strong>-15%</strong> en TODA la colección con el código <span class="ei-code-inline">TRICOLOR15</span>.</p>
+      <p class="ei-sub">Solo para las que se quedan.</p>
+
+      <form class="ei-form" id="eiForm" novalidate>
+        <label class="ei-label" for="eiEmail">Tu email</label>
+        <input type="email" id="eiEmail" name="email" required maxlength="120" autocomplete="email" placeholder="tu@email.com" inputmode="email">
+        <button type="submit" class="ei-submit" id="eiSubmit">QUIERO MI -15% <span aria-hidden="true">→</span></button>
+        <p class="ei-status" id="eiStatus" aria-live="polite"></p>
+      </form>
+
+      <p class="ei-fineprint">No spam. Solo el drop, la Tribu, y nada más. Te puedes salir cuando quieras. <strong>Reemplaza TRICOLOR10 si lo tenías — no acumulable.</strong></p>
+    </div>
+
+    <div class="ei-state ei-state-success" id="eiStateSuccess" hidden>
+      <p class="ei-tag">¡LISTO, CAFETERA! 🇨🇴</p>
+      <p class="ei-success-msg">Tu código:</p>
+      <div class="ei-code-block">
+        <strong class="ei-code">TRICOLOR15</strong>
+        <button type="button" class="ei-copy" id="eiCopy" aria-label="Copiar código TRICOLOR15">📋 Copiar</button>
+      </div>
+      <p class="ei-success-note">Aplica al checkout vía WhatsApp · válido 30 días.</p>
+      <a href="#convocatoria" class="ei-cta" id="eiCtaClose">VER LAS 4 EDICIONES <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function exitIntentInit() {
+  // Scoped to homepage by virtue of being inline here; no /tribu or
+  // /mundial trigger because those pages don't include this snippet.
+  var modal = document.getElementById('exitIntent');
+  if (!modal) return;
+
+  var COOKIE = 'tricolor_exit_shown';
+  var PROMO_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
+  function hasCookie(n) {
+    return document.cookie.split(';').some(function (c) { return c.trim().indexOf(n + '=') === 0; });
+  }
+  function setCookie(n, v, days) {
+    var d = new Date();
+    d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = n + '=' + v + '; expires=' + d.toUTCString() + '; path=/; SameSite=Lax';
+  }
+
+  // Already shown to this visitor — bail without binding any listeners.
+  if (hasCookie(COOKIE)) return;
+
+  var armed = false;
+  var dismissed = false;
+
+  // Set the 30-day cookie + lock out further triggers for this session.
+  function dismiss() {
+    dismissed = true;
+    armed = false;
+    setCookie(COOKIE, '1', 30);
+  }
+
+  // 5-second arm delay — modal can't fire on page landing.
+  setTimeout(function () { if (!dismissed) armed = true; }, 5000);
+
+  // Disarm permanently if the user clicks any 'Pedir / Comprar / WA'
+  // CTA — they're already converting, no need to interrupt.
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-product], .product-cta, .cta-hero, .btn-wa, .bundle-cta, .gorra-cta, .card-cta');
+    if (t) dismiss();
+  }, true);
+
+  function showModal() {
+    if (!armed || dismissed) return;
+    armed = false;
+    document.getElementById('eiStateForm').hidden = false;
+    document.getElementById('eiStateSuccess').hidden = true;
+    modal.classList.add('active');
+    modal.inert = false;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setTimeout(function () {
+      var input = document.getElementById('eiEmail');
+      if (input) input.focus();
+    }, 60);
+  }
+
+  function hideModal() {
+    modal.classList.remove('active');
+    modal.inert = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    dismiss();
+  }
+
+  // === DESKTOP trigger: mouseleave upward ===
+  // mouseleave on document fires when the cursor crosses the viewport
+  // boundary. clientY <= 0 ensures it's the TOP edge (going to address
+  // bar / closing tab), not sideways or downward.
+  document.addEventListener('mouseleave', function (e) {
+    if (e.clientY <= 0) showModal();
+  });
+
+  // === MOBILE trigger: rapid scroll-up burst ===
+  // Track scroll samples over the last 500ms; if the user moved up by
+  // more than 200px in that window (clear "going back to top" signal),
+  // fire the modal.
+  var scrollSamples = [];
+  window.addEventListener('scroll', function () {
+    var now = Date.now();
+    var y = window.scrollY;
+    scrollSamples.push({ y: y, t: now });
+    scrollSamples = scrollSamples.filter(function (s) { return now - s.t < 500; });
+    if (scrollSamples.length >= 2 && y - scrollSamples[0].y < -200) showModal();
+  }, { passive: true });
+
+  // Close button + backdrop click + ESC — all count as dismissal.
+  document.getElementById('eiClose').addEventListener('click', hideModal);
+  document.getElementById('eiBackdrop').addEventListener('click', hideModal);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('active')) hideModal();
+  });
+
+  // === Form submit: validate → POST /api/subscribe → activate TRICOLOR15 ===
+  var form = document.getElementById('eiForm');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = (document.getElementById('eiEmail').value || '').trim();
+    var status = document.getElementById('eiStatus');
+    var submit = document.getElementById('eiSubmit');
+    status.className = 'ei-status';
+    status.textContent = '';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+      status.classList.add('err');
+      status.textContent = 'Email no válido — revisá la dirección.';
+      return;
+    }
+    var prev = submit.textContent;
+    submit.disabled = true;
+    submit.textContent = 'Enviando...';
+    fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, source: 'exit_intent' })
+    }).then(function (r) {
+      if (!r.ok) throw new Error('http_' + r.status);
+      // Activate TRICOLOR15 — REPLACES whatever code was in the slot.
+      try {
+        sessionStorage.setItem('tricolor_promo', 'ACTIVE');
+        sessionStorage.setItem('tricolor_promo_code', 'TRICOLOR15');
+        sessionStorage.setItem('tricolor_promo_expires', String(Date.now() + PROMO_TTL_MS));
+      } catch (_) {}
+      document.documentElement.classList.add('promo-active');
+      // Sync the visible top promo-bar from -10%/TRICOLOR10 → -15%/TRICOLOR15.
+      var bar = document.getElementById('promoBar');
+      if (bar) {
+        var pct = bar.querySelector('.pb-label strong');
+        var code = bar.querySelector('.pb-code');
+        var copy = bar.querySelector('.pb-copy');
+        if (pct) pct.textContent = '-15%';
+        if (code) code.textContent = 'TRICOLOR15';
+        if (copy) copy.setAttribute('aria-label', 'Copiar código TRICOLOR15');
+      }
+      // Rebuild every data-wa href so the new code lands in WA msgs.
+      if (typeof window.__refreshWaLinks === 'function') window.__refreshWaLinks();
+      // Swap the modal to its success state and set the one-shot cookie.
+      document.getElementById('eiStateForm').hidden = true;
+      document.getElementById('eiStateSuccess').hidden = false;
+      dismiss();
+    }).catch(function () {
+      status.classList.add('err');
+      status.textContent = 'Algo falló. Probá de nuevo en un momento.';
+    }).then(function () {
+      submit.disabled = false;
+      submit.textContent = prev;
+    });
+  });
+
+  // === Copy code in success state ===
+  var copyBtn = document.getElementById('eiCopy');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function () {
+      var done = function () {
+        copyBtn.classList.add('ok');
+        copyBtn.textContent = '✓ Copiado';
+        setTimeout(function () {
+          copyBtn.classList.remove('ok');
+          copyBtn.textContent = '📋 Copiar';
+        }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText('TRICOLOR15').then(done).catch(function () {});
+      } else {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = 'TRICOLOR15';
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+          done();
+        } catch (_) {}
+      }
+    });
+  }
+
+  // Clicking the success-state CTA closes the modal as part of the
+  // scroll-to-#convocatoria navigation (the global a[href^="#"]
+  // smooth-scroll handler picks up the href).
+  var eiCtaClose = document.getElementById('eiCtaClose');
+  if (eiCtaClose) eiCtaClose.addEventListener('click', function () { hideModal(); });
+})();
+</script>
+
 </body>
 </html>

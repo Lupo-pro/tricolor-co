@@ -4847,7 +4847,286 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
    ============================================================ */
 @media print {
   .announce, .nav, .tribune-bar, .mobile-menu, .wa-float, .sticky-buy,
-  .modal-backdrop, .chant-marquee, .foot-marquee { display: none !important; }
+  .modal-backdrop, .exit-intent, .chant-marquee, .foot-marquee { display: none !important; }
   body { background: white; color: black; }
   body::before { display: none; }
+}
+
+/* ============================================================
+   EXIT INTENT MODAL — homepage one-shot email capture for the
+   TRICOLOR15 promo. Matches the product modal's V5 fanzine look
+   (cream surface, hard ink border, red shadow). 480px max on
+   desktop, near-full width on phones.
+   ============================================================ */
+.exit-intent {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.exit-intent.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.ei-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+}
+.ei-dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.96);
+  width: calc(100% - 2rem);
+  max-width: 460px;
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  background: var(--bg);
+  color: var(--ink);
+  border: var(--border);
+  box-shadow: 8px 8px 0 var(--red);
+  padding: 1.8rem 1.5rem 1.4rem;
+  transition: transform 0.3s cubic-bezier(.34, 1.56, .64, 1);
+}
+.exit-intent.active .ei-dialog { transform: translate(-50%, -50%) scale(1); }
+
+.ei-close {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.5rem;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  color: var(--bg);
+  border: 0;
+  font-size: 1.1rem;
+  font-family: 'Anton', sans-serif;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.15s;
+}
+.ei-close:hover { background: var(--red); }
+
+.ei-tag {
+  font-family: 'Anton', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 0.45rem;
+}
+.ei-title {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(1.7rem, 6.5vw, 2.2rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin-bottom: 0.85rem;
+  color: var(--ink);
+}
+.ei-title em {
+  font-style: italic;
+  color: var(--red);
+  font-family: 'Bebas Neue', sans-serif;
+}
+.ei-lead {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.02rem;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.ei-lead strong {
+  background: var(--yellow);
+  padding: 0 0.25em;
+  font-family: 'Anton', sans-serif;
+  letter-spacing: 0.08em;
+  font-weight: 400;
+}
+.ei-code-inline {
+  background: var(--ink);
+  color: var(--yellow);
+  font-family: 'Anton', sans-serif;
+  letter-spacing: 0.12em;
+  padding: 0 0.3em;
+}
+.ei-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--ink-mid);
+  margin-bottom: 1.1rem;
+}
+
+.ei-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 0.9rem;
+}
+.ei-label {
+  font-family: 'Anton', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-bottom: -0.3rem;
+}
+.ei-form input[type=email] {
+  padding: 0.85rem 0.95rem;
+  background: var(--bg-warm);
+  border: var(--border);
+  border-radius: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: var(--ink);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: box-shadow 0.15s, transform 0.15s, background 0.15s;
+}
+.ei-form input[type=email]:focus {
+  background: var(--bg);
+  box-shadow: 4px 4px 0 var(--red);
+  transform: translate(-2px, -2px);
+}
+.ei-submit {
+  padding: 0.95rem 1.1rem;
+  background: var(--yellow);
+  color: var(--ink);
+  border: var(--border);
+  box-shadow: 5px 5px 0 var(--red);
+  font-family: 'Anton', sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, background 0.15s;
+}
+.ei-submit:hover,
+.ei-submit:focus-visible {
+  outline: none;
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--red);
+  background: var(--bg);
+}
+.ei-submit:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.ei-submit[disabled] { opacity: 0.6; cursor: wait; }
+
+.ei-status {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  text-align: center;
+  min-height: 1em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.ei-status.ok  { color: var(--ink); }
+.ei-status.err { color: var(--red); }
+
+.ei-fineprint {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  line-height: 1.45;
+  color: var(--muted);
+  font-style: italic;
+}
+.ei-fineprint strong { color: var(--ink); font-style: normal; }
+
+/* === Success state === */
+.ei-success-msg {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  color: var(--ink-mid);
+}
+.ei-code-block {
+  background: var(--ink);
+  color: var(--yellow);
+  border: var(--border);
+  box-shadow: 5px 5px 0 var(--red);
+  padding: 0.95rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-bottom: 0.95rem;
+}
+.ei-code {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  letter-spacing: 0.18em;
+  color: var(--yellow);
+  user-select: all;
+  line-height: 1;
+}
+.ei-copy {
+  background: var(--yellow);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  padding: 0.5rem 0.7rem;
+  font-family: 'Anton', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.12s;
+}
+.ei-copy:hover { transform: translate(-1px, -1px); box-shadow: 2px 2px 0 var(--ink); }
+.ei-copy.ok    { background: var(--bg); }
+.ei-success-note {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-mid);
+  margin-bottom: 1.1rem;
+  text-transform: uppercase;
+}
+.ei-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.95rem 1.4rem;
+  background: var(--red);
+  color: var(--bg);
+  border: var(--border);
+  box-shadow: 5px 5px 0 var(--ink);
+  font-family: 'Anton', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, background 0.15s, color 0.15s;
+}
+.ei-cta:hover,
+.ei-cta:focus-visible {
+  outline: none;
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--ink);
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exit-intent, .ei-dialog { transition: none; }
+  .ei-form input[type=email]:focus,
+  .ei-submit:hover, .ei-submit:focus-visible,
+  .ei-cta:hover, .ei-cta:focus-visible { transform: none; }
 }

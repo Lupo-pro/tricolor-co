@@ -9,18 +9,24 @@
 const WHATSAPP_NUMBER = '34604828758';
 
 const DEFAULT_WA_MSG = '¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴';
-const PROMO_LINE = '🎁 Tengo código TRICOLOR10 (-10%)';
 
-// Append the promo code line to ANY WhatsApp message when the user
-// activated the -10% bonus from the splash AND it hasn't expired.
-// Reads sessionStorage live, so the same href compute path naturally
-// flips on/off as the promo lifecycle changes.
+// Map each promo code to its display percentage. TRICOLOR15 is awarded
+// by the exit-intent modal and REPLACES TRICOLOR10 in the same session
+// keys — they never stack.
+const PROMO_PCT = { TRICOLOR10: '-10%', TRICOLOR15: '-15%' };
+
+// Append the promo code line to ANY WhatsApp message when a promo is
+// active AND hasn't expired. Reads sessionStorage live so the same
+// href compute path naturally flips on/off (and switches code) as the
+// promo lifecycle changes.
 function applyPromoToMsg(msg) {
   try {
     const promo = sessionStorage.getItem('tricolor_promo');
     const expires = parseInt(sessionStorage.getItem('tricolor_promo_expires') || '0', 10);
     if (promo === 'ACTIVE' && Date.now() < expires) {
-      return msg + '\n\n' + PROMO_LINE;
+      const code = sessionStorage.getItem('tricolor_promo_code') || 'TRICOLOR10';
+      const pct = PROMO_PCT[code] || '-10%';
+      return msg + '\n\n' + '🎁 Tengo código ' + code + ' (' + pct + ')';
     }
   } catch (_) {}
   return msg;
@@ -953,7 +959,10 @@ document.querySelectorAll('.cta, .product-cta, .nav-cta, .bundle-cta, .card-cta,
   // Copy to clipboard with toast feedback. Falls back to execCommand
   // for HTTP-served dev environments where clipboard API is gated.
   copyBtn?.addEventListener('click', async () => {
-    const code = 'TRICOLOR10';
+    // Read the live code so the bar copies TRICOLOR15 once it's
+    // activated (e.g. by the exit-intent flow), not the hard-coded
+    // TRICOLOR10.
+    const code = sessionStorage.getItem('tricolor_promo_code') || 'TRICOLOR10';
     let copied = false;
     try {
       await navigator.clipboard.writeText(code);
