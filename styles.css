@@ -902,7 +902,9 @@ html.promo-active .promo-bar { display: flex; }
    HERO
    ============================================================ */
 .hero {
-  min-height: 100dvh;
+  /* Slightly under-full so the info row + CTA stay above the fold on
+     ~390x844 mobiles without scrolling. Was 100dvh. */
+  min-height: 92dvh;
   padding: calc(var(--offset) + 3.5rem) var(--gutter) 2.4rem;
   display: flex;
   flex-direction: column;
@@ -910,6 +912,9 @@ html.promo-active .promo-bar { display: flex; }
      sits over the dark lower-overlay band instead of covering the
      subjects' faces in the top of the photo. */
   justify-content: flex-end;
+  /* Hug the left edge so the bodies / Federación shield on the right
+     stay readable; mobile only — desktop @media overrides this. */
+  text-align: left;
   position: relative;
   /* Cream fallback under the photo (and visible if the image 404s). */
   background-color: var(--bg);
@@ -923,9 +928,11 @@ html.promo-active .promo-bar { display: flex; }
       rgba(0, 0, 0, 0.85) 100%),
     url('/images/hero/hero-moto.jpg');
   background-size: cover;
-  /* Y=18% gives just enough top-clear for foreheads while keeping the
-     moto + asphalt visible in the lower band. */
-  background-position: center 18%;
+  /* Y=5% pulls the photo down enough that the full hair/heads of
+     both riders sit inside the frame on mobile. Floor — if this
+     still clips, the mobile source itself needs regenerating with
+     more top headroom. */
+  background-position: center 5%;
   background-repeat: no-repeat;
   overflow: hidden;
 }
@@ -1118,7 +1125,11 @@ html.promo-active .promo-bar { display: flex; }
   letter-spacing: -0.01em;
   color: var(--bg);
   text-transform: uppercase;
-  text-align: center;
+  /* Left-aligned on mobile so the headline hugs the left edge and
+     the women / Federación shield on the right stay readable.
+     Desktop @media overrides to right-align for the landscape crop. */
+  text-align: left;
+  padding-left: clamp(1rem, 5vw, 2rem);
   margin: 1.1rem 0 0;
   position: relative;
   z-index: 1;
