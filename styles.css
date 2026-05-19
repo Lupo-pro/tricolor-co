@@ -1075,8 +1075,11 @@ html.promo-active .promo-bar { display: flex; }
    sticker geometry from .banderola + position from .banderola-2;
    overrides the blue/yellow colour pair with yellow/ink + a red
    hard-shadow to match the existing .cta-yellow pattern. Sway is
-   disabled — CTAs sit still so hover lift reads cleanly. */
-.banderola-cta {
+   disabled — CTAs sit still so hover lift reads cleanly.
+   Selector is .banderola.banderola-action (specificity 0,2,0) so
+   it wins against .banderola-2 (0,1,0) and isn't shadowed by an
+   unrelated .banderola-cta class used elsewhere in the page. */
+.banderola.banderola-action {
   background: var(--yellow);
   color: var(--ink);
   box-shadow: 5px 5px 0 var(--red);
@@ -1084,16 +1087,19 @@ html.promo-active .promo-bar { display: flex; }
   cursor: pointer;
   animation: none;
   transform: rotate(-1deg);
+  /* Pivot rotation from the left edge so the anchored left position
+     stays put even as the box tilts. */
+  transform-origin: left center;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s;
 }
-.banderola-cta:hover,
-.banderola-cta:focus-visible {
+.banderola.banderola-action:hover,
+.banderola.banderola-action:focus-visible {
   outline: none;
   transform: rotate(-1deg) translate(-2px, -2px);
   box-shadow: 7px 7px 0 var(--red);
   background: var(--bg);
 }
-.banderola-cta:active {
+.banderola.banderola-action:active {
   transform: rotate(-1deg) translate(1px, 1px);
   box-shadow: 2px 2px 0 var(--red);
 }
