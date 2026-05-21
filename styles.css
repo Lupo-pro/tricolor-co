@@ -1002,20 +1002,22 @@ html.promo-active .promo-bar { display: flex; }
     font-size: clamp(4rem, 9vw, 11rem);
   }
 
-  /* Banderolas — swapped sides to match the flipped layout. Both
-     use the .hero prefix (specificity 0,2,0) so they win against
-     the base .banderola-{1,2} (0,1,0) regardless of source order.
-     width:max-content keeps each one sticker-sized. */
+  /* Banderolas — desktop stacks both stickers on the LEFT to balance
+     the right-aligned headline + 'PEDIR EL MÍO' CTA. Red label at
+     top-left, yellow action CTA at bottom-left (mirrors the red CTA
+     at bottom-right). .hero prefix (specificity 0,2,0) beats base
+     .banderola-{1,2} (0,1,0). width:max-content keeps stickers tight. */
   .hero .banderola-1 {
     top: calc(var(--offset) + 1rem);
-    left: auto;
-    right: clamp(2rem, 5vw, 5rem);
+    right: auto;
+    left: clamp(2rem, 5vw, 5rem);
     width: max-content;
     max-width: max-content;
   }
   .hero .banderola-2 {
-    top: calc(var(--offset) + 1rem);
+    top: auto;
     right: auto;
+    bottom: clamp(2rem, 5vw, 5rem);
     left: clamp(2rem, 5vw, 5rem);
     width: max-content;
     max-width: max-content;
@@ -2238,6 +2240,22 @@ html.promo-active .promo-bar { display: flex; }
 }
 .gorras-sub-dot { color: var(--red); margin: 0 0.2em; }
 
+/* Emotional one-liner above the cap grid — quiet, italic, gray. */
+.gorras-emo {
+  font-family: 'Inter', sans-serif;
+  font-style: italic;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--ink-mid);
+  max-width: 44ch;
+  margin: -0.4rem 0 1.5rem;
+}
+.gorras-emo em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--ink);
+}
+
 .gorras-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2305,56 +2323,33 @@ html.promo-active .promo-bar { display: flex; }
   margin-bottom: 0.5rem;
 }
 
-.gorra-price {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  margin-bottom: 0.7rem;
-}
-.gorra-price .now {
-  font-family: 'Anton', sans-serif;
-  font-size: 1.6rem;
-  letter-spacing: 0.02em;
-  color: var(--ink);
-  line-height: 1;
-}
-.gorra-free {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--red);
-  text-transform: uppercase;
-}
-
-.gorra-cta {
+/* Display-only sticker — gorras are no longer sold standalone, they
+   ship inside the pack El Once Inicial. Sits where the CTA used to,
+   pinned to the card bottom; yellow + hard black border + slight
+   tilt, echoing the hero .banderola stickers. */
+.gorra-badge {
   margin-top: auto;
-  background: var(--ink);
-  color: var(--bg);
-  padding: 0.7rem 0.9rem;
-  font-family: 'Anton', sans-serif;
-  font-size: 0.92rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  text-align: center;
-  border: 2px solid var(--ink);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-}
-.gorra-cta:hover,
-.gorra-cta:focus-visible {
+  align-self: center;
   background: var(--yellow);
   color: var(--ink);
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 var(--red);
+  border: 3px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 0.5rem 0.85rem;
+  font-family: 'Anton', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  transform: rotate(-3deg);
 }
-.gorra-cta:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 var(--ink);
+
+/* Single pack CTA below the 4 cap cards — the only path to a gorra. */
+.gorras-cta-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.2rem;
 }
+.gorras-pack-cta { font-size: 1rem; }
 
 /* ============================================================
    CARD UPSELL — discrete cross-sell to the pack on each body card
@@ -2395,7 +2390,7 @@ html.promo-active .promo-bar { display: flex; }
 @media (max-width: 480px) {
   .gorras-sub { font-size: 0.95rem; }
   .gorra-name { font-size: 1.2rem; }
-  .gorra-price .now { font-size: 1.4rem; }
+  .gorra-badge { font-size: 0.85rem; }
 }
 
 .bundle-cta {
