@@ -1571,7 +1571,9 @@
 <!-- ============================================
      EXIT INTENT MODAL — homepage only.
      Triggered when the user signals they're leaving (mouseleave
-     upward on desktop, rapid scroll-up burst on mobile). Captures
+     upward on desktop; on mobile a strict multi-signal exit check —
+     back button / rapid scroll-up burst / idle-then-rise — gated on
+     30s+ engagement and 50%+ scroll depth). Captures
      email via /api/subscribe and unlocks TRICOLOR15 which replaces
      TRICOLOR10 in every data-wa link (never stacks). One-shot per
      visitor via a 30-day tricolor_exit_shown cookie.
@@ -1683,18 +1685,110 @@
     if (e.clientY <= 0) showModal();
   });
 
-  // === MOBILE trigger: rapid scroll-up burst ===
-  // Track scroll samples over the last 500ms; if the user moved up by
-  // more than 200px in that window (clear "going back to top" signal),
-  // fire the modal.
-  var scrollSamples = [];
-  window.addEventListener('scroll', function () {
-    var now = Date.now();
-    var y = window.scrollY;
-    scrollSamples.push({ y: y, t: now });
-    scrollSamples = scrollSamples.filter(function (s) { return now - s.t < 500; });
-    if (scrollSamples.length >= 2 && y - scrollSamples[0].y < -200) showModal();
-  }, { passive: true });
+  // === MOBILE trigger: strict multi-signal exit detection ===
+  // Plain scroll-up browsing must NOT fire the modal. Three GATE
+  // conditions must ALL hold — 30s+ on page, 50%+ scroll depth, and
+  // the user not mid-interaction — and THEN one genuine exit signal:
+  //   A. browser Back button (popstate)
+  //   B. a rapid upward scroll burst (>400px in <300ms)
+  //   C. idle 15s+ after engaging, then drifting back toward the top
+  // Better to miss an exit than to interrupt an engaged visitor.
+  var isMobile = window.matchMedia('(pointer: coarse)').matches;
+  var pageLoadTime = Date.now();
+  var ENGAGE_MS = 30000;       // min time on page
+  var SCROLL_PCT_MIN = 0.5;    // min scroll depth reached
+  var IDLE_MS = 15000;         // idle gap that arms signal C
+  var RAPID_DELTA = 400;       // px of upward travel for signal B...
+  var RAPID_WINDOW = 300;      // ...within this many ms
+
+  var maxScrollPct = 0;        // deepest scroll fraction reached
+  var lastTouchTime = Date.now();
+  var idleArmed = false;       // a 15s+ idle gap just ended
+
+  // Sections we never interrupt: product cards, cap-picker, FAQ.
+  var PROTECTED = ['#collection', '#capPickerPack', '#faq'];
+
+  function scrollFraction() {
+    var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    return scrollable > 0 ? window.scrollY / scrollable : 1;
+  }
+
+  // True when the user is mid-interaction somewhere we must leave alone:
+  // typing in a field, or a protected section sitting across the middle
+  // of the viewport (= they're reading / using it right now).
+  function isBusy() {
+    var ae = document.activeElement;
+    if (ae && (/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName) || ae.isContentEditable)) return true;
+    var vh = window.innerHeight;
+    return PROTECTED.some(function (sel) {
+      var el = document.querySelector(sel);
+      if (!el) return false;
+      var r = el.getBoundingClientRect();
+      return r.top < vh * 0.66 && r.bottom > vh * 0.33;
+    });
+  }
+
+  // The shared GATE — every condition that must hold before any mobile
+  // exit signal is allowed to open the modal.
+  function mobileExitReady() {
+    return isMobile
+      && !dismissed
+      && (Date.now() - pageLoadTime) >= ENGAGE_MS
+      && maxScrollPct >= SCROLL_PCT_MIN
+      && !isBusy();
+  }
+
+  if (isMobile) {
+    // --- Signal A: browser Back button ---
+    // Push one sentinel history entry so the first Back press fires
+    // popstate here instead of leaving the page immediately.
+    try { history.pushState({ ei: 1 }, ''); } catch (_) {}
+    window.addEventListener('popstate', function () {
+      if (mobileExitReady()) showModal();
+    });
+
+    // Track deliberate touches — powers signal C's idle detection.
+    document.addEventListener('touchstart', function () {
+      var gap = Date.now() - lastTouchTime;
+      // A long quiet gap just ended: if the visitor is already engaged,
+      // arm signal C so the next upward scroll reads as an exit drift.
+      if (gap >= IDLE_MS && maxScrollPct >= SCROLL_PCT_MIN) idleArmed = true;
+      lastTouchTime = Date.now();
+    }, { passive: true });
+
+    // --- Signals B & C: scroll-based ---
+    var scrollSamples = [];
+    var lastY = window.scrollY;
+    window.addEventListener('scroll', function () {
+      var now = Date.now();
+      var y = window.scrollY;
+
+      var frac = scrollFraction();
+      if (frac > maxScrollPct) maxScrollPct = frac;
+
+      scrollSamples.push({ y: y, t: now });
+      scrollSamples = scrollSamples.filter(function (s) { return now - s.t < RAPID_WINDOW; });
+
+      var delta = y - lastY;
+      lastY = y;
+      var movingUp = delta < -2;     // small slop to ignore jitter
+      var movingDown = delta > 2;
+
+      // Signal B — rapid upward burst: >400px of upward travel in <300ms.
+      if (scrollSamples.length >= 2 && (scrollSamples[0].y - y) > RAPID_DELTA) {
+        if (mobileExitReady()) { showModal(); return; }
+      }
+
+      // Signal C — idle-then-rise: a 15s+ idle gap ended and the user
+      // is now scrolling back upward toward the top.
+      if (idleArmed && movingUp) {
+        idleArmed = false;
+        if (mobileExitReady()) showModal();
+      } else if (movingDown) {
+        idleArmed = false;   // scrolling down again → not an exit drift
+      }
+    }, { passive: true });
+  }
 
   // Close button + backdrop click + ESC — all count as dismissal.
   document.getElementById('eiClose').addEventListener('click', hideModal);
