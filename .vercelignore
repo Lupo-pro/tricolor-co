@@ -9,6 +9,13 @@ archive-v1/
 # Mockups + raw assets
 mockups/
 
+# Source images used only by /content-machine and /outreach local
+# scripts (ad creatives, social posts) — never referenced by the live
+# site HTML/CSS. ~14MB combined; shipping them bloats the deploy and
+# the CDN cache without serving a single visitor.
+images/lifestyle/
+images/hero/hero-balcon.png
+
 # Local docs that don't need to ship
 BRIEF.md
 DEPLOY.md

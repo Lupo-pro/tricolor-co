@@ -15,6 +15,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="dns-prefetch" href="https://wa.me">
 
+<!-- Hero LCP preload — the hero is a CSS background-image, so without
+     these the browser can't discover it until styles.css finishes
+     downloading & parsing. Split by viewport so mobile only fetches
+     hero-moto.webp and desktop only fetches hero-desktop.webp. Non-WebP
+     browsers ignore these and fall back to the JPG via the CSS rule. -->
+<link rel="preload" as="image" href="/images/hero/hero-moto.webp" type="image/webp" fetchpriority="high" media="(max-width: 1023px)">
+<link rel="preload" as="image" href="/images/hero/hero-desktop.webp" type="image/webp" fetchpriority="high" media="(min-width: 1024px)">
+
 <title>LATRICOLOR.CO · Bodysuits Selección Colombia · Edición Mundial 2026</title>
 <meta name="description" content="Bodysuits de edición limitada Selección Colombia para el Mundial 2026. 4 ediciones + pack con 2 gorras GRATIS, envío a toda Colombia 24-72h, pago contraentrega. Sé Tricolor 🇨🇴">
 <meta name="keywords" content="body selección colombia, bodysuit mundial 2026, body tricolor, body amarilla colombia, edición mundial femenina, contraentrega, hinchada femenina">
@@ -708,7 +716,7 @@
       <div class="card-visual">
         <picture class="card-photo">
           <source type="image/webp" srcset="/images/products/product-capitana.webp">
-          <img src="/images/products/product-capitana.jpg" alt="La Capitana — bodysuit tricolor amarillo, Edición Home Mundial 2026" loading="eager" fetchpriority="high" decoding="async">
+          <img src="/images/products/product-capitana.jpg" alt="La Capitana — bodysuit tricolor amarillo, Edición Home Mundial 2026" loading="eager" fetchpriority="high" decoding="async" width="1122" height="1402">
         </picture>
         <span class="card-watermark" aria-hidden="true">CAP·10</span>
         <div class="card-garantia"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg> Garantizado o te devolvemos</div>
@@ -746,7 +754,7 @@
       <div class="card-visual">
         <picture class="card-photo">
           <source type="image/webp" srcset="/images/products/product-portera.webp">
-          <img src="/images/products/product-portera.jpg" alt="La Portera — bodysuit tricolor azul, Edición Away Mundial 2026" loading="lazy" decoding="async">
+          <img src="/images/products/product-portera.jpg" alt="La Portera — bodysuit tricolor azul, Edición Away Mundial 2026" loading="lazy" decoding="async" width="1024" height="1536">
         </picture>
         <span class="card-watermark" aria-hidden="true">POR·01</span>
         <div class="card-garantia"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg> Garantizado o te devolvemos</div>
@@ -784,7 +792,7 @@
       <div class="card-visual">
         <picture class="card-photo">
           <source type="image/webp" srcset="/images/products/product-oro-negro.webp">
-          <img src="/images/products/product-oro-negro.jpg" alt="Oro Negro — bodysuit tricolor negro con detalles dorados, Edición Premium" loading="lazy" decoding="async">
+          <img src="/images/products/product-oro-negro.jpg" alt="Oro Negro — bodysuit tricolor negro con detalles dorados, Edición Premium" loading="lazy" decoding="async" width="1122" height="1402">
         </picture>
         <span class="card-watermark" aria-hidden="true">ORO·07</span>
         <div class="card-garantia"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg> Garantizado o te devolvemos</div>
@@ -822,7 +830,7 @@
       <div class="card-visual">
         <picture class="card-photo">
           <source type="image/webp" srcset="/images/products/product-cafetera.webp">
-          <img src="/images/products/product-cafetera.jpg" alt="La Cafetera — bodysuit tricolor rojo, Edición Alterna Mundial 2026" loading="lazy" decoding="async">
+          <img src="/images/products/product-cafetera.jpg" alt="La Cafetera — bodysuit tricolor rojo, Edición Alterna Mundial 2026" loading="lazy" decoding="async" width="1122" height="1402">
         </picture>
         <span class="card-watermark" aria-hidden="true">CAF·09</span>
         <div class="card-garantia"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg> Garantizado o te devolvemos</div>
@@ -874,7 +882,7 @@
         <div class="gorra-visual">
           <picture>
             <source type="image/webp" srcset="/images/caps/cap-amarilla.webp">
-            <img src="/images/caps/cap-amarilla.jpg" alt="Gorra tricolor amarilla con bordado oficial" loading="lazy" decoding="async">
+            <img src="/images/caps/cap-amarilla.jpg" alt="Gorra tricolor amarilla con bordado oficial" loading="lazy" decoding="async" width="1000" height="1250">
           </picture>
         </div>
         <h3 class="gorra-name">Gorra Amarilla</h3>
@@ -886,7 +894,7 @@
         <div class="gorra-visual">
           <picture>
             <source type="image/webp" srcset="/images/caps/cap-roja.webp">
-            <img src="/images/caps/cap-roja.jpg" alt="Gorra tricolor roja con bordado oficial" loading="lazy" decoding="async">
+            <img src="/images/caps/cap-roja.jpg" alt="Gorra tricolor roja con bordado oficial" loading="lazy" decoding="async" width="1000" height="1250">
           </picture>
         </div>
         <h3 class="gorra-name">Gorra Roja</h3>
@@ -898,7 +906,7 @@
         <div class="gorra-visual">
           <picture>
             <source type="image/webp" srcset="/images/caps/cap-azul.webp">
-            <img src="/images/caps/cap-azul.jpg" alt="Gorra tricolor azul con bordado oficial" loading="lazy" decoding="async">
+            <img src="/images/caps/cap-azul.jpg" alt="Gorra tricolor azul con bordado oficial" loading="lazy" decoding="async" width="1000" height="1250">
           </picture>
         </div>
         <h3 class="gorra-name">Gorra Azul</h3>
@@ -910,7 +918,7 @@
         <div class="gorra-visual">
           <picture>
             <source type="image/webp" srcset="/images/caps/cap-blanca.webp">
-            <img src="/images/caps/cap-blanca.jpg" alt="Gorra tricolor blanca con bordado oficial" loading="lazy" decoding="async">
+            <img src="/images/caps/cap-blanca.jpg" alt="Gorra tricolor blanca con bordado oficial" loading="lazy" decoding="async" width="1000" height="1250">
           </picture>
         </div>
         <h3 class="gorra-name">Gorra Blanca</h3>
@@ -990,7 +998,7 @@
             <span class="cpp-photo">
               <picture>
                 <source type="image/webp" srcset="/images/caps/cap-amarilla.webp">
-                <img src="/images/caps/cap-amarilla.jpg" alt="" loading="lazy" decoding="async">
+                <img src="/images/caps/cap-amarilla.jpg" alt="" loading="lazy" decoding="async" width="1000" height="1250">
               </picture>
               <span class="cpp-mark" aria-hidden="true">✓</span>
             </span>
@@ -1000,7 +1008,7 @@
             <span class="cpp-photo">
               <picture>
                 <source type="image/webp" srcset="/images/caps/cap-roja.webp">
-                <img src="/images/caps/cap-roja.jpg" alt="" loading="lazy" decoding="async">
+                <img src="/images/caps/cap-roja.jpg" alt="" loading="lazy" decoding="async" width="1000" height="1250">
               </picture>
               <span class="cpp-mark" aria-hidden="true">✓</span>
             </span>
@@ -1010,7 +1018,7 @@
             <span class="cpp-photo">
               <picture>
                 <source type="image/webp" srcset="/images/caps/cap-azul.webp">
-                <img src="/images/caps/cap-azul.jpg" alt="" loading="lazy" decoding="async">
+                <img src="/images/caps/cap-azul.jpg" alt="" loading="lazy" decoding="async" width="1000" height="1250">
               </picture>
               <span class="cpp-mark" aria-hidden="true">✓</span>
             </span>
@@ -1020,7 +1028,7 @@
             <span class="cpp-photo">
               <picture>
                 <source type="image/webp" srcset="/images/caps/cap-blanca.webp">
-                <img src="/images/caps/cap-blanca.jpg" alt="" loading="lazy" decoding="async">
+                <img src="/images/caps/cap-blanca.jpg" alt="" loading="lazy" decoding="async" width="1000" height="1250">
               </picture>
               <span class="cpp-mark" aria-hidden="true">✓</span>
             </span>
@@ -1041,10 +1049,10 @@
       <p class="bundle-trust"><svg class="ic"><use href="#ic-check"/></svg> Pago contraentrega · Envío 24-72h</p>
     </div>
     <div class="bundle-visual" aria-hidden="true">
-      <div class="mini mini-body mini-1"><img src="/images/products/product-capitana.jpg" alt="" loading="lazy" decoding="async"></div>
-      <div class="mini mini-body mini-2"><img src="/images/products/product-portera.jpg" alt="" loading="lazy" decoding="async"></div>
-      <div class="mini mini-body mini-3"><img src="/images/products/product-oro-negro.jpg" alt="" loading="lazy" decoding="async"></div>
-      <div class="mini mini-body mini-4"><img src="/images/products/product-cafetera.jpg" alt="" loading="lazy" decoding="async"></div>
+      <div class="mini mini-body mini-1"><img src="/images/products/product-capitana.jpg" alt="" loading="lazy" decoding="async" width="1122" height="1402"></div>
+      <div class="mini mini-body mini-2"><img src="/images/products/product-portera.jpg" alt="" loading="lazy" decoding="async" width="1024" height="1536"></div>
+      <div class="mini mini-body mini-3"><img src="/images/products/product-oro-negro.jpg" alt="" loading="lazy" decoding="async" width="1122" height="1402"></div>
+      <div class="mini mini-body mini-4"><img src="/images/products/product-cafetera.jpg" alt="" loading="lazy" decoding="async" width="1122" height="1402"></div>
     </div>
   </article>
 </section>
@@ -1069,7 +1077,8 @@
           <source type="image/webp" srcset="/images/testimonios/selfie-4.webp">
           <img src="/images/testimonios/selfie-4.jpg"
                alt="Selfie de María C. con su body tricolor en Bogotá"
-               loading="lazy"
+               loading="lazy" decoding="async"
+               width="1080" height="1350"
                onerror="this.style.display='none'">
         </picture>
       </div>
@@ -1086,7 +1095,8 @@
           <source type="image/webp" srcset="/images/testimonios/selfie-2.webp">
           <img src="/images/testimonios/selfie-2.jpg"
                alt="Selfie de Valentina R. caminando en Cartagena con su body tricolor"
-               loading="lazy"
+               loading="lazy" decoding="async"
+               width="1080" height="1350"
                onerror="this.style.display='none'">
         </picture>
       </div>
@@ -1103,7 +1113,8 @@
           <source type="image/webp" srcset="/images/testimonios/selfie-5.webp">
           <img src="/images/testimonios/selfie-5.png"
                alt="Selfie de Lucía y Sara con sus bodies tricolor en Pereira"
-               loading="lazy"
+               loading="lazy" decoding="async"
+               width="700" height="1244"
                onerror="this.style.display='none'">
         </picture>
       </div>
@@ -1120,7 +1131,8 @@
           <source type="image/webp" srcset="/images/testimonios/selfie-3.webp">
           <img src="/images/testimonios/selfie-3.png"
                alt="Selfie de Ana M. en un evento con su body tricolor en Medellín"
-               loading="lazy"
+               loading="lazy" decoding="async"
+               width="700" height="1244"
                onerror="this.style.display='none'">
         </picture>
       </div>
@@ -1543,7 +1555,7 @@
     <div class="modal-visual color-capitana" id="modalVisual">
       <picture class="modal-photo">
         <source type="image/webp" srcset="/images/products/product-capitana.webp">
-        <img src="/images/products/product-capitana.jpg" alt="La Capitana — Home · Titular #10" decoding="async">
+        <img src="/images/products/product-capitana.jpg" alt="La Capitana — Home · Titular #10" decoding="async" width="1122" height="1402">
       </picture>
       <button class="modal-nav modal-nav-prev" id="modalNavPrev" type="button" aria-label="Foto anterior" hidden>←</button>
       <button class="modal-nav modal-nav-next" id="modalNavNext" type="button" aria-label="Foto siguiente" hidden>→</button>
