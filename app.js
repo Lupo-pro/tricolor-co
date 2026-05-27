@@ -35,6 +35,17 @@ function applyPromoToMsg(msg) {
 const buildWaUrl = (msg) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(applyPromoToMsg(msg || DEFAULT_WA_MSG))}`;
 
+// ============================================
+// TIKTOK PIXEL — safe track wrapper. Pixel base code loads in <head>;
+// if it hasn't initialized (network failure, ad blocker), every call
+// no-ops instead of throwing.
+// ============================================
+function ttqTrack(event, params) {
+  if (window.ttq && typeof window.ttq.track === 'function') {
+    try { window.ttq.track(event, params); } catch (_) {}
+  }
+}
+
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ============================================
@@ -57,6 +68,20 @@ function refreshAllWaLinks() {
 }
 refreshAllWaLinks();
 window.__refreshWaLinks = refreshAllWaLinks;
+
+// TikTok ClickButton — fire on any click that resolves to a WhatsApp
+// link or our yellow CTA class. Delegated at document level so it
+// covers dynamically-rebuilt hrefs (data-wa) and future elements.
+// Doesn't preventDefault — the WhatsApp window still opens normally.
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('a[href*="wa.me"], a[href*="whatsapp"], .cta-yellow');
+  if (!el) return;
+  ttqTrack('ClickButton', {
+    content_name: 'WhatsApp CTA',
+    content_id: 'whatsapp_pedir',
+    description: 'User clicked PEDIR EL MÍO or WhatsApp link'
+  });
+}, { capture: true });
 
 // ============================================
 // STOCK URGENCY — randomized scarcity number per card.
@@ -399,9 +424,22 @@ modalVisual.addEventListener('pointerup', (e) => {
   if (Math.abs(dx) > 50) cyclePhoto(dx < 0 ? 1 : -1);
 });
 
+// Map internal color keys to the public product slugs used in
+// analytics events (oronegro → oro-negro, others passthrough).
+const PRODUCT_SLUG_MAP = { oronegro: 'oro-negro' };
+
 function openModal(color, returnTo) {
   const data = productData[color];
   if (!data) return;
+  // TikTok AddToCart — fires every time a product modal opens.
+  // Slug matches the public product identifier (oro-negro, not oronegro).
+  ttqTrack('AddToCart', {
+    content_name: 'Body Tricolor',
+    content_id: PRODUCT_SLUG_MAP[color] || color,
+    content_type: 'product',
+    value: 89000,
+    currency: 'COP'
+  });
   modalReturnFocus = returnTo || document.activeElement;
   modalVisual.className = 'modal-visual color-' + data.color;
   // Build the carousel content fresh on every open. The color-X class
@@ -761,7 +799,17 @@ const stickyBuy = document.getElementById('stickyBuy');
          { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }],
         { duration: 280, easing: 'ease-in-out' }
       );
+      return;
     }
+    // TikTok InitiateCheckout — only on the real pack order (2 caps picked).
+    // Highest-intent event on the site; cart value = full pack.
+    ttqTrack('InitiateCheckout', {
+      content_name: 'Pack El Once Inicial',
+      content_id: 'pack_once_inicial',
+      content_type: 'bundle',
+      value: 329000,
+      currency: 'COP'
+    });
   });
 
   render();
