@@ -10,6 +10,7 @@
    ============================================ */
 
 const { renderWelcomeEmail } = require('./_welcome-email');
+const { addContactToAudience } = require('./_resend-audience');
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FROM = 'La Tricolor <hola@latricolor.co>';
@@ -39,6 +40,10 @@ module.exports = async function handler(req, res) {
   const ts = new Date().toISOString();
   // Single-line JSON keeps the log searchable in Vercel's UI.
   console.log(JSON.stringify({ event: 'subscribe', email, source, ts }));
+
+  // Persist to the Resend Audience so we have a real subscriber list,
+  // not just log lines. No-op if RESEND_AUDIENCE_ID isn't set.
+  await addContactToAudience({ email });
 
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {

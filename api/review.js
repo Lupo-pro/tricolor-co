@@ -9,6 +9,8 @@
    the user. The review is recoverable from the log line.
    ============================================ */
 
+const { addContactToAudience } = require('./_resend-audience');
+
 const TO = 'hola@latricolor.co';
 const FROM = 'La Tricolor <hola@latricolor.co>';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -89,6 +91,13 @@ module.exports = async function handler(req, res) {
   const ts = new Date().toISOString();
   const record = { event: 'review', name, city, rating, email, comment, photo, source, ts };
   console.log(JSON.stringify(record));
+
+  // If the reviewer left an email, persist them to the Resend Audience
+  // tagged with their name + city (Resend's first_name / last_name fields
+  // are the only structured metadata available on a contact).
+  if (email) {
+    await addContactToAudience({ email, firstName: name, lastName: city });
+  }
 
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
