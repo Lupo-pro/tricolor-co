@@ -527,6 +527,25 @@ document.querySelectorAll('.product-cta, [data-product]').forEach((btn) => {
   });
 });
 
+// ============================================
+// DIVARTE × LATRICOLOR — collab bag reservations.
+// Each "Reservar el mío" CTA fires AddToCart with the bag's slug + price
+// so TikTok Events Manager shows which limited bag pulls the most intent.
+// The WhatsApp href itself is built by refreshAllWaLinks() (data-wa), so
+// we don't preventDefault here — the chat still opens normally.
+// ============================================
+document.querySelectorAll('.divarte-cta').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    ttqTrack('AddToCart', {
+      content_name: 'Bolso Divarte x LATRICOLOR',
+      content_id: btn.dataset.bagSlug,       // 'la-hincha' | 'la-tribu'
+      content_type: 'product',
+      value: Number(btn.dataset.bagPrice),   // 289000 | 349000
+      currency: 'COP'
+    });
+  });
+});
+
 modalClose.addEventListener('click', closeModal);
 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', (e) => {

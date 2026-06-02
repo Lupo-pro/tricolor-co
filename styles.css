@@ -2352,6 +2352,260 @@ html.promo-active .promo-bar { display: flex; }
 .gorras-pack-cta { font-size: 1rem; }
 
 /* ============================================================
+   DIVARTE × LATRICOLOR — Edición Mundial 2026
+   Special collab: 2 handmade crochet bags, 5 units each. The panel
+   sits on a lighter crema than the rest of the page (delineates it as
+   a guest collaboration) with a thin tricolor rule marking the team-up.
+   Tone is luxe-handmade: more whitespace, calmer, scarcity stickers.
+   ============================================================ */
+.divarte {
+  padding: 5rem var(--gutter) 5.5rem;
+  /* Lighter, warmer crema than --bg so the collab reads as its own
+     pinned panel without ever touching pure white. */
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,211,0,0.06), transparent 60%),
+    #F6F2E9;
+  border-top: var(--border);
+  border-bottom: var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.divarte-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+
+/* Thin tricolor rule above the title — the collaboration mark. */
+.divarte-rule {
+  display: block;
+  width: 180px;
+  height: 4px;
+  margin: 0 auto 1.4rem;
+  background: linear-gradient(
+    to right,
+    var(--yellow) 0 33.3%,
+    var(--blue) 33.3% 66.6%,
+    var(--red) 66.6% 100%
+  );
+}
+
+.divarte-head { text-align: center; margin-bottom: 3rem; }
+.divarte-prelabel {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.9rem;
+}
+
+/* 3-color logo treatment: yellow / blue / red words, ink stroke +
+   offset shadow so the yellow stays legible on crema (mirrors
+   .logo-tricolor). */
+.divarte-title {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25em;
+  margin-top: 0;
+  font-size: clamp(2.1rem, 7vw, 4.6rem);
+}
+.divarte-title .dv-word,
+.divarte-title .dv-x {
+  -webkit-text-stroke: 1.5px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 3px 3px 0 var(--ink);
+}
+.divarte-title .dv-y { color: var(--yellow); }
+.divarte-title .dv-x { color: var(--blue); font-size: 0.7em; }
+.divarte-title .dv-r { color: var(--red); }
+
+.divarte-tagline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.05rem, 2.6vw, 1.5rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 1rem auto 0;
+  max-width: 30ch;
+}
+.divarte-intro {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 52ch;
+  margin: 0.9rem auto 0;
+}
+.divarte-intro em {
+  font-style: italic;
+  font-weight: 600;
+  color: var(--red);
+}
+
+/* Two product cards — premium, calmer than the body cards. */
+.divarte-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 880px;
+  margin: 0 auto;
+}
+.divarte-card {
+  background: var(--bg);
+  border: var(--border);
+  box-shadow: var(--shadow-hard);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.divarte-card:hover,
+.divarte-card:focus-within {
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 var(--blue);
+}
+
+/* Reuses .card-visual (4/5) for the bag image; warm crema fallback
+   behind the placeholder SVG while it loads. */
+.divarte-visual { background: var(--bg-warm); }
+
+/* SOLO 5 UNIDADES — bright-red sticker, hard shadow, tilted. Screams. */
+.divarte-stock {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  z-index: 4;
+  background: var(--red);
+  color: #fff;
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 0.45rem 0.8rem;
+  font-family: 'Anton', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: rotate(-3deg);
+}
+
+.divarte-info {
+  padding: 1.4rem 1.5rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+.divarte-name {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.9rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.divarte-edition {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+.divarte-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0.3rem 0 0.2rem;
+}
+.divarte-price {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.7rem;
+  color: var(--ink);
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+.divarte-cta { width: 100%; margin-top: 0.7rem; }
+
+/* Value / urgency infographic — 3 simple icon facts. */
+.divarte-facts {
+  list-style: none;
+  margin: 3rem auto 0;
+  padding: 0;
+  max-width: 880px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  border-top: var(--border-thin);
+  padding-top: 2rem;
+}
+.divarte-fact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+.divarte-fact-ic { font-size: 1.9rem; line-height: 1; }
+.divarte-fact-txt {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--ink-mid);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.divarte-fact-txt strong {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/* Reassurance line + WhatsApp to Nay. */
+.divarte-help {
+  margin: 2.6rem auto 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+.divarte-help-text {
+  font-family: 'Inter', sans-serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+.divarte-help-cta .ic-wa-mini {
+  width: 1.1em;
+  height: 1.1em;
+  fill: currentColor;
+}
+
+@media (min-width: 720px) {
+  .divarte-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .divarte-facts {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+    max-width: 320px;
+  }
+  .divarte-fact {
+    flex-direction: row;
+    text-align: left;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .divarte-fact-txt { align-items: flex-start; }
+}
+
+/* ============================================================
    CARD UPSELL — discrete cross-sell to the pack on each body card
    ============================================================ */
 .card-upsell {
