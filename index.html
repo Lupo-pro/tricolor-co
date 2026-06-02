@@ -322,7 +322,7 @@
       "@id": "https://latricolor.co/#la-hincha",
       "name": "La Hincha — Bolso Tricolor Crochet Hecho a Mano · Divarte × LATRICOLOR",
       "description": "Edición Mundial 2026. Bolso tricolor tejido a mano en hilo grueso con banderola amarilla, azul y roja. Colaboración especial Divarte × LATRICOLOR. Edición #01, solo 5 unidades en el mundo.",
-      "image": "https://latricolor.co/images/divarte/bag-hincha-placeholder.svg",
+      "image": "https://latricolor.co/images/divarte/bag-hincha.webp",
       "category": "Bolsos artesanales",
       "brand": { "@type": "Brand", "name": "Divarte × LATRICOLOR" },
       "offers": {
@@ -1118,13 +1118,16 @@
 
     <div class="divarte-grid">
 
-      <!-- Card 1 — La Hincha -->
+      <!-- Card 1 — La Hincha (real photos + modal carousel, reuses the
+           4-ediciones modal via data-color="lahincha" in app.js) -->
       <article class="divarte-card reveal">
-        <div class="card-visual divarte-visual">
+        <div class="card-visual divarte-visual divarte-gallery" data-color="lahincha" role="button" tabindex="0" aria-label="Ver las 5 fotos de La Hincha">
           <picture class="card-photo">
-            <img src="/images/divarte/bag-hincha-placeholder.svg" alt="La Hincha — bolso tricolor tejido a mano en crochet, con banderola amarilla, azul y roja. Edición Mundial Divarte × LATRICOLOR." loading="lazy" decoding="async" width="800" height="1000">
+            <source srcset="/images/divarte/bag-hincha.webp" type="image/webp">
+            <img src="/images/divarte/bag-hincha.jpg" alt="Bolso La Hincha — crochet tricolor hecho a mano, edición Mundial Divarte × LATRICOLOR" loading="lazy" decoding="async" width="1200" height="1500">
           </picture>
           <span class="divarte-stock" aria-hidden="true">Solo 5 unidades</span>
+          <span class="divarte-gallery-hint" aria-hidden="true">📷 5 fotos</span>
         </div>
         <div class="divarte-info">
           <h3 class="divarte-name">La Hincha</h3>

@@ -316,9 +316,29 @@ const productData = {
     color: 'cafetera',
     photos: ['product-cafetera'],
   },
-  // Divarte × LATRICOLOR collab bag — reuses the modal carousel, but its
-  // photos live in /images/divarte/ (dir) and it tracks as a bag, not a
-  // body. ctaMsg mirrors the card's WhatsApp reservation message.
+  // Divarte × LATRICOLOR collab bags — reuse the modal carousel, but their
+  // photos live in /images/divarte/ (dir) and they track as bags, not
+  // bodies. ctaMsg mirrors each card's WhatsApp reservation message.
+  lahincha: {
+    name: 'La Hincha',
+    desc: 'Bolso tricolor crochet hecho a mano, edición Mundial Divarte × LATRICOLOR. Tejido en hilo grueso con banderola amarilla, azul y roja. Para ir al estadio sin perder elegancia. Solo 5 unidades en el mundo.',
+    tag: 'Bolso Crochet · Edición #01',
+    price: '$200.000',
+    old: '',
+    color: 'lahincha',
+    dir: '/images/divarte/',
+    photos: ['bag-hincha', 'bag-hincha2', 'bag-hincha3', 'bag-hincha4', 'bag-hincha5'],
+    track: { content_name: 'Bolso Divarte x LATRICOLOR', content_id: 'la-hincha', value: 200000, currency: 'COP' },
+    ctaMsg: 'Hola quiero reservar LA HINCHA edición Mundial Divarte × LATRICOLOR',
+    // Bag, not a body: no size selector, its own craft-led feature list.
+    talla: false,
+    features: [
+      'Tejido a mano en hilo grueso',
+      'Banderola amarilla, azul y roja',
+      'Cada pieza tarda 2-3 días en hacerse',
+      'Solo 5 unidades en el mundo · Edición #01',
+    ],
+  },
   latribu: {
     name: 'La Tribu',
     desc: 'Bolso tricolor crochet hecho a mano, edición Mundial Divarte × LATRICOLOR. Más grande, más bandera, más memoria. Tejido en hilo grueso con banderola amarilla, azul y roja. Solo 5 unidades en el mundo.',
