@@ -2473,6 +2473,28 @@ html.promo-active .promo-bar { display: flex; }
    behind the placeholder SVG while it loads. */
 .divarte-visual { background: var(--bg-warm); }
 
+/* La Tribu opens a photo carousel — signal it's clickable. */
+.divarte-gallery { cursor: zoom-in; }
+.divarte-gallery-hint {
+  position: absolute;
+  bottom: 0.7rem;
+  left: 0.7rem;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(10,10,10,0.78);
+  color: var(--bg);
+  border: 2px solid var(--ink);
+  padding: 0.3rem 0.6rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.divarte-gallery .ic { width: 0.9em; height: 0.9em; fill: currentColor; }
+
 /* SOLO 5 UNIDADES — bright-red sticker, hard shadow, tilted. Screams. */
 .divarte-stock {
   position: absolute;

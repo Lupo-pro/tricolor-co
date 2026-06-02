@@ -341,7 +341,7 @@
       "@id": "https://latricolor.co/#la-tribu",
       "name": "La Tribu — Bolso Tricolor Crochet Hecho a Mano · Divarte × LATRICOLOR",
       "description": "Edición Mundial 2026. Bolso tricolor crochet más grande, tejido a mano con banderola amarilla, azul y roja. Colaboración especial Divarte × LATRICOLOR. Edición #02, solo 5 unidades en el mundo.",
-      "image": "https://latricolor.co/images/divarte/bag-tribu-placeholder.svg",
+      "image": "https://latricolor.co/images/divarte/bag-tribu.webp",
       "category": "Bolsos artesanales",
       "brand": { "@type": "Brand", "name": "Divarte × LATRICOLOR" },
       "offers": {
@@ -564,13 +564,13 @@
 <div class="announce" role="banner" aria-label="Anuncio Mundial 2026">
   <div class="announce-track">
     <span>🚚 ENVÍO GRATIS A TODA COLOMBIA</span><span class="sep">★</span>
-    <span>💵 PAGA AL RECIBIR</span><span class="sep">★</span>
+    <span>💵 CONTRA ENTREGA</span><span class="sep">★</span>
     <span>🔥 -40% SOLO HOY</span><span class="sep">★</span>
     <span>🇨🇴 EDICIÓN MUNDIAL 2026</span><span class="sep">★</span>
     <span>⚠️ STOCK LIMITADO</span><span class="sep">★</span>
     <span>47 PEDIDOS HOY</span><span class="sep">★</span>
     <span>🚚 ENVÍO GRATIS A TODA COLOMBIA</span><span class="sep">★</span>
-    <span>💵 PAGA AL RECIBIR</span><span class="sep">★</span>
+    <span>💵 CONTRA ENTREGA</span><span class="sep">★</span>
     <span>🔥 -40% SOLO HOY</span><span class="sep">★</span>
     <span>🇨🇴 EDICIÓN MUNDIAL 2026</span><span class="sep">★</span>
     <span>⚠️ STOCK LIMITADO</span><span class="sep">★</span>
@@ -1142,13 +1142,16 @@
         </div>
       </article>
 
-      <!-- Card 2 — La Tribu -->
+      <!-- Card 2 — La Tribu (real photos + modal carousel, reuses the
+           4-ediciones modal via data-color="latribu" in app.js) -->
       <article class="divarte-card reveal">
-        <div class="card-visual divarte-visual">
+        <div class="card-visual divarte-visual divarte-gallery" data-color="latribu" role="button" tabindex="0" aria-label="Ver las 4 fotos de La Tribu">
           <picture class="card-photo">
-            <img src="/images/divarte/bag-tribu-placeholder.svg" alt="La Tribu — bolso tricolor grande tejido a mano en crochet, con banderola amarilla, azul y roja. Edición Mundial Divarte × LATRICOLOR." loading="lazy" decoding="async" width="800" height="1000">
+            <source srcset="/images/divarte/bag-tribu.webp" type="image/webp">
+            <img src="/images/divarte/bag-tribu.jpg" alt="Bolso La Tribu — crochet tricolor hecho a mano, edición Mundial Divarte × LATRICOLOR" loading="lazy" decoding="async" width="1200" height="1500">
           </picture>
           <span class="divarte-stock" aria-hidden="true">Solo 5 unidades</span>
+          <span class="divarte-gallery-hint" aria-hidden="true">📷 4 fotos</span>
         </div>
         <div class="divarte-info">
           <h3 class="divarte-name">La Tribu</h3>

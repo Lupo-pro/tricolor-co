@@ -316,6 +316,29 @@ const productData = {
     color: 'cafetera',
     photos: ['product-cafetera'],
   },
+  // Divarte × LATRICOLOR collab bag — reuses the modal carousel, but its
+  // photos live in /images/divarte/ (dir) and it tracks as a bag, not a
+  // body. ctaMsg mirrors the card's WhatsApp reservation message.
+  latribu: {
+    name: 'La Tribu',
+    desc: 'Bolso tricolor crochet hecho a mano, edición Mundial Divarte × LATRICOLOR. Más grande, más bandera, más memoria. Tejido en hilo grueso con banderola amarilla, azul y roja. Solo 5 unidades en el mundo.',
+    tag: 'Bolso Crochet · Edición #02',
+    price: '$280.000',
+    old: '',
+    color: 'latribu',
+    dir: '/images/divarte/',
+    photos: ['bag-tribu', 'bag-tribu2', 'bag-tribu3', 'bag-tribu4'],
+    track: { content_name: 'Bolso Divarte x LATRICOLOR', content_id: 'la-tribu', value: 280000, currency: 'COP' },
+    ctaMsg: 'Hola quiero reservar LA TRIBU edición Mundial Divarte × LATRICOLOR',
+    // Bag, not a body: no size selector, its own craft-led feature list.
+    talla: false,
+    features: [
+      'Tejido a mano en hilo grueso',
+      'Banderola amarilla, azul y roja',
+      'Cada pieza tarda 2-3 días en hacerse',
+      'Solo 5 unidades en el mundo · Edición #02',
+    ],
+  },
 };
 
 // ============================================
@@ -333,6 +356,12 @@ const modalTag = document.getElementById('modalTag');
 const modalPriceNow = document.getElementById('modalPriceNow');
 const modalPriceOld = document.getElementById('modalPriceOld');
 const modalCta = document.getElementById('modalCta');
+// Body-only blocks — captured once so we can restore them after a
+// non-body product (the Divarte bag) swapped/hid them.
+const modalTallaEl = modalDialog.querySelector('.modal-talla');
+const modalFeaturesEl = modalDialog.querySelector('.modal-features');
+const modalSaveEl = modalDialog.querySelector('.mp-save');
+const FEATURES_DEFAULT_HTML = modalFeaturesEl ? modalFeaturesEl.innerHTML : null;
 
 let modalReturnFocus = null;
 
@@ -361,6 +390,9 @@ function trapFocus(e) {
 // Reset every openModal(); arrows + dots only show when length > 1.
 let modalPhotos = [];
 let modalPhotoIdx = 0;
+// Image folder for the current product's photos. Bodies live in
+// /images/products/; the Divarte bag overrides this via data.dir.
+let modalDir = '/images/products/';
 const modalNavPrev = document.getElementById('modalNavPrev');
 const modalNavNext = document.getElementById('modalNavNext');
 const modalDots    = document.getElementById('modalDots');
@@ -372,8 +404,8 @@ function renderModalPhoto() {
   if (!picture) return;
   const source = picture.querySelector('source');
   const img    = picture.querySelector('img');
-  if (source) source.srcset = '/images/products/' + file + '.webp';
-  if (img)    img.src       = '/images/products/' + file + '.jpg';
+  if (source) source.srcset = modalDir + file + '.webp';
+  if (img)    img.src       = modalDir + file + '.jpg';
   if (modalDots) {
     modalDots.querySelectorAll('.modal-dot').forEach((d, i) => {
       const active = i === modalPhotoIdx;
@@ -431,9 +463,10 @@ const PRODUCT_SLUG_MAP = { oronegro: 'oro-negro' };
 function openModal(color, returnTo) {
   const data = productData[color];
   if (!data) return;
-  // TikTok AddToCart — fires every time a product modal opens.
-  // Slug matches the public product identifier (oro-negro, not oronegro).
-  ttqTrack('AddToCart', {
+  // TikTok AddToCart — fires every time a product modal opens. Bodies
+  // report as 'Body Tricolor' @ 89000; products carrying their own
+  // `track` (the Divarte bag) report their real name / id / value.
+  ttqTrack('AddToCart', data.track || {
     content_name: 'Body Tricolor',
     content_id: PRODUCT_SLUG_MAP[color] || color,
     content_type: 'product',
@@ -442,6 +475,8 @@ function openModal(color, returnTo) {
   });
   modalReturnFocus = returnTo || document.activeElement;
   modalVisual.className = 'modal-visual color-' + data.color;
+  // Photos may live in a different folder (Divarte bag → /images/divarte/).
+  modalDir = data.dir || '/images/products/';
   // Build the carousel content fresh on every open. The color-X class
   // keeps the per-edition radial-gradient as a tinted fallback while
   // the photo loads / if it 404s.
@@ -451,8 +486,8 @@ function openModal(color, returnTo) {
   const first = modalPhotos[0] || 'product-capitana';
   modalVisual.innerHTML =
     '<picture class="modal-photo">' +
-      '<source type="image/webp" srcset="/images/products/' + first + '.webp">' +
-      '<img src="/images/products/' + first + '.jpg" alt="' + alt + '" decoding="async">' +
+      '<source type="image/webp" srcset="' + modalDir + first + '.webp">' +
+      '<img src="' + modalDir + first + '.jpg" alt="' + alt + '" decoding="async">' +
     '</picture>';
   // Re-attach the carousel controls inside .modal-visual every time —
   // innerHTML wipe above removes them otherwise. They live in the
@@ -470,7 +505,19 @@ function openModal(color, returnTo) {
   modalTag.textContent = data.tag;
   modalPriceNow.textContent = data.price;
   modalPriceOld.textContent = data.old;
-  updateModalCta(data.name, data.price);
+  // Body-only blocks: hide the size selector + discount badge for the bag,
+  // and swap in its craft-led feature list (restore defaults for bodies).
+  if (modalTallaEl) modalTallaEl.style.display = (data.talla === false) ? 'none' : '';
+  if (modalSaveEl)  modalSaveEl.style.display  = data.old ? '' : 'none';
+  if (modalFeaturesEl) {
+    if (data.features && data.features.length) {
+      modalFeaturesEl.innerHTML = data.features.map((f) =>
+        '<li><svg class="ic"><use href="#ic-check"/></svg> ' + f + '</li>').join('');
+    } else if (FEATURES_DEFAULT_HTML != null) {
+      modalFeaturesEl.innerHTML = FEATURES_DEFAULT_HTML;
+    }
+  }
+  updateModalCta(data.name, data.price, data.ctaMsg);
   modal.classList.add('active');
   modal.inert = false;
   modal.setAttribute('aria-hidden', 'false');
@@ -480,8 +527,8 @@ function openModal(color, returnTo) {
   setTimeout(() => modalClose.focus(), 50);
 }
 
-function updateModalCta(productName, price) {
-  const msg = `¡Hola! Quiero pedir el body ${productName} 🇨🇴\n\nTalla: única (S a XL)\nPrecio: ${price}\n\n¿Está disponible?`;
+function updateModalCta(productName, price, customMsg) {
+  const msg = customMsg || `¡Hola! Quiero pedir el body ${productName} 🇨🇴\n\nTalla: única (S a XL)\nPrecio: ${price}\n\n¿Está disponible?`;
   modalCta.href = buildWaUrl(msg);
   modalCta.target = '_blank';
   modalCta.rel = 'noopener';
@@ -524,6 +571,18 @@ document.querySelectorAll('.product-cta, [data-product]').forEach((btn) => {
     if (!product) return;
     const msg = `¡Hola! Me interesa ${product} 🇨🇴\n\n¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?`;
     window.open(buildWaUrl(msg), '_blank', 'noopener');
+  });
+});
+
+// Divarte gallery visuals (La Tribu) open the same modal carousel as the
+// body cards — click or keyboard-activate the image to browse its photos.
+document.querySelectorAll('.divarte-gallery[data-color]').forEach((el) => {
+  el.addEventListener('click', () => openModal(el.dataset.color, el));
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openModal(el.dataset.color, el);
+    }
   });
 });
 
