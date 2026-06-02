@@ -8,6 +8,12 @@
 // ⚠️ Placeholder — replace when the real line is ready.
 const WHATSAPP_NUMBER = '34604828758';
 
+// Divarte × LATRICOLOR collab bags route to Nay's own WhatsApp line
+// (+33 7 80 66 05 34), separate from the main LATRICOLOR number above.
+// Used ONLY for the 2 Divarte bag links/modals — everything else stays
+// on WHATSAPP_NUMBER.
+const DIVARTE_WHATSAPP_NUMBER = '33780660534';
+
 const DEFAULT_WA_MSG = '¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴';
 
 // Map each promo code to its display percentage. TRICOLOR15 is awarded
@@ -32,8 +38,10 @@ function applyPromoToMsg(msg) {
   return msg;
 }
 
-const buildWaUrl = (msg) =>
-  `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(applyPromoToMsg(msg || DEFAULT_WA_MSG))}`;
+// `number` defaults to the main LATRICOLOR line; pass DIVARTE_WHATSAPP_NUMBER
+// for the collab bags.
+const buildWaUrl = (msg, number) =>
+  `https://wa.me/${number || WHATSAPP_NUMBER}?text=${encodeURIComponent(applyPromoToMsg(msg || DEFAULT_WA_MSG))}`;
 
 // ============================================
 // TIKTOK PIXEL — safe track wrapper. Pixel base code loads in <head>;
@@ -61,7 +69,10 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 // ============================================
 function refreshAllWaLinks() {
   document.querySelectorAll('[data-wa]').forEach((el) => {
-    el.href = buildWaUrl(el.dataset.waMsg);
+    // Links inside the #divarte section (bag CTAs + "Escríbile a Nay")
+    // route to Nay's Divarte line; everything else stays on LATRICOLOR.
+    const number = el.closest('#divarte') ? DIVARTE_WHATSAPP_NUMBER : undefined;
+    el.href = buildWaUrl(el.dataset.waMsg, number);
     if (!el.target) el.target = '_blank';
     el.rel = 'noopener';
   });
@@ -331,6 +342,7 @@ const productData = {
     track: { content_name: 'Bolso Divarte x LATRICOLOR', content_id: 'la-hincha', value: 200000, currency: 'COP' },
     ctaMsg: 'Hola quiero reservar LA HINCHA edición Mundial Divarte × LATRICOLOR',
     trust: '★ Pago contraentrega · Envío 24-72h',
+    waNumber: DIVARTE_WHATSAPP_NUMBER,
     // Bag, not a body: no size selector, its own craft-led feature list.
     talla: false,
     features: [
@@ -352,6 +364,7 @@ const productData = {
     track: { content_name: 'Bolso Divarte x LATRICOLOR', content_id: 'la-tribu', value: 280000, currency: 'COP' },
     ctaMsg: 'Hola quiero reservar LA TRIBU edición Mundial Divarte × LATRICOLOR',
     trust: '★ Pago contraentrega · Envío 24-72h',
+    waNumber: DIVARTE_WHATSAPP_NUMBER,
     // Bag, not a body: no size selector, its own craft-led feature list.
     talla: false,
     features: [
@@ -544,7 +557,7 @@ function openModal(color, returnTo) {
   // Trust line: handmade bags drop the 7-day guarantee (doesn't apply to
   // limited handmade pieces); bodies keep the default line.
   if (modalTrustEl && TRUST_DEFAULT != null) modalTrustEl.textContent = data.trust || TRUST_DEFAULT;
-  updateModalCta(data.name, data.price, data.ctaMsg);
+  updateModalCta(data.name, data.price, data.ctaMsg, data.waNumber);
   modal.classList.add('active');
   modal.inert = false;
   modal.setAttribute('aria-hidden', 'false');
@@ -554,9 +567,9 @@ function openModal(color, returnTo) {
   setTimeout(() => modalClose.focus(), 50);
 }
 
-function updateModalCta(productName, price, customMsg) {
+function updateModalCta(productName, price, customMsg, waNumber) {
   const msg = customMsg || `¡Hola! Quiero pedir el body ${productName} 🇨🇴\n\nTalla: única (S a XL)\nPrecio: ${price}\n\n¿Está disponible?`;
-  modalCta.href = buildWaUrl(msg);
+  modalCta.href = buildWaUrl(msg, waNumber);
   modalCta.target = '_blank';
   modalCta.rel = 'noopener';
 }
