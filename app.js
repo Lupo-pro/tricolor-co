@@ -330,6 +330,7 @@ const productData = {
     photos: ['bag-hincha', 'bag-hincha2', 'bag-hincha3', 'bag-hincha4', 'bag-hincha5'],
     track: { content_name: 'Bolso Divarte x LATRICOLOR', content_id: 'la-hincha', value: 200000, currency: 'COP' },
     ctaMsg: 'Hola quiero reservar LA HINCHA edición Mundial Divarte × LATRICOLOR',
+    trust: '★ Pago contraentrega · Envío 24-72h',
     // Bag, not a body: no size selector, its own craft-led feature list.
     talla: false,
     features: [
@@ -350,6 +351,7 @@ const productData = {
     photos: ['bag-tribu', 'bag-tribu2', 'bag-tribu3', 'bag-tribu4'],
     track: { content_name: 'Bolso Divarte x LATRICOLOR', content_id: 'la-tribu', value: 280000, currency: 'COP' },
     ctaMsg: 'Hola quiero reservar LA TRIBU edición Mundial Divarte × LATRICOLOR',
+    trust: '★ Pago contraentrega · Envío 24-72h',
     // Bag, not a body: no size selector, its own craft-led feature list.
     talla: false,
     features: [
@@ -381,7 +383,9 @@ const modalCta = document.getElementById('modalCta');
 const modalTallaEl = modalDialog.querySelector('.modal-talla');
 const modalFeaturesEl = modalDialog.querySelector('.modal-features');
 const modalSaveEl = modalDialog.querySelector('.mp-save');
+const modalTrustEl = modalDialog.querySelector('.modal-trust');
 const FEATURES_DEFAULT_HTML = modalFeaturesEl ? modalFeaturesEl.innerHTML : null;
+const TRUST_DEFAULT = modalTrustEl ? modalTrustEl.textContent : null;
 
 let modalReturnFocus = null;
 
@@ -537,6 +541,9 @@ function openModal(color, returnTo) {
       modalFeaturesEl.innerHTML = FEATURES_DEFAULT_HTML;
     }
   }
+  // Trust line: handmade bags drop the 7-day guarantee (doesn't apply to
+  // limited handmade pieces); bodies keep the default line.
+  if (modalTrustEl && TRUST_DEFAULT != null) modalTrustEl.textContent = data.trust || TRUST_DEFAULT;
   updateModalCta(data.name, data.price, data.ctaMsg);
   modal.classList.add('active');
   modal.inert = false;
