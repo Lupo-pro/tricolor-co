@@ -332,7 +332,7 @@ const productData = {
   // bodies. ctaMsg mirrors each card's WhatsApp reservation message.
   lahincha: {
     name: 'La Hincha',
-    desc: 'Bolso tricolor crochet hecho a mano, edición Mundial Divarte × LATRICOLOR. Tejido en hilo grueso con banderola amarilla, azul y roja. Para ir al estadio sin perder elegancia. Solo 5 unidades en el mundo.',
+    desc: 'Bolso tricolor crochet hecho a mano, edición Mundial Divarte × LATRICOLOR. Tejido en hilo grueso con banderola amarilla, azul y roja. Para ir al estadio sin perder elegancia. Solo 5 unidades en el mundo. Cada bolso viene con un body LATRICOLOR de regalo, en el color que elijas. El look tricolor completo.',
     tag: 'Bolso Crochet · Edición #01',
     price: '$200.000',
     old: '',
@@ -340,12 +340,13 @@ const productData = {
     dir: '/images/divarte/',
     photos: ['bag-hincha', 'bag-hincha2', 'bag-hincha3', 'bag-hincha4', 'bag-hincha5'],
     track: { content_name: 'Bolso Divarte x LATRICOLOR', content_id: 'la-hincha', value: 200000, currency: 'COP' },
-    ctaMsg: 'Hola quiero reservar LA HINCHA edición Mundial Divarte × LATRICOLOR',
+    ctaMsg: 'Hola quiero reservar LA HINCHA edición Mundial Divarte × LATRICOLOR (con body de regalo)',
     trust: '★ Pago contraentrega · Envío 24-72h',
     waNumber: DIVARTE_WHATSAPP_NUMBER,
     // Bag, not a body: no size selector, its own craft-led feature list.
     talla: false,
     features: [
+      'Body LATRICOLOR de regalo · color a elección',
       'Tejido a mano en hilo grueso',
       'Banderola amarilla, azul y roja',
       'Cada pieza tarda 2-3 días en hacerse',
@@ -354,7 +355,7 @@ const productData = {
   },
   latribu: {
     name: 'La Tribu',
-    desc: 'Bolso tricolor crochet hecho a mano, edición Mundial Divarte × LATRICOLOR. Más grande, más bandera, más memoria. Tejido en hilo grueso con banderola amarilla, azul y roja. Solo 5 unidades en el mundo.',
+    desc: 'Bolso tricolor crochet hecho a mano, edición Mundial Divarte × LATRICOLOR. Más grande, más bandera, más memoria. Tejido en hilo grueso con banderola amarilla, azul y roja. Solo 5 unidades en el mundo. Cada bolso viene con un body LATRICOLOR de regalo, en el color que elijas. El look tricolor completo.',
     tag: 'Bolso Crochet · Edición #02',
     price: '$280.000',
     old: '',
@@ -362,12 +363,13 @@ const productData = {
     dir: '/images/divarte/',
     photos: ['bag-tribu', 'bag-tribu2', 'bag-tribu3', 'bag-tribu4'],
     track: { content_name: 'Bolso Divarte x LATRICOLOR', content_id: 'la-tribu', value: 280000, currency: 'COP' },
-    ctaMsg: 'Hola quiero reservar LA TRIBU edición Mundial Divarte × LATRICOLOR',
+    ctaMsg: 'Hola quiero reservar LA TRIBU edición Mundial Divarte × LATRICOLOR (con body de regalo)',
     trust: '★ Pago contraentrega · Envío 24-72h',
     waNumber: DIVARTE_WHATSAPP_NUMBER,
     // Bag, not a body: no size selector, its own craft-led feature list.
     talla: false,
     features: [
+      'Body LATRICOLOR de regalo · color a elección',
       'Tejido a mano en hilo grueso',
       'Banderola amarilla, azul y roja',
       'Cada pieza tarda 2-3 días en hacerse',

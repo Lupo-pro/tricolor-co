@@ -2557,18 +2557,39 @@ html.promo-active .promo-bar { display: flex; }
 }
 .divarte-cta { width: 100%; margin-top: 0.7rem; }
 
-/* Value / urgency infographic — 3 simple icon facts. */
+/* "Body de regalo" bonus — yellow pill under the price. Eye-catching but
+   secondary to the red SOLO 5 UNIDADES scarcity sticker. */
+.divarte-gift {
+  margin: 0.6rem 0 0;
+  align-self: flex-start;
+  background: var(--yellow);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.divarte-gift strong { font-weight: 800; }
+
+/* Value / urgency infographic — 4 icon facts (incl. the free-body offer). */
 .divarte-facts {
   list-style: none;
   margin: 3rem auto 0;
   padding: 0;
-  max-width: 880px;
+  max-width: 980px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   border-top: var(--border-thin);
   padding-top: 2rem;
 }
+/* The gift fact gets a subtle yellow tint so the bonus stands out. */
+.divarte-fact-gift .divarte-fact-ic { transform: scale(1.05); }
+.divarte-fact-gift .divarte-fact-txt strong { color: var(--ink); border-bottom: 3px solid var(--yellow); display: inline-block; }
 .divarte-fact {
   display: flex;
   flex-direction: column;
@@ -2617,6 +2638,10 @@ html.promo-active .promo-bar { display: flex; }
 
 @media (min-width: 720px) {
   .divarte-grid { grid-template-columns: 1fr 1fr; }
+}
+/* Tablet — 4 facts in a tidy 2×2 instead of cramped single row. */
+@media (max-width: 760px) {
+  .divarte-facts { grid-template-columns: repeat(2, 1fr); max-width: 560px; }
 }
 @media (max-width: 560px) {
   .divarte-facts {
