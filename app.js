@@ -594,16 +594,21 @@ document.querySelectorAll('.product-cta, [data-product]').forEach((btn) => {
   });
 });
 
-// Divarte gallery visuals (La Tribu) open the same modal carousel as the
-// body cards — click or keyboard-activate the image to browse its photos.
-document.querySelectorAll('.divarte-gallery[data-color]').forEach((el) => {
-  el.addEventListener('click', () => openModal(el.dataset.color, el));
-  el.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      openModal(el.dataset.color, el);
-    }
-  });
+// Divarte gallery visuals (La Hincha + La Tribu) open the same modal
+// carousel as the body cards. Delegated at document level so a click on
+// ANY descendant (badge, hint, photo) reliably resolves to the gallery —
+// more robust than per-element listeners against overlays / future DOM.
+document.addEventListener('click', (e) => {
+  const g = e.target.closest('.divarte-gallery[data-color]');
+  if (!g) return;
+  openModal(g.dataset.color, g);
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const g = e.target.closest && e.target.closest('.divarte-gallery[data-color]');
+  if (!g) return;
+  e.preventDefault();
+  openModal(g.dataset.color, g);
 });
 
 // ============================================

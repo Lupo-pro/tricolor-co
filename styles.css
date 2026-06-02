@@ -2473,8 +2473,14 @@ html.promo-active .promo-bar { display: flex; }
    behind the placeholder SVG while it loads. */
 .divarte-visual { background: var(--bg-warm); }
 
-/* La Tribu opens a photo carousel — signal it's clickable. */
+/* Bag cards open a photo carousel — signal it's clickable, with the same
+   subtle photo zoom-on-hover cue the ediciones cards use. */
 .divarte-gallery { cursor: zoom-in; }
+.divarte-gallery .card-photo img {
+  transition: transform 0.3s cubic-bezier(.22,.61,.36,1);
+}
+.divarte-gallery:hover .card-photo img,
+.divarte-gallery:focus-visible .card-photo img { transform: scale(1.04); }
 .divarte-gallery-hint {
   position: absolute;
   bottom: 0.7rem;
