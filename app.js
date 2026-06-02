@@ -540,7 +540,7 @@ document.querySelectorAll('.divarte-cta').forEach((btn) => {
       content_name: 'Bolso Divarte x LATRICOLOR',
       content_id: btn.dataset.bagSlug,       // 'la-hincha' | 'la-tribu'
       content_type: 'product',
-      value: Number(btn.dataset.bagPrice),   // 289000 | 349000
+      value: Number(btn.dataset.bagPrice),   // 180000 | 220000
       currency: 'COP'
     });
   });
