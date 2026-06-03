@@ -118,25 +118,31 @@ module.exports = async function handler(req, res) {
     ') por ' + COP(total) + ' contra entrega. Coordinamos la entrega?';
   const waConfirm = 'https://wa.me/57' + whatsapp + '?text=' + encodeURIComponent(confirmText);
 
-  const itemsLine = items.map((it, i) => '  Body ' + (i + 1) + ': ' + (it.color || '?') + ' (talla única S-XL)').join('\n');
-  const gorrasLine = gorras.length ? gorras.map((g, i) => '  Gorra ' + (i + 1) + ': ' + g).join('\n') : '  —';
+  // Richer, scannable line items (shared by Telegram + email).
+  const bodyLines = items.map((it, i) => '   👕 Body ' + (i + 1) + ': ' + (it.color || '?')).join('\n');
+  const gorraLines = gorras.length ? gorras.map((g, i) => '   🧢 Gorra ' + (i + 1) + ': ' + g).join('\n') : '';
+  const DIV = '━━━━━━━━━━━━━━';
+  const payLine = 'contra entrega' + (recoveryDiscount ? ' · descuento -' + COP(RECOVERY_DISCOUNT) : '');
+  const prioLine = priorityShipping ? 'SÍ' : 'NO';
 
   // ---- Telegram (fail-soft) ----
   const tgToken = process.env.TELEGRAM_BOT_TOKEN;
   const tgChat = process.env.TELEGRAM_CHAT_ID;
   if (tgToken && tgChat) {
     const tgText =
-      '🛒 <b>Nuevo pedido LATRICOLOR</b>\n' +
-      '<b>' + reference + '</b> · <b>' + COP(total) + '</b> (contra entrega)\n\n' +
-      '<b>' + OFFER_NAME[offer] + '</b>' + (priorityShipping ? ' · envío prioritario' : '') +
-      (recoveryDiscount ? ' · descuento -' + COP(RECOVERY_DISCOUNT) : '') + '\n' +
-      itemsLine + '\n' + (gorras.length ? 'Gorras:\n' + gorrasLine + '\n' : '') + '\n' +
+      '🔥🇨🇴 <b>NUEVO PEDIDO LATRICOLOR</b> 🇨🇴🔥\n' +
+      '🧾 <b>' + reference + '</b>\n' +
+      '💰 <b>' + COP(total) + '</b> · ' + payLine + '\n' +
+      DIV + '\n' +
+      '📦 <b>' + OFFER_NAME[offer] + '</b>\n' +
+      bodyLines + (gorraLines ? '\n' + gorraLines : '') + '\n' +
+      DIV + '\n' +
       '👤 ' + nombre + ' ' + apellidos + '\n' +
       '📍 ' + ciudad + ', ' + departamento + '\n' +
-      direccion + (barrio ? ' (' + barrio + ')' : '') + '\n' +
-      '📱 ' + whatsapp + (email ? '\n✉️ ' + email : '') + '\n' +
-      '🎯 variante ' + variant + '\n\n' +
-      '<a href="' + waConfirm + '">✅ Confirmar por WhatsApp</a>';
+      '🏠 ' + direccion + (barrio ? ' ' + barrio : '') + '\n' +
+      '📱 <a href="' + waConfirm + '">' + whatsapp + ' — escribir por WhatsApp</a>' + (email ? '\n✉️ ' + email : '') + '\n' +
+      '🚚 Envío prioritario: ' + prioLine + '\n' +
+      '🎯 Variante ' + variant;
     try {
       const r = await fetch('https://api.telegram.org/bot' + tgToken + '/sendMessage', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -151,21 +157,23 @@ module.exports = async function handler(req, res) {
   // ---- Resend email (fail-soft) ----
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
+    const bodyLinesHtml = items.map((it, i) => '👕 Body ' + (i + 1) + ': ' + (it.color || '?')).join('<br>');
+    const gorraLinesHtml = gorras.length ? gorras.map((g, i) => '🧢 Gorra ' + (i + 1) + ': ' + g).join('<br>') : '';
     const html =
-      '<h2>Nuevo pedido ' + reference + '</h2>' +
-      '<p><strong>Total: ' + COP(total) + '</strong> · contra entrega · estado: cod_pending</p>' +
-      '<p><strong>Oferta:</strong> ' + OFFER_NAME[offer] +
-      (priorityShipping ? ' · <strong>envío prioritario (+' + COP(PRIORITY_FEE) + ')</strong>' : '') +
-      (recoveryDiscount ? ' · <strong>descuento recuperación (-' + COP(RECOVERY_DISCOUNT) + ')</strong>' : '') + '</p>' +
-      '<pre>' + itemsLine + (gorras.length ? '\nGorras:\n' + gorrasLine : '') + '</pre>' +
-      '<p><strong>Cliente:</strong> ' + nombre + ' ' + apellidos + '<br>' +
-      '<strong>WhatsApp:</strong> ' + whatsapp + '<br>' +
-      (email ? '<strong>Correo:</strong> ' + email + '<br>' : '') +
-      '<strong>Departamento:</strong> ' + departamento + '<br>' +
-      '<strong>Ciudad:</strong> ' + ciudad + '<br>' +
-      '<strong>Dirección:</strong> ' + direccion + (barrio ? ' (' + barrio + ')' : '') + '<br>' +
-      '<strong>Variante:</strong> ' + variant + '</p>' +
-      '<p><a href="' + waConfirm + '" style="background:#25D366;color:#fff;padding:12px 20px;text-decoration:none;border-radius:6px;display:inline-block;font-weight:700">✅ Confirmar por WhatsApp</a></p>';
+      '<h2>🔥🇨🇴 NUEVO PEDIDO LATRICOLOR 🇨🇴🔥</h2>' +
+      '<p>🧾 <strong>' + reference + '</strong><br>' +
+      '💰 <strong>' + COP(total) + '</strong> · ' + payLine + ' · estado: cod_pending</p>' +
+      '<hr>' +
+      '<p>📦 <strong>' + OFFER_NAME[offer] + '</strong><br>' +
+      bodyLinesHtml + (gorraLinesHtml ? '<br>' + gorraLinesHtml : '') + '</p>' +
+      '<hr>' +
+      '<p>👤 ' + nombre + ' ' + apellidos + '<br>' +
+      '📍 ' + ciudad + ', ' + departamento + '<br>' +
+      '🏠 ' + direccion + (barrio ? ' ' + barrio : '') + '<br>' +
+      '📱 ' + whatsapp + (email ? '<br>✉️ ' + email : '') + '<br>' +
+      '🚚 Envío prioritario: ' + prioLine + '<br>' +
+      '🎯 Variante ' + variant + '</p>' +
+      '<p><a href="' + waConfirm + '" style="background:#25D366;color:#fff;padding:12px 20px;text-decoration:none;border-radius:6px;display:inline-block;font-weight:700">📱 Escribir al cliente por WhatsApp</a></p>';
     try {
       const r = await fetch('https://api.resend.com/emails', {
         method: 'POST',

@@ -99,9 +99,22 @@ body.lt-modal-lock { position:fixed; left:0; right:0; width:100%; overflow:hidde
 .pedido .pg-field.pg-invalid .pg-err { display:block; }
 .pg-two { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 
-/* ---- Order bump ---- */
-.pg-bump { display:flex; gap:10px; align-items:flex-start; background:#fff; border:2px dashed var(--ink); border-radius:9px; padding:11px 12px; margin-top:14px; cursor:pointer; }
-.pg-bump input { width:20px; height:20px; flex:0 0 auto; margin-top:1px; accent-color:var(--blue); }
+/* ---- Order bump (marching-dashes border) ---- */
+.pg-bump {
+  display:flex; gap:10px; align-items:flex-start; background-color:#fff;
+  border:none; border-radius:9px; padding:11px 12px; margin-top:14px; cursor:pointer;
+  /* four 2px dashed edges drawn with gradients so they can "march" */
+  background-image:
+    repeating-linear-gradient(90deg, var(--ink) 0 7px, transparent 7px 14px),
+    repeating-linear-gradient(90deg, var(--ink) 0 7px, transparent 7px 14px),
+    repeating-linear-gradient(0deg, var(--ink) 0 7px, transparent 7px 14px),
+    repeating-linear-gradient(0deg, var(--ink) 0 7px, transparent 7px 14px);
+  background-size:100% 2px, 100% 2px, 2px 100%, 2px 100%;
+  background-position:0 0, 0 100%, 0 0, 100% 0;
+  background-repeat:no-repeat;
+  animation:lt-march 14s linear infinite;
+}
+.pg-bump input { width:20px; height:20px; flex:0 0 auto; margin-top:1px; accent-color:var(--blue); animation:lt-nudge 3.2s ease-in-out infinite; }
 .pg-bump .pg-bump-txt { font-size:13px; line-height:1.35; }
 .pg-bump .pg-bump-txt strong { color:var(--red-deep); }
 
@@ -128,8 +141,9 @@ body.lt-modal-lock { position:fixed; left:0; right:0; width:100%; overflow:hidde
 }
 .pg-submit .pg-submit-main { font-size:clamp(15px,4.4vw,19px); }
 .pg-submit .pg-submit-sub { font-family:'Inter',sans-serif; text-transform:none; font-size:12px; font-weight:600; opacity:0.95; }
+.pg-submit:not(:disabled) { animation:lt-pulse-cod 3s ease-in-out infinite; }
 .pg-submit:active { transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink); }
-.pg-submit:disabled { background:#9fb0a6; cursor:not-allowed; box-shadow:4px 4px 0 #6f7a73; border-color:#6f7a73; }
+.pg-submit:disabled { background:#9fb0a6; cursor:not-allowed; box-shadow:4px 4px 0 #6f7a73; border-color:#6f7a73; animation:none; }
 .pg-submit-status { text-align:center; font-size:13px; font-weight:700; margin-top:10px; min-height:1.1em; }
 .pg-submit-status.err { color:var(--red-deep); }
 .pg-secondary { text-align:center; margin-top:14px; }
@@ -157,6 +171,7 @@ body.lt-modal-lock { position:fixed; left:0; right:0; width:100%; overflow:hidde
   border:2px solid #1A1A1A; border-radius:18px;
   box-shadow:0 6px 20px rgba(0,0,0,0.28);
   font-family:'Anton',sans-serif; text-transform:uppercase; line-height:1.05;
+  animation:lt-pulse-sticky 3s ease-in-out infinite;
 }
 .lt-sticky .lt-s-icon { font-size:26px; line-height:1; flex:0 0 auto; }
 .lt-sticky .lt-s-text { display:flex; flex-direction:column; align-items:flex-start; }
@@ -185,3 +200,31 @@ body.lt-modal-lock .lt-sticky { display:none !important; }
 .lt-rec-primary { display:block; width:100%; background:#1f8a3b; color:#fff; border:3px solid #1A1A1A; box-shadow:4px 4px 0 #1A1A1A; border-radius:9px; padding:14px 12px; font-family:'Anton',sans-serif; text-transform:uppercase; font-size:15px; line-height:1.1; cursor:pointer; }
 .lt-rec-primary:active { transform:translate(2px,2px); box-shadow:2px 2px 0 #1A1A1A; }
 .lt-rec-dismiss { display:inline-block; margin-top:12px; background:none; border:none; color:#8A867E; font-size:13px; font-weight:600; text-decoration:underline; cursor:pointer; }
+
+/* ============================================================
+   ATTENTION MICRO-ANIMATIONS — gentle, premium, ~3s loops
+   (~0.4s pulse + ~2.6s rest). All disabled under reduced-motion.
+   ============================================================ */
+@keyframes lt-pulse-cod {
+  0%, 14%, 100% { transform: scale(1); box-shadow: 4px 4px 0 #1A1A1A; }
+  6%            { transform: scale(1.03); box-shadow: 6px 6px 0 #1A1A1A, 0 8px 22px rgba(0,0,0,0.22); }
+}
+@keyframes lt-pulse-sticky {
+  0%, 14%, 100% { transform: scale(1); box-shadow: 0 6px 20px rgba(0,0,0,0.28); }
+  6%            { transform: scale(1.035); box-shadow: 0 10px 30px rgba(0,0,0,0.40); }
+}
+/* marching dashes around the order-bump (one 14px period = seamless loop) */
+@keyframes lt-march {
+  to { background-position: 14px 0, -14px 100%, 0 -14px, 100% 14px; }
+}
+/* tiny "tap me" nudge on the bump checkbox */
+@keyframes lt-nudge {
+  0%, 88%, 100% { transform: scale(1); }
+  94%           { transform: scale(1.18); }
+}
+/* sticky doesn't pulse while the modal is open (it's hidden then anyway) */
+body.lt-modal-lock .lt-sticky { animation: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-submit, .pg-submit:not(:disabled), .lt-sticky, .pg-bump, .pg-bump input { animation: none !important; }
+}
