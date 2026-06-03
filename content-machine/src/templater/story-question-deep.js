@@ -1,6 +1,6 @@
 // ============================================
 // story-question-deep.js — open-ended question, big mark, teaser.
-// Huge "¿..." up top, the question fills the centre, a small
+// Huge "..." up top, the question fills the centre, a small
 // "Mañana te respondo →" teaser at the bottom for the next story.
 // ============================================
 
@@ -26,7 +26,7 @@ export function render(descriptor, { width = 1080, height = 1920 } = {}) {
     grainOverlay({ opacity: 0.08 }),
     flagBar({ height: 20 }),
 
-    // Huge "¿..." mark — visually carries the question
+    // Huge "..." mark — visually carries the question
     el('div', {
       style: {
         display: 'flex', flexDirection: 'column',
@@ -41,7 +41,7 @@ export function render(descriptor, { width = 1080, height = 1920 } = {}) {
           color: accent,
           letterSpacing: '-0.05em',
         },
-      }, '¿...'),
+      }, '...'),
     ),
 
     // The question itself

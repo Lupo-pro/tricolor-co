@@ -27,12 +27,12 @@ const postSamples = {
 };
 
 const storySamples = {
-  'hook-center':         { headline: '¿SABES QUÉ PASA HOY?', subline: 'A las 7pm exacto', bg: 'cream', accent: 'yellow' },
-  'hook-split':          { headline: '¿LISTA PARA EL MUNDIAL?', subline: 'Sólo 25 días', bg: 'cream', accent: 'red' },
+  'hook-center':         { headline: 'SABES QUÉ PASA HOY?', subline: 'A las 7pm exacto', bg: 'cream', accent: 'yellow' },
+  'hook-split':          { headline: 'LISTA PARA EL MUNDIAL?', subline: 'Sólo 25 días', bg: 'cream', accent: 'red' },
   'sticker-placeholder': { headline: 'PREGÚNTANOS', subline: 'Toca el sticker abajo', bg: 'ink', accent: 'yellow' },
   'quote-center':        { headline: 'ESTO NO ES ROPA · ES BANDERA', subline: 'Manifiesto', bg: 'red', accent: 'yellow' },
   'numbers':             { eyebrow: 'CONTANDO LOS DÍAS', value: '25', label: 'DÍAS AL MUNDIAL', bg: 'yellow', accent: 'ink' },
-  'question':            { question: '¿CUÁL EDICIÓN ERES?', answers: ['LA CAPITANA', 'LA PORTERA', 'ORO NEGRO', 'LA CAFETERA'], bg: 'cream', accent: 'red' },
+  'question':            { question: 'CUÁL EDICIÓN ERES?', answers: ['LA CAPITANA', 'LA PORTERA', 'ORO NEGRO', 'LA CAFETERA'], bg: 'cream', accent: 'red' },
   'bts':                 { eyebrow: 'BEHIND THE SCENES', headline: 'CONFECCIÓN A MANO', subline: 'Bogotá · 5am', bg: 'cream', accent: 'red' },
   'match-score':         { home: { name: 'COL', score: 1, color: 'yellow' }, away: { name: 'UZB', score: 0, color: 'cream' }, eyebrow: 'MINUTO 67', subline: 'James · gol al ángulo' },
 };

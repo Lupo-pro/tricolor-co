@@ -28,52 +28,52 @@ Use these verbatim phrasings. They're Colombian Spanish, warm but professional, 
 
 ### Generic CTA (hero, sticky button, CTA final)
 ```
-¡Hola! Quiero pedir mi body Tricolor 🇨🇴
+Hola! Quiero pedir mi body Tricolor 🇨🇴
 ```
 
 ### Product card click (no size yet)
 ```
-¡Hola! Me interesa {PRODUCT_NAME} 🇨🇴
+Hola! Me interesa {PRODUCT_NAME} 🇨🇴
 
-¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?
+Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?
 ```
 
 ### Modal CTA (size + price known)
 ```
-¡Hola! Quiero pedir el body {PRODUCT_NAME} 🇨🇴
+Hola! Quiero pedir el body {PRODUCT_NAME} 🇨🇴
 
 Talla: {SIZE}
 Precio: {PRICE}
 
-¿Está disponible?
+Está disponible?
 ```
 
 ### Bundle (El Once Inicial)
 ```
-¡Hola! Quiero pedir el Once Inicial (Pack 4 ediciones) 🇨🇴 ¿Está disponible?
+Hola! Quiero pedir el Once Inicial (Pack 4 ediciones) 🇨🇴 Está disponible?
 ```
 
 ### Mass / wholesale (10+ units, mentioned in FAQ)
 ```
-¡Hola! Quiero hacer un pedido al por mayor 🇨🇴
+Hola! Quiero hacer un pedido al por mayor 🇨🇴
 
 Cantidad estimada: {QTY}
 Ciudad: {CITY}
 
-¿Me cuentan condiciones?
+Me cuentan condiciones?
 ```
 
 ## Implementation pattern
 
 In HTML:
 ```html
-<a href="#" data-wa data-wa-msg="¡Hola! Quiero pedir mi body Tricolor 🇨🇴" class="btn btn-wa">Pedir</a>
+<a href="#" data-wa data-wa-msg="Hola! Quiero pedir mi body Tricolor 🇨🇴" class="btn btn-wa">Pedir</a>
 ```
 
 In `app.js` (already wired):
 ```js
 document.querySelectorAll('[data-wa]').forEach(el => {
-  const msg = el.dataset.waMsg || '¡Hola! Quiero pedir mi body Tricolor 🇨🇴';
+  const msg = el.dataset.waMsg || 'Hola! Quiero pedir mi body Tricolor 🇨🇴';
   el.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   el.target = '_blank';
   el.rel = 'noopener';

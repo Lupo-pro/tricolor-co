@@ -8,7 +8,7 @@
 // ⚠️ Placeholder — replace when the real line is ready.
 const WHATSAPP_NUMBER = '573000000000';
 
-const DEFAULT_WA_MSG = '¡Hola! Quiero pedir mi body Tricolor 🇨🇴';
+const DEFAULT_WA_MSG = 'Hola! Quiero pedir mi body Tricolor 🇨🇴';
 
 const buildWaUrl = (msg) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg || DEFAULT_WA_MSG)}`;
@@ -253,7 +253,7 @@ function openModal(color, returnTo) {
 
 function updateModalCta(productName, price) {
   const size = document.querySelector('.size-btn.active')?.dataset.size || 'M';
-  const msg = `¡Hola! Quiero pedir el body ${productName} 🇨🇴\n\nTalla: ${size}\nPrecio: ${price}\n\n¿Está disponible?`;
+  const msg = `Hola! Quiero pedir el body ${productName} 🇨🇴\n\nTalla: ${size}\nPrecio: ${price}\n\nEstá disponible?`;
   modalCta.href = buildWaUrl(msg);
   modalCta.target = '_blank';
   modalCta.rel = 'noopener';
@@ -285,7 +285,7 @@ document.querySelectorAll('.product-cta, [data-product]').forEach((btn) => {
     e.stopPropagation();
     const product = btn.dataset.product;
     if (!product) return;
-    const msg = `¡Hola! Me interesa ${product} 🇨🇴\n\n¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?`;
+    const msg = `Hola! Me interesa ${product} 🇨🇴\n\nMe podrías ayudar con la asesoría de talla y confirmar disponibilidad?`;
     window.open(buildWaUrl(msg), '_blank', 'noopener');
   });
 });
@@ -517,16 +517,16 @@ faqItems.forEach((item) => {
 // inline-CTA observer: one prominent WhatsApp CTA at a time.
 // ============================================
 const STICKY_BAR_PRODUCTS = {
-  capitana: { name: 'La Capitana', price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa La Capitana 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
-  portera:  { name: 'La Portera',  price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa La Portera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
-  oronegro: { name: 'Oro Negro',   price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa Oro Negro 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
-  cafetera: { name: 'La Cafetera', price: '$99.000', old: '$149.000', msg: '¡Hola! Me interesa La Cafetera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  capitana: { name: 'La Capitana', price: '$99.000', old: '$149.000', msg: 'Hola! Me interesa La Capitana 🇨🇴 Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  portera:  { name: 'La Portera',  price: '$99.000', old: '$149.000', msg: 'Hola! Me interesa La Portera 🇨🇴 Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  oronegro: { name: 'Oro Negro',   price: '$99.000', old: '$149.000', msg: 'Hola! Me interesa Oro Negro 🇨🇴 Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  cafetera: { name: 'La Cafetera', price: '$99.000', old: '$149.000', msg: 'Hola! Me interesa La Cafetera 🇨🇴 Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
 };
 const STICKY_BAR_DEFAULT = {
   name: 'El Once Inicial',
   price: '$329.000',
   old: '$596.000',
-  msg: '¡Hola! Quiero pedir el Once Inicial (Pack 4 ediciones) 🇨🇴 ¿Está disponible?',
+  msg: 'Hola! Quiero pedir el Once Inicial (Pack 4 ediciones) 🇨🇴 Está disponible?',
 };
 
 const stickyBuy = document.getElementById('stickyBuy');
@@ -705,14 +705,14 @@ function maxSize(sizes) {
     });
 
     const ctaMsg = [
-      '¡Hola! Quiero asesoría de talla 🇨🇴',
+      'Hola! Quiero asesoría de talla 🇨🇴',
       '',
       `Mis medidas:`,
       vals.busto != null ? `- Busto: ${vals.busto} cm` : null,
       vals.cintura != null ? `- Cintura: ${vals.cintura} cm` : null,
       vals.cadera != null ? `- Cadera: ${vals.cadera} cm` : null,
       '',
-      `La calculadora me sugiere talla ${recommended}. ¿Me confirmas?`,
+      `La calculadora me sugiere talla ${recommended}. Me confirmas?`,
     ].filter((l) => l !== null).join('\n');
     cta.href = buildWaUrl(ctaMsg);
     cta.dataset.waMsg = ctaMsg;

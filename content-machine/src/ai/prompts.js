@@ -234,7 +234,7 @@ ${contractFor('post')}`;
 }
 
 // ─── 10. Poll story ───
-export function capPoll({ question = '¿Qué edición te llama más?', optionA = 'La Capitana 💛', optionB = 'La Cafetera ❤️', seed = '', angle = '' } = {}) {
+export function capPoll({ question = 'Qué edición te llama más?', optionA = 'La Capitana 💛', optionB = 'La Cafetera ❤️', seed = '', angle = '' } = {}) {
   return `Caption de Instagram para una story con sticker de sondage.
 
 Pregunta: "${question}"
@@ -286,7 +286,7 @@ ${contractFor('carouselGlobal')}`;
 }
 
 // ─── 12. Q&A ───
-export function capQA({ question = '¿Pago contraentrega de verdad?', seed = '', angle = '' } = {}) {
+export function capQA({ question = 'Pago contraentrega de verdad?', seed = '', angle = '' } = {}) {
   return `Caption de Instagram para responder una pregunta frecuente.
 
 Pregunta de la cliente: "${question}"

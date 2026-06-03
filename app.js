@@ -14,7 +14,7 @@ const WHATSAPP_NUMBER = '34604828758';
 // on WHATSAPP_NUMBER.
 const DIVARTE_WHATSAPP_NUMBER = '33780660534';
 
-const DEFAULT_WA_MSG = '¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴';
+const DEFAULT_WA_MSG = 'Hola! Quiero pedir mi body de La Tricolor 🇨🇴';
 
 // Map each promo code to its display percentage. TRICOLOR15 is awarded
 // by the exit-intent modal and REPLACES TRICOLOR10 in the same session
@@ -570,7 +570,7 @@ function openModal(color, returnTo) {
 }
 
 function updateModalCta(productName, price, customMsg, waNumber) {
-  const msg = customMsg || `¡Hola! Quiero pedir el body ${productName} 🇨🇴\n\nTalla: única (S a XL)\nPrecio: ${price}\n\n¿Está disponible?`;
+  const msg = customMsg || `Hola! Quiero pedir el body ${productName} 🇨🇴\n\nTalla: única (S a XL)\nPrecio: ${price}\n\nEstá disponible?`;
   modalCta.href = buildWaUrl(msg, waNumber);
   modalCta.target = '_blank';
   modalCta.rel = 'noopener';
@@ -611,7 +611,7 @@ document.querySelectorAll('.product-cta, [data-product]').forEach((btn) => {
     e.stopPropagation();
     const product = btn.dataset.product;
     if (!product) return;
-    const msg = `¡Hola! Me interesa ${product} 🇨🇴\n\n¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?`;
+    const msg = `Hola! Me interesa ${product} 🇨🇴\n\nMe podrías ayudar con la asesoría de talla y confirmar disponibilidad?`;
     window.open(buildWaUrl(msg), '_blank', 'noopener');
   });
 });
@@ -762,16 +762,16 @@ faqItems.forEach((item) => {
 // inline-CTA observer: one prominent WhatsApp CTA at a time.
 // ============================================
 const STICKY_BAR_PRODUCTS = {
-  capitana: { name: 'La Capitana', price: '$89.000', old: '$149.000', msg: '¡Hola! Me interesa La Capitana 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
-  portera:  { name: 'La Portera',  price: '$89.000', old: '$149.000', msg: '¡Hola! Me interesa La Portera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
-  oronegro: { name: 'Oro Negro',   price: '$89.000', old: '$149.000', msg: '¡Hola! Me interesa Oro Negro 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
-  cafetera: { name: 'La Cafetera', price: '$89.000', old: '$149.000', msg: '¡Hola! Me interesa La Cafetera 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  capitana: { name: 'La Capitana', price: '$89.000', old: '$149.000', msg: 'Hola! Me interesa La Capitana 🇨🇴 Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  portera:  { name: 'La Portera',  price: '$89.000', old: '$149.000', msg: 'Hola! Me interesa La Portera 🇨🇴 Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  oronegro: { name: 'Oro Negro',   price: '$89.000', old: '$149.000', msg: 'Hola! Me interesa Oro Negro 🇨🇴 Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
+  cafetera: { name: 'La Cafetera', price: '$89.000', old: '$149.000', msg: 'Hola! Me interesa La Cafetera 🇨🇴 Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?' },
 };
 const STICKY_BAR_DEFAULT = {
   name: 'Desde $89K · 🎁 Pack: 2 gorras GRATIS',
   price: '',           // empty → JS collapses the price column
   old: '',
-  msg: '¡Hola! Quiero pedir mi body de La Tricolor 🇨🇴',
+  msg: 'Hola! Quiero pedir mi body de La Tricolor 🇨🇴',
 };
 
 const stickyBuy = document.getElementById('stickyBuy');
@@ -859,7 +859,7 @@ const stickyBuy = document.getElementById('stickyBuy');
   const counter = document.getElementById('cppCount');
   if (!root || !cta || !label || !counter) return;
 
-  const BASE_MSG = '¡Hola! Quiero el pack El Once Inicial (4 ediciones + 2 gorras GRATIS';
+  const BASE_MSG = 'Hola! Quiero el pack El Once Inicial (4 ediciones + 2 gorras GRATIS';
   const READY_LABEL = 'Lo Quiero Completo';
   const PENDING_LABEL = 'Elegí 2 gorras primero';
   const selected = []; // ordered list of {color, labelText} — newest at the end

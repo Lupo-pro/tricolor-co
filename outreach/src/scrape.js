@@ -91,7 +91,7 @@ function extractEmailFromBio(bio) {
 
 function detectLanguage(bio) {
   if (!bio) return 'unknown';
-  const es = /[áéíóúñ¿¡]|colombia|mujer|paisa|hola|gracias|bello|amor/i.test(bio);
+  const es = /[áéíóúñ]|colombia|mujer|paisa|hola|gracias|bello|amor/i.test(bio);
   return es ? 'es' : 'en';
 }
 

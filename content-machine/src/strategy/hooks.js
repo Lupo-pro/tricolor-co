@@ -21,16 +21,16 @@
 // ============================================
 
 export const HOOKS_INTERROGATIFS = [
-  '¿SABES QUÉ PASA HOY?',
-  '¿CUÁL ERES TÚ?',
-  '¿POR QUÉ NADIE TE DIJO ESTO?',
-  '¿LISTA PARA EL MUNDIAL?',
-  '¿SABÍAS QUE EL 17 DE JUNIO...?',
-  '¿CUÁL ES TU EDICIÓN?',
-  '¿YA VISTE ESTO?',
-  '¿TE ANIMÁS?',
-  '¿QUIÉN VA A ESTAR ESE DÍA?',
-  '¿VAS A FALTAR AL PARTIDO?',
+  'SABES QUÉ PASA HOY?',
+  'CUÁL ERES TÚ?',
+  'POR QUÉ NADIE TE DIJO ESTO?',
+  'LISTA PARA EL MUNDIAL?',
+  'SABÍAS QUE EL 17 DE JUNIO...?',
+  'CUÁL ES TU EDICIÓN?',
+  'YA VISTE ESTO?',
+  'TE ANIMÁS?',
+  'QUIÉN VA A ESTAR ESE DÍA?',
+  'VAS A FALTAR AL PARTIDO?',
 ];
 
 export const HOOKS_PROVOCATEURS = [

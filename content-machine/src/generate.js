@@ -63,7 +63,7 @@ async function loadSequence(name) {
     // Inline fallback — same shape as the real daily-drop.js will use.
     return {
       generate: (ctx) => [
-        { step: 1, role: 'hook',    headline: '¿SABES QUÉ PASA HOY?',  subline: 'A las 7pm exacto · No te lo pierdas', bg: 'cream', accent: 'yellow' },
+        { step: 1, role: 'hook',    headline: 'SABES QUÉ PASA HOY?',  subline: 'A las 7pm exacto · No te lo pierdas', bg: 'cream', accent: 'yellow' },
         { step: 2, role: 'tease',   headline: 'NUEVA EDICIÓN',          subline: 'Adivina cuál...',                    bg: 'ink',   accent: 'blue' },
         { step: 3, role: 'reveal',  headline: (ctx.editionName || 'LA CAPITANA').toUpperCase(),
                                     subline: `Edición Mundial · $${ctx.price || 99}K`,

@@ -510,7 +510,7 @@
           var original = copyBtn.dataset.label || copyBtn.textContent;
           copyBtn.dataset.label = original;
           copyBtn.textContent = '✓ COPIADO';
-          showToast('¡Código TRIBU15 copiado! 💛💙❤️');
+          showToast('Código TRIBU15 copiado! 💛💙❤️');
           setTimeout(function(){
             copyBtn.classList.remove('ok');
             copyBtn.textContent = '📋 Copiar código';
@@ -583,9 +583,9 @@
           });
           if (!r.ok) throw new Error('http_' + r.status);
           form.reset();
-          status.textContent = '¡Gracias tricolor! 💛💙❤️';
+          status.textContent = 'Gracias tricolor! 💛💙❤️';
           status.classList.add('ok');
-          showToast('¡Gracias tricolor! 💛💙❤️', 3500);
+          showToast('Gracias tricolor! 💛💙❤️', 3500);
           // TikTok Subscribe — only after the API succeeds (real signup).
           if (window.ttq) {
             window.ttq.track('Subscribe', {
@@ -746,7 +746,7 @@
       </div>
 
       <div class="review-field">
-        <label>¿Cómo te quedó tu body?</label>
+        <label>Cómo te quedó tu body?</label>
         <div class="stars" role="radiogroup" aria-label="Calificación de 1 a 5 estrellas">
           <input type="radio" name="rating" id="rv-r5" value="5" required>
           <label for="rv-r5" aria-label="5 estrellas">★</label>

@@ -24,7 +24,7 @@ export function generate({ edition = 'la-capitana', stockLeft = 47, price } = {}
       step: 1,
       role: 'hook',
       offsetMin: 0,
-      headline: '¿SABES QUÉ PASA HOY?',
+      headline: 'SABES QUÉ PASA HOY?',
       subline: 'A las 7pm exacto · No te lo pierdas',
       bg: 'cream',
       accent: 'yellow',
@@ -38,7 +38,7 @@ export function generate({ edition = 'la-capitana', stockLeft = 47, price } = {}
       subline: 'Adivina cuál...',
       bg: 'ink',
       accent: 'blue',
-      sticker: { type: 'poll', question: '¿Cuál crees que es?', options: ['Amarilla', 'Azul', 'Negra', 'Roja'] },
+      sticker: { type: 'poll', question: 'Cuál crees que es?', options: ['Amarilla', 'Azul', 'Negra', 'Roja'] },
     },
     {
       step: 3,

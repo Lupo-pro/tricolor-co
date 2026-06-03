@@ -89,9 +89,9 @@ export const ANGLES = [
   {
     id: 'data',
     title: 'Data / Insight',
-    voice: '¿Sabías que...? — autoridad amable, no académica',
+    voice: 'Sabías que...? — autoridad amable, no académica',
     hooks: [
-      '¿SABÍAS QUE COLOMBIA NUNCA PASÓ DE CUARTOS?',
+      'SABÍAS QUE COLOMBIA NUNCA PASÓ DE CUARTOS?',
       '5 DATOS QUE NO CONOCÍAS DEL MUNDIAL 2026',
       'LA ESTADÍSTICA QUE CAMBIA TODO',
       '48 SELECCIONES · 3 PAÍSES · 1 SOLA CAFETERA',

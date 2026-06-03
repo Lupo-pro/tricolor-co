@@ -9,11 +9,11 @@
 
 const DEFAULTS = {
   questions: [
-    { question: '¿CUÁNTOS PAÍSES SEDES TIENE EL MUNDIAL 2026?',
+    { question: 'CUÁNTOS PAÍSES SEDES TIENE EL MUNDIAL 2026?',
       answers: ['1', '2', '3', '4'] },
-    { question: '¿QUIÉN ES NUESTRO CAPITÁN HISTÓRICO?',
+    { question: 'QUIÉN ES NUESTRO CAPITÁN HISTÓRICO?',
       answers: ['JAMES', 'PIBE', 'YEPES', 'PIBE Y JAMES'] },
-    { question: '¿CONTRA QUIÉN ABRIMOS EL MUNDIAL?',
+    { question: 'CONTRA QUIÉN ABRIMOS EL MUNDIAL?',
       answers: ['BRASIL', 'PORTUGAL', 'UZBEKISTÁN', 'JAPÓN'] },
   ],
   resultTitle: '3/3',

@@ -63,7 +63,7 @@ export function generate({
       layout: 'hook-center',
       offsetMin: 960, // 22:00 kickoff
       tag: 'EN VIVO',
-      headline: '¡VAMOS COLOMBIA!',
+      headline: 'VAMOS COLOMBIA!',
       subline: `vs ${opponent} · ${stadium}`,
       bg: 'red', accent: 'yellow',
       sticker: { type: 'countdown', endsInHours: 2, label: 'Termina en' },
@@ -76,7 +76,7 @@ export function generate({
       eyebrow: 'MINUTO 67',
       home: { name: 'COL', score: 1, color: 'yellow' },
       away: { name: opponent.slice(0, 3).toUpperCase(), score: 0, color: 'cream' },
-      subline: '¡GOL DE COLOMBIA!',
+      subline: 'GOL DE COLOMBIA!',
     },
     {
       step: 6,

@@ -179,7 +179,7 @@ function renderWelcomeEmail({ email } = {}) {
         <tr>
           <td align="center" style="padding:6px 12px 18px;font-family:Georgia,'Times New Roman',serif;font-size:10px;letter-spacing:1px;color:#8A867E;">
             Te suscribiste a las alertas Mundial en latricolor.co/mundial.
-            ¿Ya no las querés? Respondé este email con "Salir" y te quitamos.
+            Ya no las querés? Respondé este email con "Salir" y te quitamos.
           </td>
         </tr>
       </table>

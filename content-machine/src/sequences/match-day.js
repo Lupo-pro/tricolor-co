@@ -7,7 +7,7 @@
 //   +20min  tease  "Gol o no gol? · Poll"
 //   +HT     tease  "Mejor jugador del primer tiempo"
 //   +60min  reveal "Stock relámpago · 20% en pack 2"
-//   +85min  reveal "Score final · ¿qué seguís sintiendo?"
+//   +85min  reveal "Score final · qué seguís sintiendo?"
 //   +95min  cta    "Compartí tu look del partido · Etiquetá @latricolor.co"
 //   next-day cta   "Repost UGC del partido"
 // ============================================
@@ -28,7 +28,7 @@ export function generate({ opponent = 'Uzbekistán', kickoff = '22:00', stadium 
       step: 2,
       role: 'hook',
       offsetMin: 0,
-      headline: '¡VAMOS COLOMBIA!',
+      headline: 'VAMOS COLOMBIA!',
       subline: `vs ${opponent} · ${stadium}`,
       bg: 'red',
       accent: 'cream',
@@ -38,11 +38,11 @@ export function generate({ opponent = 'Uzbekistán', kickoff = '22:00', stadium 
       step: 3,
       role: 'tease',
       offsetMin: 20,
-      headline: '¿GOL O NO GOL?',
+      headline: 'GOL O NO GOL?',
       subline: 'Tu predicción cuenta',
       bg: 'ink',
       accent: 'yellow',
-      sticker: { type: 'poll', question: '¿Marcamos en los primeros 30?', options: ['Sí', 'No'] },
+      sticker: { type: 'poll', question: 'Marcamos en los primeros 30?', options: ['Sí', 'No'] },
     },
     {
       step: 4,
@@ -69,10 +69,10 @@ export function generate({ opponent = 'Uzbekistán', kickoff = '22:00', stadium 
       role: 'reveal',
       offsetMin: 85,
       headline: 'SCORE FINAL',
-      subline: '¿Qué seguís sintiendo?',
+      subline: 'Qué seguís sintiendo?',
       bg: 'red',
       accent: 'cream',
-      sticker: { type: 'poll', question: '¿Cómo te sentís?', options: ['Orgullosa', 'Brava', 'Lista pa\' la próxima'] },
+      sticker: { type: 'poll', question: 'Cómo te sentís?', options: ['Orgullosa', 'Brava', 'Lista pa\' la próxima'] },
     },
     {
       step: 7,

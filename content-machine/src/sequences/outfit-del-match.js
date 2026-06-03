@@ -26,7 +26,7 @@ export function generate({ opponent, optionA, optionB } = {}) {
       layout: 'hook-center',
       offsetMin: 0,
       tag: 'OUTFIT DEL MATCH',
-      headline: `¿QUÉ TE PONÉS HOY?`,
+      headline: `QUÉ TE PONÉS HOY?`,
       subline: `Colombia vs ${opp}`,
       bg: 'cream', accent: 'red',
     },

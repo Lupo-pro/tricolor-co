@@ -238,10 +238,10 @@ Format : `https://wa.me/34604828758?text=ENCODED_MESSAGE`
 Numéro de prod : **+34 604 82 87 58** (centralisé dans `app.js` → `WHATSAPP_NUMBER = '34604828758'`).
 
 ### Messages pré-remplis selon contexte
-- **CTA général** : `¡Hola! Quiero pedir mi body Tricolor 🇨🇴`
-- **Card produit** : `¡Hola! Me interesa [NOM] 🇨🇴 ¿Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?`
-- **Modal avec taille** : `¡Hola! Quiero pedir el body [NOM] 🇨🇴\n\nTalla: [SIZE]\nPrecio: [PRICE]\n\n¿Está disponible?`
-- **Pack** : `¡Hola! Quiero pedir el Once Inicial (Pack 4 ediciones) 🇨🇴 ¿Está disponible?`
+- **CTA général** : `Hola! Quiero pedir mi body Tricolor 🇨🇴`
+- **Card produit** : `Hola! Me interesa [NOM] 🇨🇴 Me podrías ayudar con la asesoría de talla y confirmar disponibilidad?`
+- **Modal avec taille** : `Hola! Quiero pedir el body [NOM] 🇨🇴\n\nTalla: [SIZE]\nPrecio: [PRICE]\n\nEstá disponible?`
+- **Pack** : `Hola! Quiero pedir el Once Inicial (Pack 4 ediciones) 🇨🇴 Está disponible?`
 
 ---
 

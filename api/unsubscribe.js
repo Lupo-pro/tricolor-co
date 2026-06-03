@@ -84,7 +84,7 @@ p.lead{font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:0.12
   <p class="lead">Tu email fue removido de la lista.</p>
   <div class="email-box">${email ? escapeHtml(email) : '(sin email)'}</div>
   <a class="back" href="https://latricolor.co">Volver a latricolor.co →</a>
-  <p class="fine">¿Te equivocaste? Solo respondé al último mensaje y volvemos a sumarte.</p>
+  <p class="fine">Te equivocaste? Solo respondé al último mensaje y volvemos a sumarte.</p>
 </div>
 </body>
 </html>`;
