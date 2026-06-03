@@ -42,4 +42,24 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://latricolor.co/oferta"/>
   </url>
 
+  <url>
+    <loc>https://latricolor.co/oferta-2</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es-CO" href="https://latricolor.co/oferta-2"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://latricolor.co/oferta-2"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://latricolor.co/oferta-2"/>
+  </url>
+
+  <url>
+    <loc>https://latricolor.co/oferta-3</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es-CO" href="https://latricolor.co/oferta-3"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://latricolor.co/oferta-3"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://latricolor.co/oferta-3"/>
+  </url>
+
 </urlset>
