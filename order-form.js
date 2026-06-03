@@ -357,25 +357,46 @@
   sticky.innerHTML = '<span class="lt-s-main">LO QUIERO YA 🇨🇴</span><span class="lt-s-sub">Pago contra entrega · Envío gratis</span>';
   document.body.appendChild(sticky);
 
-  /* Route primary CTAs to OPEN the checkout modal (WhatsApp is now the
-     merchant's confirmation step). Divarte bags, Pack El Once, catalog
-     "Pedir", and the secondary "Dudas?" link keep WhatsApp behavior. */
-  var OPEN_LABELS = /^(hero|final|countdown-asegurar|ver-toda-oferta|pack-[123]body(-repeat)?)$/;
+  /* Route EVERY bodysuit/offer purchase CTA to OPEN the checkout modal
+     (WhatsApp is now the merchant's confirmation step). Only Pack El Once
+     and the secondary "Dudas? WhatsApp" link keep WhatsApp; Divarte bags
+     (different product/number) and the footer contact link also stay.
+     Body CTAs are matched by: .lt-sticky, .qty-cta, .js-open-pedido,
+     a[href="#pedido"] (the oferta CTAs were re-pointed to #pedido), and
+     the index 4-ediciones .product-cta cards (handled first, with color). */
+  var COLOR_BY_LABEL = { 'color-capitana': 'Amarilla', 'color-portera': 'Azul', 'color-cafetera': 'Roja', 'color-oronegro': 'Negra' };
+  var COLOR_BY_PRODUCT = { 'La Capitana': 'Amarilla', 'La Portera': 'Azul', 'La Cafetera': 'Roja', 'Oro Negro': 'Negra' };
+
+  function presetColor(color) {
+    if (!color) return;
+    var sel = mount.querySelector('.pg-color');
+    if (sel) sel.value = color;
+  }
+
   document.addEventListener('click', function (e) {
-    var a = e.target.closest('.lt-sticky, a[data-label], .qty-cta');
+    // index 4-ediciones product cards → order modal (preselect 1 body + color),
+    // intercepting the homepage product-detail modal.
+    var pc = e.target.closest && e.target.closest('.product-cta[data-product]');
+    if (pc) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      openModal('1');
+      presetColor(COLOR_BY_PRODUCT[pc.getAttribute('data-product')]);
+      return;
+    }
+    var a = e.target.closest('.lt-sticky, .qty-cta, .js-open-pedido, a[href="#pedido"]');
     if (!a) return;
-    var label = a.getAttribute && a.getAttribute('data-label') || '';
-    var isOpen = a.classList.contains('lt-sticky') || a.classList.contains('qty-cta') || OPEN_LABELS.test(label);
-    if (!isOpen) return;
     e.preventDefault();
-    var offerId = null;
+    var label = (a.getAttribute && a.getAttribute('data-label')) || '';
+    var offerId = null, color = null;
     var m = label.match(/pack-([123])body/);
     if (m) offerId = m[1];
+    else if (COLOR_BY_LABEL[label]) { offerId = '1'; color = COLOR_BY_LABEL[label]; }
     else if (a.classList.contains('qty-cta')) {
       var card = a.closest('.qty-card');
       if (card) { var idx = [].indexOf.call(card.parentNode.children, card); if (idx >= 0 && idx <= 2) offerId = String(idx + 1); }
     }
     openModal(offerId);
+    if (color) presetColor(color);
   }, true);
 
   /* ============================================================

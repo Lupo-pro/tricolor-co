@@ -13,9 +13,13 @@
   background:rgba(0,0,0,0.55);
 }
 .lt-modal.open { display:flex; align-items:flex-start; justify-content:center; }
+/* The SHEET is the scroll container — capped to the viewport so the long
+   form scrolls internally while the body stays locked. */
 .lt-modal-sheet {
-  position:relative; width:100%; min-height:100%;
-  overflow-y:auto; -webkit-overflow-scrolling:touch;
+  position:relative; width:100%;
+  min-height:100vh; min-height:100dvh;
+  max-height:100vh; max-height:100dvh;
+  overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
 }
 .lt-modal-close {
   position:fixed; top:10px; right:12px; z-index:5;
@@ -28,7 +32,7 @@
 body.lt-modal-lock { position:fixed; left:0; right:0; width:100%; overflow:hidden; }
 @media (min-width:760px) {
   .lt-modal.open { align-items:center; padding:24px; }
-  .lt-modal-sheet { width:auto; max-width:600px; min-height:0; max-height:92vh; border:3px solid var(--ink); border-radius:14px; box-shadow:6px 6px 0 var(--ink); }
+  .lt-modal-sheet { width:auto; max-width:600px; min-height:0; max-height:90vh; border:3px solid var(--ink); border-radius:14px; box-shadow:6px 6px 0 var(--ink); }
   .lt-modal-close { position:absolute; }
 }
 
@@ -40,7 +44,7 @@ body.lt-modal-lock { position:fixed; left:0; right:0; width:100%; overflow:hidde
   font-family:'Inter',system-ui,sans-serif;
 }
 .pedido * { box-sizing:border-box; }
-.pedido .pedido-wrap { width:100%; max-width:560px; margin:0 auto; padding:46px 16px 32px; }
+.pedido .pedido-wrap { width:100%; max-width:560px; margin:0 auto; padding:46px 16px calc(32px + env(safe-area-inset-bottom)); }
 .pedido .pedido-kicker { text-align:center; font-family:'Bebas Neue',sans-serif; letter-spacing:1px; color:var(--red-deep); font-size:18px; }
 .pedido .pedido-title { text-align:center; font-family:'Anton',sans-serif; text-transform:uppercase; font-size:clamp(28px,8vw,40px); line-height:0.98; margin:2px 0 18px; }
 .pedido .pedido-title em { color:var(--blue); font-style:normal; }
@@ -134,20 +138,25 @@ body.lt-modal-lock { position:fixed; left:0; right:0; width:100%; overflow:hidde
    ============================================================ */
 .sticky-cta, #stickyBuy, #waFloat, .wa-float, .sticky-buy { display:none !important; }
 /* room for the mobile sticky bar so it never covers footer/content */
-@media (max-width:759px) { body { padding-bottom:72px; } }
+@media (max-width:759px) { body { padding-bottom:78px; } }
+/* Single, compact, fully-tappable bottom bar (one button). Safe-area inset
+   for iPhone home indicator. The two text lines are the whole button. */
 .lt-sticky {
   position:fixed; left:0; right:0; bottom:0; z-index:150;
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
-  height:60px; text-decoration:none; cursor:pointer;
+  min-height:64px; padding:9px 16px calc(9px + env(safe-area-inset-bottom));
+  text-decoration:none; cursor:pointer;
   background:var(--green,#1f8a3b); color:#fff;
   border-top:3px solid #1A1A1A; box-shadow:0 -4px 14px rgba(0,0,0,0.28);
-  font-family:'Anton',sans-serif; text-transform:uppercase; line-height:1;
+  font-family:'Anton',sans-serif; text-transform:uppercase; line-height:1.05;
 }
-.lt-sticky .lt-s-main { font-size:18px; letter-spacing:0.5px; }
+.lt-sticky .lt-s-main { font-size:19px; letter-spacing:0.5px; }
 .lt-sticky .lt-s-sub { font-family:'Inter',sans-serif; text-transform:none; font-size:11px; font-weight:600; opacity:0.95; }
 .lt-sticky:active { background:#1a7733; }
+/* never cover the checkout modal while it is open */
+body.lt-modal-lock .lt-sticky { display:none !important; }
 @media (min-width:760px) {
-  .lt-sticky { left:auto; right:24px; bottom:24px; height:auto; padding:12px 22px; border:3px solid #1A1A1A; border-radius:50px; box-shadow:3px 3px 0 #1A1A1A; }
+  .lt-sticky { left:auto; right:24px; bottom:24px; min-height:0; padding:11px 22px; border:3px solid #1A1A1A; border-radius:50px; box-shadow:3px 3px 0 #1A1A1A; }
   .lt-sticky .lt-s-main { font-size:16px; }
 }
 
