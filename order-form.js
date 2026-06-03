@@ -30,8 +30,13 @@
   var PRIORITY_FEE = 5000;
   var RECOVERY_DISCOUNT = 10000;
   var COLORS = ['Amarilla', 'Azul', 'Roja', 'Negra'];
-  var TALLAS = ['S', 'M', 'L', 'XL'];
   var GORRA_COLORS = ['Amarilla', 'Roja', 'Azul', 'Blanca'];
+  // Real product thumbnails per tier (1 shot for 1 body, a small cluster for 2/3).
+  var OFFER_IMGS = {
+    '1': ['product-capitana'],
+    '2': ['product-capitana', 'product-portera'],
+    '3': ['product-capitana', 'product-portera', 'product-cafetera']
+  };
 
   var state = { offer: '2', priority: false, recovery: false, interacted: false };
   var DEPTOS = null;
@@ -47,10 +52,15 @@
   /* ---- Build the form markup ---- */
   function offerCard(id) {
     var o = OFFERS[id];
+    var imgs = OFFER_IMGS[id] || [];
+    var thumb = '<span class="pg-o-thumb pg-o-thumb-' + imgs.length + '" aria-hidden="true">' +
+      imgs.map(function (f) { return '<img src="/images/products/' + f + '.webp" alt="" loading="lazy" decoding="async" width="120" height="120">'; }).join('') +
+      '</span>';
     return '<label class="pg-offer' + (id === '3' ? ' pg-hot' : '') + '">' +
       '<input type="radio" name="pg-offer" value="' + id + '"' + (id === state.offer ? ' checked' : '') + '>' +
       '<div class="pg-card">' +
         '<span class="pg-check" aria-hidden="true">✓</span>' +
+        thumb +
         '<div class="pg-o-name">' + o.name + '</div>' +
         '<div class="pg-o-price">' + cop(o.price) + '</div>' +
         '<div class="pg-o-note">' + o.note + '</div>' +
@@ -73,8 +83,9 @@
       '<div class="pg-step">1 · Elegí tu pack</div>' +
       '<div class="pg-offers">' + offerCard('1') + offerCard('2') + offerCard('3') + '</div>' +
 
-      '<div class="pg-step">2 · Color y talla</div>' +
+      '<div class="pg-step">2 · Elegí el color</div>' +
       '<div class="pg-variants" id="pgVariants"></div>' +
+      '<p class="pg-talla-note">Talla única S a XL — se adapta a tu cuerpo.</p>' +
 
       '<label class="pg-bump"><input type="checkbox" id="pgPriority">' +
         '<span class="pg-bump-txt">Agrega <strong>Envío prioritario por solo $5.000</strong> — despachamos tu pedido primero.</span></label>' +
@@ -134,10 +145,9 @@
     var o = OFFERS[state.offer];
     var html = '';
     for (var b = 0; b < o.bodies; b++) {
-      html += '<div class="pg-vrow"><div class="pg-vrow-h">Body ' + (b + 1) + '</div><div class="pg-vrow-grid">' +
+      html += '<div class="pg-vrow"><div class="pg-vrow-h">Body ' + (b + 1) + ' · color</div>' +
         '<select class="pg-color" aria-label="Color body ' + (b + 1) + '">' + opts(COLORS) + '</select>' +
-        '<select class="pg-talla" aria-label="Talla body ' + (b + 1) + '">' + opts(TALLAS) + '</select>' +
-        '</div></div>';
+        '</div>';
     }
     for (var g = 0; g < o.gorras; g++) {
       html += '<div class="pg-vrow"><div class="pg-vrow-h pg-gorra-h">Gorra gratis ' + (g + 1) + ' 🎁</div>' +
@@ -245,9 +255,8 @@
     if (!isValid()) { elStatus.className = 'pg-submit-status err'; elStatus.textContent = 'Revisá los campos marcados.'; return; }
 
     var items = [];
-    elVariants.querySelectorAll('.pg-color').forEach(function (sel, i) {
-      var talla = elVariants.querySelectorAll('.pg-talla')[i];
-      items.push({ color: sel.value, talla: talla ? talla.value : '' });
+    elVariants.querySelectorAll('.pg-color').forEach(function (sel) {
+      items.push({ color: sel.value });
     });
     var gorras = [].map.call(elVariants.querySelectorAll('.pg-gorra'), function (s) { return s.value; });
 
@@ -354,7 +363,9 @@
   var sticky = document.createElement('a');
   sticky.className = 'lt-sticky';
   sticky.href = '#pedido';
-  sticky.innerHTML = '<span class="lt-s-main">LO QUIERO YA 🇨🇴</span><span class="lt-s-sub">Pago contra entrega · Envío gratis</span>';
+  sticky.innerHTML = '<span class="lt-s-icon" aria-hidden="true">🛒</span>' +
+    '<span class="lt-s-text"><span class="lt-s-main">LO QUIERO YA 🇨🇴</span>' +
+    '<span class="lt-s-sub">Pago contra entrega · Envío gratis</span></span>';
   document.body.appendChild(sticky);
 
   /* Route EVERY bodysuit/offer purchase CTA to OPEN the checkout modal

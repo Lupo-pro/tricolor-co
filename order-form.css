@@ -19,7 +19,7 @@
   position:relative; width:100%;
   min-height:100vh; min-height:100dvh;
   max-height:100vh; max-height:100dvh;
-  overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
+  overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
 }
 .lt-modal-close {
   position:fixed; top:10px; right:12px; z-index:5;
@@ -56,16 +56,20 @@ body.lt-modal-lock { position:fixed; left:0; right:0; width:100%; overflow:hidde
 .pg-offer input { position:absolute; opacity:0; pointer-events:none; }
 .pg-offer .pg-card {
   height:100%; background:#fff; border:2px solid var(--ink); border-radius:9px;
-  box-shadow:2px 2px 0 var(--ink); padding:12px 7px; text-align:center;
+  box-shadow:2px 2px 0 var(--ink); padding:10px 6px; text-align:center;
   transition:transform .08s ease;
 }
+/* real product thumbnails — single shot (1 body) or overlapping cluster (2/3) */
+.pg-o-thumb { display:flex; justify-content:center; align-items:center; height:44px; margin-bottom:5px; }
+.pg-o-thumb img { width:42px; height:42px; object-fit:cover; object-position:center 20%; border-radius:50%; border:2px solid #fff; box-shadow:0 1px 3px rgba(0,0,0,0.25); background:#fff; }
+.pg-o-thumb img + img { margin-left:-15px; }
 .pg-offer .pg-o-name { font-family:'Anton',sans-serif; font-size:14px; text-transform:uppercase; line-height:1; }
 .pg-offer .pg-o-price { font-family:'Anton',sans-serif; font-size:21px; color:var(--blue); line-height:1; margin:5px 0 3px; }
 .pg-offer .pg-o-note { font-size:10px; font-weight:700; color:var(--red-deep); line-height:1.15; min-height:1.1em; }
 .pg-offer .pg-o-badge { display:inline-block; margin-top:6px; background:var(--ink); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:0.4px; padding:2px 6px; border-radius:10px; }
 .pg-offer input:checked + .pg-card { border-color:var(--blue); box-shadow:3px 3px 0 var(--blue); background:#fff; }
 .pg-offer input:checked + .pg-card .pg-check { display:block; }
-.pg-offer .pg-check { display:none; position:absolute; top:-9px; right:-7px; width:22px; height:22px; border-radius:50%; background:var(--blue); color:#fff; font-size:13px; line-height:22px; border:2px solid #fff; }
+.pg-offer .pg-check { display:none; position:absolute; top:3px; right:3px; width:22px; height:22px; border-radius:50%; background:var(--blue); color:#fff; font-size:13px; line-height:22px; border:2px solid #fff; z-index:2; }
 /* dominant 3rd card */
 .pg-offer.pg-hot .pg-card { border:3px solid var(--yellow); box-shadow:3px 3px 0 var(--ink); }
 .pg-offer.pg-hot input:checked + .pg-card { border-color:var(--red); box-shadow:3px 3px 0 var(--red); }
@@ -76,8 +80,9 @@ body.lt-modal-lock { position:fixed; left:0; right:0; width:100%; overflow:hidde
 .pg-variants { margin-top:14px; display:flex; flex-direction:column; gap:10px; }
 .pg-vrow { background:#fff; border:2px solid var(--ink); border-radius:9px; padding:10px 12px; }
 .pg-vrow .pg-vrow-h { font-family:'Bebas Neue',sans-serif; letter-spacing:0.5px; font-size:14px; margin-bottom:6px; }
-.pg-vrow .pg-vrow-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .pg-gorra-h { color:var(--red-deep); }
+/* talla-única reassurance under the color selectors */
+.pg-talla-note { font-size:12px; color:var(--ink-soft); font-weight:600; margin:8px 0 2px; text-align:center; }
 
 /* ---- Fields ---- */
 .pg-field { margin-bottom:11px; }
@@ -137,27 +142,32 @@ body.lt-modal-lock { position:fixed; left:0; right:0; width:100%; overflow:hidde
    Hide the page-native ones so there's a single consistent button.
    ============================================================ */
 .sticky-cta, #stickyBuy, #waFloat, .wa-float, .sticky-buy { display:none !important; }
-/* room for the mobile sticky bar so it never covers footer/content */
-@media (max-width:759px) { body { padding-bottom:78px; } }
-/* Single, compact, fully-tappable bottom bar (one button). Safe-area inset
-   for iPhone home indicator. The two text lines are the whole button. */
+/* room for the detached floating pill so it never covers footer/content */
+@media (max-width:759px) { body { padding-bottom:96px; } }
+/* DETACHED FLOATING PILL — looks like a button, not a footer banner:
+   margins off the edges, rounded, drop shadow, leading cart icon. The
+   whole pill is one tappable button that opens the modal. Brand red for
+   max contrast against the crema/blue/yellow bands. */
 .lt-sticky {
-  position:fixed; left:0; right:0; bottom:0; z-index:150;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
-  min-height:64px; padding:9px 16px calc(9px + env(safe-area-inset-bottom));
+  position:fixed; left:14px; right:14px; bottom:calc(14px + env(safe-area-inset-bottom)); z-index:150;
+  display:flex; flex-direction:row; align-items:center; justify-content:center; gap:11px;
+  min-height:60px; padding:10px 18px;
   text-decoration:none; cursor:pointer;
-  background:var(--green,#1f8a3b); color:#fff;
-  border-top:3px solid #1A1A1A; box-shadow:0 -4px 14px rgba(0,0,0,0.28);
+  background:var(--red,#E63946); color:#fff;
+  border:2px solid #1A1A1A; border-radius:18px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.28);
   font-family:'Anton',sans-serif; text-transform:uppercase; line-height:1.05;
 }
+.lt-sticky .lt-s-icon { font-size:26px; line-height:1; flex:0 0 auto; }
+.lt-sticky .lt-s-text { display:flex; flex-direction:column; align-items:flex-start; }
 .lt-sticky .lt-s-main { font-size:19px; letter-spacing:0.5px; }
 .lt-sticky .lt-s-sub { font-family:'Inter',sans-serif; text-transform:none; font-size:11px; font-weight:600; opacity:0.95; }
-.lt-sticky:active { background:#1a7733; }
+.lt-sticky:active { transform:translateY(1px); box-shadow:0 4px 13px rgba(0,0,0,0.3); }
 /* never cover the checkout modal while it is open */
 body.lt-modal-lock .lt-sticky { display:none !important; }
 @media (min-width:760px) {
-  .lt-sticky { left:auto; right:24px; bottom:24px; min-height:0; padding:11px 22px; border:3px solid #1A1A1A; border-radius:50px; box-shadow:3px 3px 0 #1A1A1A; }
-  .lt-sticky .lt-s-main { font-size:16px; }
+  .lt-sticky { left:auto; right:24px; bottom:24px; min-height:0; padding:12px 22px; }
+  .lt-sticky .lt-s-main { font-size:17px; }
 }
 
 /* ============================================================

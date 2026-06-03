@@ -2,7 +2,7 @@
    /api/order — embedded COD (contra entrega) order intake.
 
    POST JSON: {
-     variant, offer (1|2|3), items:[{color,talla}], gorras:[color],
+     variant, offer (1|2|3), items:[{color}], gorras:[color],
      priorityShipping:bool, recoveryDiscount:bool,
      whatsapp, nombre, apellidos, departamento, ciudad, direccion,
      barrio, email
@@ -85,7 +85,7 @@ module.exports = async function handler(req, res) {
   }
 
   const items = Array.isArray(body.items) ? body.items.slice(0, 3).map((it) => ({
-    color: clean(it && it.color, 20), talla: clean(it && it.talla, 4),
+    color: clean(it && it.color, 20),
   })) : [];
   const gorras = Array.isArray(body.gorras) ? body.gorras.slice(0, 2).map((g) => clean(g, 20)) : [];
   const priorityShipping = !!body.priorityShipping;
@@ -118,7 +118,7 @@ module.exports = async function handler(req, res) {
     ') por ' + COP(total) + ' contra entrega. Coordinamos la entrega?';
   const waConfirm = 'https://wa.me/57' + whatsapp + '?text=' + encodeURIComponent(confirmText);
 
-  const itemsLine = items.map((it, i) => '  Body ' + (i + 1) + ': ' + (it.color || '?') + ' · talla ' + (it.talla || '?')).join('\n');
+  const itemsLine = items.map((it, i) => '  Body ' + (i + 1) + ': ' + (it.color || '?') + ' (talla única S-XL)').join('\n');
   const gorrasLine = gorras.length ? gorras.map((g, i) => '  Gorra ' + (i + 1) + ': ' + g).join('\n') : '  —';
 
   // ---- Telegram (fail-soft) ----
