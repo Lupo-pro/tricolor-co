@@ -106,14 +106,14 @@ body.lt-modal-lock { position:fixed; left:0; right:0; width:100%; overflow:hidde
   /* four 3px dashed edges drawn with gradients so they can "march" — thicker
      + higher-contrast so the motion clearly reads on the cream bg */
   background-image:
-    repeating-linear-gradient(90deg, var(--ink) 0 9px, transparent 9px 16px),
-    repeating-linear-gradient(90deg, var(--ink) 0 9px, transparent 9px 16px),
-    repeating-linear-gradient(0deg, var(--ink) 0 9px, transparent 9px 16px),
-    repeating-linear-gradient(0deg, var(--ink) 0 9px, transparent 9px 16px);
+    repeating-linear-gradient(90deg, var(--ink) 0 7px, transparent 7px 12px),
+    repeating-linear-gradient(90deg, var(--ink) 0 7px, transparent 7px 12px),
+    repeating-linear-gradient(0deg, var(--ink) 0 7px, transparent 7px 12px),
+    repeating-linear-gradient(0deg, var(--ink) 0 7px, transparent 7px 12px);
   background-size:100% 3px, 100% 3px, 3px 100%, 3px 100%;
   background-position:0 0, 0 100%, 0 0, 100% 0;
   background-repeat:no-repeat;
-  animation:lt-march 5s linear infinite;
+  animation:lt-march 1.5s linear infinite;
 }
 .pg-bump input { width:20px; height:20px; flex:0 0 auto; margin-top:1px; accent-color:var(--blue); animation:lt-nudge 2.5s ease-in-out infinite; }
 .pg-bump .pg-bump-txt { font-size:13px; line-height:1.35; }
@@ -224,9 +224,10 @@ body.lt-modal-lock .lt-sticky { display:none !important; }
   0%, 25%, 100% { transform: scale(1);    box-shadow: 0 6px 20px rgba(0,0,0,0.28); }
   12%           { transform: scale(1.06); box-shadow: 0 14px 36px rgba(0,0,0,0.45); }
 }
-/* marching dashes around the order-bump (one 16px period = seamless loop) */
+/* marching dashes around the order-bump — shift 3 full 12px periods (36px)
+   per 1.5s loop so the dashes visibly race; 36 = 3×12 keeps it seamless */
 @keyframes lt-march {
-  to { background-position: 16px 0, -16px 100%, 0 -16px, 100% 16px; }
+  to { background-position: 36px 0, -36px 100%, 0 -36px, 100% 36px; }
 }
 /* "tap me" nudge on the bump checkbox — pronounced scale + little tilt */
 @keyframes lt-nudge {
