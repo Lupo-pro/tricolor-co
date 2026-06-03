@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0033A0">
+<meta name="robots" content="noindex, nofollow">
+<title>Tu pedido está confirmado 🇨🇴 · LATRICOLOR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<style>
+  :root { --crema:#F5EFE0; --yellow:#FFD300; --blue:#0033A0; --red:#E63946; --ink:#1A1A1A; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Inter',system-ui,sans-serif; background:var(--blue); color:#fff;
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:28px 20px; text-align:center; -webkit-font-smoothing:antialiased;
+  }
+  .g-card {
+    max-width:480px; width:100%; background:var(--crema); color:var(--ink);
+    border:3px solid var(--ink); border-radius:14px; box-shadow:6px 6px 0 var(--ink);
+    padding:34px 24px 28px;
+  }
+  .g-flag { font-size:46px; }
+  .g-title { font-family:'Anton',sans-serif; text-transform:uppercase; font-size:clamp(30px,8vw,44px); line-height:0.98; margin:8px 0 12px; }
+  .g-title em { color:var(--blue); font-style:normal; }
+  .g-lead { font-size:16px; line-height:1.5; color:#2A2A28; margin-bottom:18px; }
+  .g-ref { font-family:'Bebas Neue',sans-serif; letter-spacing:1px; font-size:15px; color:#2A2A28; background:#fff; border:2px solid var(--ink); border-radius:8px; padding:10px 12px; margin-bottom:18px; }
+  .g-ref strong { font-family:'Anton',sans-serif; letter-spacing:0.5px; color:var(--red); }
+  .g-closer { font-family:'Anton',sans-serif; text-transform:uppercase; font-size:clamp(20px,6vw,28px); color:var(--red); margin-bottom:20px; }
+  .g-home {
+    display:inline-flex; align-items:center; gap:8px; text-decoration:none;
+    font-family:'Anton',sans-serif; text-transform:uppercase; font-size:18px;
+    color:var(--ink); background:var(--yellow); border:3px solid var(--ink);
+    box-shadow:4px 4px 0 var(--ink); border-radius:6px; padding:14px 24px;
+  }
+  .g-home:active { transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink); }
+</style>
+
+<!-- Vercel Analytics -->
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<!-- TikTok Pixel -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+  ttq.load('D8B5TCBC77UDONQHVH2G'); ttq.page();
+}(window, document, 'ttq');
+</script>
+</head>
+<body>
+  <main class="g-card">
+    <div class="g-flag" aria-hidden="true">🇨🇴</div>
+    <h1 class="g-title">Tu pedido está <em>confirmado</em></h1>
+    <p class="g-lead">Te escribimos por WhatsApp en minutos para coordinar la entrega. Pagas cuando lo recibís — sin riesgos.</p>
+    <p class="g-ref">Tu referencia: <strong id="gRef">—</strong></p>
+    <p class="g-closer">Ya sos parte de la hinchada.</p>
+    <a class="g-home" href="/">Volver al inicio <span aria-hidden="true">→</span></a>
+  </main>
+  <script>
+    // Show the order reference passed as ?ref= (purely cosmetic confirmation).
+    (function () {
+      try {
+        var ref = new URLSearchParams(location.search).get('ref');
+        if (ref) document.getElementById('gRef').textContent = ref;
+      } catch (_) {}
+      if (window.ttq) window.ttq.track('CompletePayment', { content_name: 'COD order confirmed' });
+    })();
+  </script>
+</body>
+</html>
