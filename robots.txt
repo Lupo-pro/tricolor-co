@@ -9,6 +9,7 @@ Allow: /mundial
 # raw outreach toolchain. The audio file is also disallowed so search
 # crawlers don't waste budget on a 4MB media asset.
 Disallow: /api/
+Disallow: /admin
 Disallow: /admin/
 Disallow: /outreach/
 Disallow: /assets/audio/

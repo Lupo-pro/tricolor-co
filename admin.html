@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel · LATRICOLOR</title>
+<style>
+  :root{ --crema:#F5EFE0; --ink:#1A1A1A; --ink2:#2A2A28; --muted:#8A867E; --line:#e2dccb;
+    --yellow:#FFD300; --blue:#0033A0; --red:#E63946; --green:#1f8a3b;
+    --amber:#d97706; --indigo:#4f46e5; }
+  *{ box-sizing:border-box; margin:0; }
+  body{ font-family:'Inter',system-ui,-apple-system,sans-serif; background:var(--crema); color:var(--ink);
+    -webkit-font-smoothing:antialiased; padding:14px 12px 60px; }
+  h1{ font-family:'Anton','Inter',sans-serif; text-transform:uppercase; font-size:22px; letter-spacing:0.5px; }
+  .muted{ color:var(--muted); }
+  /* ---- gate ---- */
+  .gate{ max-width:340px; margin:14vh auto 0; background:#fff; border:2px solid var(--ink); border-radius:12px;
+    box-shadow:5px 5px 0 var(--ink); padding:26px 22px; text-align:center; }
+  .gate h1{ margin-bottom:4px; }
+  .gate p{ font-size:13px; color:var(--ink2); margin-bottom:16px; }
+  .gate input{ width:100%; padding:12px; font-size:16px; border:2px solid var(--ink); border-radius:8px; margin-bottom:10px; }
+  .btn{ width:100%; padding:12px; font-family:'Anton',sans-serif; text-transform:uppercase; font-size:16px;
+    background:var(--blue); color:#fff; border:2px solid var(--ink); border-radius:8px; cursor:pointer; }
+  .btn:active{ transform:translateY(1px); }
+  .gate-err{ color:var(--red); font-size:13px; font-weight:700; min-height:1.1em; margin-top:8px; }
+  /* ---- dashboard ---- */
+  .topbar{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; }
+  .logout{ font-size:12px; font-weight:700; color:var(--blue); background:none; border:none; cursor:pointer; text-decoration:underline; }
+  .kpis{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+  .kpi{ background:#fff; border:2px solid var(--ink); border-radius:10px; padding:12px; }
+  .kpi .k-label{ font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); font-weight:700; }
+  .kpi .k-num{ font-family:'Anton',sans-serif; font-size:26px; line-height:1.1; }
+  .kpi .k-sub{ font-size:13px; font-weight:700; color:var(--green); }
+  .variante{ background:#fff; border:2px solid var(--ink); border-radius:10px; padding:12px; margin-bottom:14px; }
+  .variante .k-label{ font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); font-weight:700; margin-bottom:8px; }
+  .vgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+  .vcell{ text-align:center; border:1px solid var(--line); border-radius:8px; padding:8px 4px; }
+  .vcell b{ display:block; font-family:'Anton',sans-serif; font-size:16px; }
+  .vcell .vc-tag{ font-size:10px; font-weight:800; letter-spacing:0.5px; }
+  .vcell .vc-n{ font-size:18px; font-family:'Anton',sans-serif; }
+  .vcell .vc-tot{ font-size:11px; color:var(--ink2); font-weight:700; }
+  .filters{ display:flex; gap:8px; margin-bottom:12px; }
+  .filters button{ flex:1; padding:9px; font-weight:800; font-size:13px; border:2px solid var(--ink); border-radius:8px;
+    background:#fff; cursor:pointer; }
+  .filters button.on{ background:var(--ink); color:#fff; }
+  /* ---- orders ---- */
+  .order{ background:#fff; border:2px solid var(--ink); border-left-width:7px; border-radius:10px; padding:11px 12px; margin-bottom:9px; }
+  .o-top{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .o-ref{ font-family:'Bebas Neue','Anton',monospace; font-size:13px; letter-spacing:0.5px; color:var(--ink2); }
+  .o-total{ font-family:'Anton',sans-serif; font-size:18px; }
+  .o-line{ font-size:13px; margin-top:3px; }
+  .o-line b{ font-weight:800; }
+  .o-meta{ font-size:12px; color:var(--ink2); margin-top:2px; }
+  .o-foot{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; }
+  .o-wa{ font-size:12px; font-weight:800; color:var(--green); text-decoration:none; border:1.5px solid var(--green);
+    border-radius:7px; padding:5px 9px; white-space:nowrap; }
+  .o-status{ font-size:13px; font-weight:800; border:2px solid var(--ink); border-radius:7px; padding:6px 8px; color:#fff; }
+  .v-pill{ display:inline-block; font-size:11px; font-weight:900; padding:1px 7px; border-radius:20px; background:var(--ink); color:#fff; }
+  /* status colors */
+  .st-pendiente{ border-left-color:var(--amber); } .st-pendiente .o-status{ background:var(--amber); }
+  .st-confirmada{ border-left-color:var(--blue); }  .st-confirmada .o-status{ background:var(--blue); }
+  .st-enviada{ border-left-color:var(--indigo); }   .st-enviada .o-status{ background:var(--indigo); }
+  .st-entregada{ border-left-color:var(--green); }  .st-entregada .o-status{ background:var(--green); }
+  .st-rechazada{ border-left-color:var(--red); }    .st-rechazada .o-status{ background:var(--red); }
+  .notice{ background:#fff; border:2px dashed var(--red); border-radius:10px; padding:18px; text-align:center; color:var(--red); font-weight:800; }
+  .empty{ text-align:center; color:var(--muted); padding:24px; font-weight:600; }
+  .hidden{ display:none; }
+</style>
+</head>
+<body>
+
+<!-- ===== Password gate ===== -->
+<section class="gate" id="gate">
+  <h1>Panel LATRICOLOR</h1>
+  <p>Ingresá la clave para ver los pedidos.</p>
+  <input type="password" id="pw" placeholder="Clave" autocomplete="current-password" inputmode="text">
+  <button class="btn" id="loginBtn" type="button">Entrar</button>
+  <p class="gate-err" id="gateErr" role="alert"></p>
+</section>
+
+<!-- ===== Dashboard ===== -->
+<main class="dash hidden" id="dash">
+  <div class="topbar">
+    <h1>Pedidos</h1>
+    <button class="logout" id="logoutBtn" type="button">Salir</button>
+  </div>
+
+  <div id="kvNotice" class="notice hidden">KV no conectado. Revisá KV_REST_API_URL / KV_REST_API_TOKEN.</div>
+
+  <div id="content">
+    <div class="kpis">
+      <div class="kpi"><div class="k-label">Pedidos hoy</div><div class="k-num" id="kHoyN">0</div><div class="k-sub" id="kHoyT">$0</div></div>
+      <div class="kpi"><div class="k-label">Pedidos total</div><div class="k-num" id="kTotN">0</div><div class="k-sub" id="kTotT">$0</div></div>
+    </div>
+    <div class="variante">
+      <div class="k-label">Conversión por variante</div>
+      <div class="vgrid" id="vgrid"></div>
+    </div>
+    <div class="filters">
+      <button id="fHoy" class="on" type="button">Hoy</button>
+      <button id="fTodos" type="button">Todos</button>
+    </div>
+    <div id="orders"></div>
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var OFFER_NAME = { '1': '1 Body', '2': '2 Bodies + 1 gorra', '3': '3 Bodies + 2 gorras' };
+  var STATUSES = ['pendiente', 'confirmada', 'enviada', 'entregada', 'rechazada'];
+  var VARIANTS = ['A', 'B', 'C', 'HOME'];
+  var allOrders = [];
+  var filterMode = 'hoy';
+
+  var $ = function (id) { return document.getElementById(id); };
+  function cop(n) { return '$' + Number(n || 0).toLocaleString('es-CO'); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function isToday(iso) { try { var d = new Date(iso); return d.toDateString() === new Date().toDateString(); } catch (_) { return false; } }
+  function hora(iso) { try { return new Date(iso).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }); } catch (_) { return '--'; } }
+  // map the stored status (e.g. cod_pending) onto an admin status
+  function adminStatus(s) { return STATUSES.indexOf(s) > -1 ? s : 'pendiente'; }
+
+  /* ---- auth + load ---- */
+  function showGate(msg) { $('gate').classList.remove('hidden'); $('dash').classList.add('hidden'); if (msg) $('gateErr').textContent = msg; }
+  function showDash() { $('gate').classList.add('hidden'); $('dash').classList.remove('hidden'); }
+
+  function load() {
+    fetch('/api/admin-orders', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) {
+        if (r.status === 401) { showGate(''); return null; }
+        return r.json();
+      })
+      .then(function (data) {
+        if (!data) return;
+        showDash();
+        if (!data.ok && data.error === 'kv') { $('kvNotice').classList.remove('hidden'); $('content').classList.add('hidden'); return; }
+        $('kvNotice').classList.add('hidden'); $('content').classList.remove('hidden');
+        allOrders = (data.orders || []).map(function (o) { o.status = adminStatus(o.status); return o; });
+        render();
+      })
+      .catch(function () { showDash(); $('kvNotice').classList.remove('hidden'); $('content').classList.add('hidden'); });
+  }
+
+  function login() {
+    var pw = $('pw').value;
+    $('gateErr').textContent = '';
+    fetch('/api/admin-login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pw }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (d) {
+        if (d && d.ok) { $('pw').value = ''; load(); }
+        else if (d && d.error === 'not_configured') $('gateErr').textContent = 'Falta configurar ADMIN_PASSWORD.';
+        else $('gateErr').textContent = 'Clave incorrecta.';
+      })
+      .catch(function () { $('gateErr').textContent = 'Error de conexión.'; });
+  }
+
+  /* ---- render ---- */
+  function render() {
+    var today = allOrders.filter(function (o) { return isToday(o.createdAt); });
+    var sum = function (arr) { return arr.reduce(function (a, o) { return a + Number(o.total || 0); }, 0); };
+    $('kHoyN').textContent = today.length;
+    $('kHoyT').textContent = cop(sum(today));
+    $('kTotN').textContent = allOrders.length;
+    $('kTotT').textContent = cop(sum(allOrders));
+
+    // A/B/C/HOME breakdown
+    var vg = '';
+    VARIANTS.forEach(function (v) {
+      var rows = allOrders.filter(function (o) { return (o.variant || 'HOME') === v; });
+      vg += '<div class="vcell"><span class="vc-tag">' + v + '</span>' +
+        '<span class="vc-n">' + rows.length + '</span>' +
+        '<span class="vc-tot">' + cop(sum(rows)) + '</span></div>';
+    });
+    $('vgrid').innerHTML = vg;
+
+    // orders list
+    var list = filterMode === 'hoy' ? today : allOrders;
+    if (!list.length) { $('orders').innerHTML = '<div class="empty">Sin pedidos ' + (filterMode === 'hoy' ? 'hoy' : 'todavía') + '.</div>'; return; }
+    var html = '';
+    list.forEach(function (o) {
+      var st = adminStatus(o.status);
+      var colores = (o.items || []).map(function (it) { return it.color; }).filter(Boolean).join(', ') || '—';
+      var gorras = (o.gorras || []).length ? ' · gorras: ' + o.gorras.join(', ') : '';
+      var wa = 'https://wa.me/57' + String(o.whatsapp || '').replace(/\D/g, '') +
+        '?text=' + encodeURIComponent('Hola! Te escribimos de LATRICOLOR por tu pedido ' + (o.reference || '') + ' 🇨🇴');
+      var opts = STATUSES.map(function (s) { return '<option value="' + s + '"' + (s === st ? ' selected' : '') + '>' + s + '</option>'; }).join('');
+      html += '<div class="order st-' + st + '">' +
+        '<div class="o-top"><span class="o-ref">' + esc(o.reference) + '</span><span class="o-total">' + cop(o.total) + '</span></div>' +
+        '<div class="o-line"><span class="v-pill">' + esc(o.variant || 'HOME') + '</span> <b>' + esc(OFFER_NAME[o.offer] || ('Oferta ' + o.offer)) + '</b></div>' +
+        '<div class="o-meta">' + esc(colores) + esc(gorras) + '</div>' +
+        '<div class="o-meta">' + hora(o.createdAt) + ' · ' + esc(o.nombre) + ' ' + esc(o.apellidos) + ' · ' + esc(o.ciudad) + ', ' + esc(o.departamento) + '</div>' +
+        '<div class="o-meta">' + esc(o.direccion) + (o.barrio ? ' (' + esc(o.barrio) + ')' : '') + '</div>' +
+        '<div class="o-foot">' +
+          '<a class="o-wa" href="' + wa + '" target="_blank" rel="noopener">WhatsApp ' + esc(o.whatsapp) + '</a>' +
+          '<select class="o-status" data-ref="' + esc(o.reference) + '">' + opts + '</select>' +
+        '</div></div>';
+    });
+    $('orders').innerHTML = html;
+  }
+
+  function setStatus(reference, status, sel) {
+    sel.disabled = true;
+    fetch('/api/admin-status', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reference: reference, status: status }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (d) {
+        sel.disabled = false;
+        if (d && d.ok) {
+          var o = allOrders.filter(function (x) { return x.reference === reference; })[0];
+          if (o) o.status = status;
+          render(); // re-colors the row
+        } else { alert('No se pudo actualizar el estado.'); }
+      })
+      .catch(function () { sel.disabled = false; alert('Error de conexión.'); });
+  }
+
+  /* ---- events ---- */
+  $('loginBtn').addEventListener('click', login);
+  $('pw').addEventListener('keydown', function (e) { if (e.key === 'Enter') login(); });
+  $('logoutBtn').addEventListener('click', function () {
+    fetch('/api/admin-login?logout=1').then(function () { showGate(''); });
+  });
+  $('fHoy').addEventListener('click', function () { filterMode = 'hoy'; $('fHoy').classList.add('on'); $('fTodos').classList.remove('on'); render(); });
+  $('fTodos').addEventListener('click', function () { filterMode = 'todos'; $('fTodos').classList.add('on'); $('fHoy').classList.remove('on'); render(); });
+  $('orders').addEventListener('change', function (e) {
+    var sel = e.target.closest ? e.target.closest('.o-status') : null;
+    if (sel) setStatus(sel.getAttribute('data-ref'), sel.value, sel);
+  });
+
+  load(); // probe auth on open; shows gate if not authed
+})();
+</script>
+</body>
+</html>
