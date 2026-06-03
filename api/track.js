@@ -24,8 +24,8 @@
      GET /api/track?stats=1&token=<STATS_READ_TOKEN>
    ============================================================ */
 
-const VARIANTS = new Set(['A', 'B', 'C']);
-const EVENTS   = new Set(['visit', 'whatsapp_click', 'price_cta_click']);
+const VARIANTS = new Set(['A', 'B', 'C', 'HOME']);
+const EVENTS   = new Set(['visit', 'whatsapp_click', 'price_cta_click', 'email_capture']);
 
 function kvEnv() {
   const url = process.env.KV_REST_API_URL;

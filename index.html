@@ -425,20 +425,19 @@
 <link rel="stylesheet" href="/styles.css">
 <script defer src="/app.js"></script>
 
-<!-- Inline pre-CSS gate — adds .has-entered + .promo-active to <html>
-     before first paint so CSS can hide the splash and shift the top
-     bars down for the promo bar without any layout flash. -->
+<!-- Inline pre-CSS gate. The arrival splash was removed, so the page is
+     always "entered" (frees body scroll). Still reflects an active promo
+     — now granted by the desktop exit-intent (-10%) — into .promo-active
+     before first paint so the promo bar shows without a layout flash. -->
 <script>
+  document.documentElement.classList.add('has-entered');
   try {
-    if (sessionStorage.getItem('tricolor_entered') === '1') {
-      document.documentElement.classList.add('has-entered');
-    }
     var promo = sessionStorage.getItem('tricolor_promo');
     var expires = parseInt(sessionStorage.getItem('tricolor_promo_expires') || '0', 10);
     if (promo === 'ACTIVE' && Date.now() < expires) {
       document.documentElement.classList.add('promo-active');
     }
-  } catch (e) { /* sessionStorage disabled — splash will just show */ }
+  } catch (e) { /* sessionStorage disabled */ }
 </script>
 <!-- Vercel Analytics -->
 <script>
@@ -474,54 +473,8 @@
   </button>
 </div>
 
-<!-- ============================================
-     SPLASH SCREEN — first-visit consent gate
-     Hidden via CSS when html.has-entered is set by the head script.
-     ============================================ -->
-<div class="splash" id="splash" role="dialog" aria-modal="true" aria-labelledby="splashTitle">
-  <div class="splash-bg" aria-hidden="true">
-    <div class="sb-stripe sb-stripe-1"></div>
-    <div class="sb-stripe sb-stripe-2"></div>
-    <div class="sb-stripe sb-stripe-3"></div>
-  </div>
-
-  <div class="splash-modal" role="document">
-    <div class="logo-tricolor-full splash-logo">
-      <span class="la">★ La ★</span>
-      <span class="logo-tricolor splash-logo-word">
-        <span class="tri">Tri</span><span class="co">co</span><span class="lor">lor</span>
-      </span>
-    </div>
-
-    <div class="splash-bandera" aria-hidden="true">★ Oferta Exclusiva Mundial ★</div>
-
-    <h1 class="splash-title" id="splashTitle">
-      <span class="splash-line splash-unlock">Desbloquea</span>
-      <span class="splash-line splash-discount">-10%</span>
-    </h1>
-
-    <p class="splash-sub">En tu primera edición Tricolor</p>
-
-    <button class="splash-cta" id="splashEnter" type="button"
-            aria-label="Activar descuento del 10% y entrar al sitio con música">
-      Activar mi -10% <span aria-hidden="true">🔓</span>
-    </button>
-
-    <p class="splash-audio-line" aria-hidden="true">🎵 Con sonido stadium incluido</p>
-
-    <button class="splash-skip" id="splashSkip" type="button" aria-label="Continuar sin bonus">
-      Continuar sin bonus <span aria-hidden="true">→</span>
-    </button>
-  </div>
-
-  <!-- Curtain reveal — three horizontal flag bands cover the splash on
-       exit and then slide / fade apart to expose the site underneath. -->
-  <div class="splash-curtain" aria-hidden="true">
-    <div class="sc-band sc-band-yellow"></div>
-    <div class="sc-band sc-band-blue"></div>
-    <div class="sc-band sc-band-red"></div>
-  </div>
-</div>
+<!-- Arrival splash/-10%-on-load popup removed. The -10% now lives in the
+     desktop exit-intent (email capture) below. -->
 
 <!-- ============================================
      SVG SYMBOLS — reused body shape across cards
@@ -731,6 +684,55 @@
   <span aria-hidden="true">🔥</span>
   <strong>187 cafeteras</strong> pidieron esta semana <span class="spb-sep" aria-hidden="true">·</span> <span class="spb-cta">Únete a la hinchada</span>
 </div>
+
+<!-- ============================================
+     QUANTITY OFFER — 1 / 2 / 3 bodies (main offer)
+     Struck prices = real post-Mundial regular price ($109.000/body +
+     $35.000/gorra), so the discounts are honest. Dominant card = 3 bodies.
+     Pack El Once lives as its own anchor section (#bundle) below.
+     ============================================ -->
+<section class="qty-offer" id="oferta" aria-label="Oferta 1, 2 o 3 bodies">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-tag">★ Elegí tu pack</div>
+      <h2 class="section-title">1, 2 o 3 <em>bodies</em></h2>
+    </div>
+  </div>
+  <div class="qty-grid">
+    <article class="qty-card">
+      <!-- TODO: replace with dedicated mini-image (1 body) -->
+      <img src="/images/products/product-capitana.webp" alt="1 body Selección Colombia" loading="lazy" decoding="async" width="300" height="300">
+      <div class="qty-name">1 Body</div>
+      <div class="qty-old">$109.000</div>
+      <div class="qty-now">$79.000</div>
+      <div class="qty-tag">Para empezar</div>
+      <div class="qty-save">Ahorrás $30.000</div>
+      <a class="cta-yellow qty-cta" data-wa data-wa-msg="Hola quiero el pack de 1 BODY por $79.000 🇨🇴">Comprar</a>
+    </article>
+    <article class="qty-card">
+      <!-- TODO: replace with dedicated mini-image (2 bodies) -->
+      <img src="/images/products/product-portera.webp" alt="2 bodies Selección Colombia" loading="lazy" decoding="async" width="300" height="300">
+      <div class="qty-name">2 Bodies</div>
+      <div class="qty-old">$218.000</div>
+      <div class="qty-now">$149.000</div>
+      <div class="qty-gift">+ 1 gorra gratis 🎁</div>
+      <div class="qty-save">Ahorrás $69.000</div>
+      <a class="cta-yellow qty-cta" data-wa data-wa-msg="Hola quiero el pack de 2 BODIES + 1 gorra gratis por $149.000 🇨🇴">Comprar</a>
+    </article>
+    <article class="qty-card qty-hot">
+      <span class="qty-sticker">★ MÁS VENDIDO</span>
+      <!-- TODO: replace with dedicated mini-image (3 bodies) -->
+      <img src="/images/products/product-oro-negro.webp" alt="3 bodies Selección Colombia" loading="lazy" decoding="async" width="300" height="300">
+      <div class="qty-name">3 Bodies 🔥</div>
+      <div class="qty-old">$327.000</div>
+      <div class="qty-now">$199.000</div>
+      <div class="qty-gift">+ 2 gorras gratis 🎁</div>
+      <div class="qty-save">Ahorrás $128.000</div>
+      <a class="cta-yellow qty-cta" data-wa data-wa-msg="Hola quiero el pack de 3 BODIES + 2 gorras gratis por $199.000 🇨🇴">Comprar</a>
+    </article>
+  </div>
+  <p class="qty-reassure">🚚 Envío gratis · 💵 Contra entrega · 🎁 Gorras gratis en los packs</p>
+</section>
 
 <!-- ============================================
      COLLECTION + BUNDLE
@@ -982,8 +984,8 @@
       <p class="bundle-desc">Pack completo: todas las ediciones del Mundial (Capitana, Portera, Cafetera, Oro Negro) + 2 gorras oficiales tricolor SIN COSTO. El paquete con el que armás tu outfit para todo el torneo.</p>
       <div class="bundle-price-row">
         <span class="bp-now">$329.000</span>
-        <span class="bp-old">$426.000</span>
-        <span class="bp-save">Ahorrás $97.000</span>
+        <span class="bp-old">$506.000</span>
+        <span class="bp-save">Ahorrás $177.000</span>
       </div>
       <p class="talla-unica talla-unica-bundle">Cada body en talla única · <strong>S a XL</strong></p>
 
@@ -995,8 +997,8 @@
       <table class="bundle-compare" aria-label="Comparativa de precios">
         <tbody>
           <tr>
-            <th scope="row">4 bodies sueltos <small>(a $89K c/u)</small></th>
-            <td>$356.000</td>
+            <th scope="row">4 bodies sueltos <small>(a $109K c/u)</small></th>
+            <td>$436.000</td>
           </tr>
           <tr>
             <th scope="row">2 gorras sueltas <small>(a $35K c/u)</small></th>
@@ -1004,7 +1006,7 @@
           </tr>
           <tr class="bc-subtotal">
             <th scope="row">Valor total separado</th>
-            <td><s>$426.000</s></td>
+            <td><s>$506.000</s></td>
           </tr>
           <tr>
             <th scope="row">El Once Inicial (pack)</th>
@@ -1016,7 +1018,7 @@
           </tr>
           <tr class="bc-total">
             <th scope="row">Ahorro Total</th>
-            <td><strong>$97.000</strong> <span aria-hidden="true">🔥</span></td>
+            <td><strong>$177.000</strong> <span aria-hidden="true">🔥</span></td>
           </tr>
         </tbody>
       </table>
@@ -1765,27 +1767,27 @@
     <button class="ei-close" id="eiClose" type="button" aria-label="Cerrar">✕</button>
 
     <div class="ei-state ei-state-form" id="eiStateForm">
-      <p class="ei-tag">EH, TRICOLOR!</p>
-      <h2 class="ei-title" id="eiTitle">Te vas <em>sin tu body</em>?</h2>
-      <p class="ei-lead">Última oportunidad: <strong>-15%</strong> en TODA la colección con el código <span class="ei-code-inline">TRICOLOR15</span>.</p>
+      <p class="ei-tag">ESPERÁ! 🇨🇴</p>
+      <h2 class="ei-title" id="eiTitle">No te vayas <em>sin tu -10%</em></h2>
+      <p class="ei-lead">Dejá tu correo y te mandamos un <strong>-10%</strong> + las novedades del Mundial 🇨🇴</p>
       <p class="ei-sub">Solo para las que se quedan.</p>
 
       <form class="ei-form" id="eiForm" novalidate>
-        <label class="ei-label" for="eiEmail">Tu email</label>
-        <input type="email" id="eiEmail" name="email" required maxlength="120" autocomplete="email" placeholder="tu@email.com" inputmode="email">
-        <button type="submit" class="ei-submit" id="eiSubmit">QUIERO MI -15% <span aria-hidden="true">→</span></button>
+        <label class="ei-label" for="eiEmail">Tu correo</label>
+        <input type="email" id="eiEmail" name="email" required maxlength="120" autocomplete="email" placeholder="tu@correo.com" inputmode="email">
+        <button type="submit" class="ei-submit" id="eiSubmit">QUIERO MI -10% <span aria-hidden="true">→</span></button>
         <p class="ei-status" id="eiStatus" aria-live="polite"></p>
       </form>
 
-      <p class="ei-fineprint">No spam. Solo el drop, la Tribu, y nada más. Te puedes salir cuando quieras. <strong>Reemplaza TRICOLOR10 si lo tenías — no acumulable.</strong></p>
+      <p class="ei-fineprint">Sin spam. Solo el drop, la Tribu y las novedades del Mundial. Te podés salir cuando quieras.</p>
     </div>
 
     <div class="ei-state ei-state-success" id="eiStateSuccess" hidden>
       <p class="ei-tag">LISTO, CAFETERA! 🇨🇴</p>
-      <p class="ei-success-msg">Tu código:</p>
+      <p class="ei-success-msg">Tu código de -10%:</p>
       <div class="ei-code-block">
-        <strong class="ei-code">TRICOLOR15</strong>
-        <button type="button" class="ei-copy" id="eiCopy" aria-label="Copiar código TRICOLOR15">📋 Copiar</button>
+        <strong class="ei-code">TRICOLOR10</strong>
+        <button type="button" class="ei-copy" id="eiCopy" aria-label="Copiar código TRICOLOR10">📋 Copiar</button>
       </div>
       <p class="ei-success-note">Aplica al checkout vía WhatsApp · válido 30 días.</p>
       <a href="#convocatoria" class="ei-cta" id="eiCtaClose">VER LAS 4 EDICIONES <span aria-hidden="true">→</span></a>
@@ -1814,6 +1816,13 @@
 
   // Already shown to this visitor — bail without binding any listeners.
   if (hasCookie(COOKIE)) return;
+
+  // DESKTOP ONLY — never on mobile/touch. Requires a hover-capable, fine
+  // pointer and a desktop-width viewport; on anything else we bail before
+  // binding any trigger.
+  var isDesktop = window.matchMedia &&
+    window.matchMedia('(min-width: 760px) and (hover: hover) and (pointer: fine)').matches;
+  if (!isDesktop) return;
 
   var armed = false;
   var dismissed = false;
@@ -1874,7 +1883,7 @@
   //   B. a rapid upward scroll burst (>400px in <300ms)
   //   C. idle 15s+ after engaging, then drifting back toward the top
   // Better to miss an exit than to interrupt an engaged visitor.
-  var isMobile = window.matchMedia('(pointer: coarse)').matches;
+  var isMobile = false; // exit-intent is desktop-only now; mobile triggers below stay inert
   var pageLoadTime = Date.now();
   var ENGAGE_MS = 30000;       // min time on page
   var SCROLL_PCT_MIN = 0.5;    // min scroll depth reached
@@ -2001,36 +2010,42 @@
       body: JSON.stringify({ email: email, source: 'exit_intent' })
     }).then(function (r) {
       if (!r.ok) throw new Error('http_' + r.status);
-      // Activate TRICOLOR15 — REPLACES whatever code was in the slot.
+      // Activate TRICOLOR10 (-10%) — the discount granted for the email.
       try {
         sessionStorage.setItem('tricolor_promo', 'ACTIVE');
-        sessionStorage.setItem('tricolor_promo_code', 'TRICOLOR15');
+        sessionStorage.setItem('tricolor_promo_code', 'TRICOLOR10');
         sessionStorage.setItem('tricolor_promo_expires', String(Date.now() + PROMO_TTL_MS));
       } catch (_) {}
       document.documentElement.classList.add('promo-active');
-      // Sync the visible top promo-bar from -10%/TRICOLOR10 → -15%/TRICOLOR15.
+      // Make sure the top promo-bar shows -10%/TRICOLOR10.
       var bar = document.getElementById('promoBar');
       if (bar) {
         var pct = bar.querySelector('.pb-label strong');
         var code = bar.querySelector('.pb-code');
         var copy = bar.querySelector('.pb-copy');
-        if (pct) pct.textContent = '-15%';
-        if (code) code.textContent = 'TRICOLOR15';
-        if (copy) copy.setAttribute('aria-label', 'Copiar código TRICOLOR15');
+        if (pct) pct.textContent = '-10%';
+        if (code) code.textContent = 'TRICOLOR10';
+        if (copy) copy.setAttribute('aria-label', 'Copiar código TRICOLOR10');
       }
-      // Rebuild every data-wa href so the new code lands in WA msgs.
+      // Rebuild every data-wa href so the code lands in WA msgs.
       if (typeof window.__refreshWaLinks === 'function') window.__refreshWaLinks();
       // Swap the modal to its success state and set the one-shot cookie.
       document.getElementById('eiStateForm').hidden = true;
       document.getElementById('eiStateSuccess').hidden = false;
-      // TikTok SubmitForm — only after the API succeeds (real conversion).
+      // Subscribe pixel — only after the API succeeds (real conversion).
       if (window.ttq) {
-        window.ttq.track('SubmitForm', {
-          content_name: 'TRICOLOR15 Exit Intent',
-          content_id: 'tricolor15_popup',
-          description: 'User submitted email for TRICOLOR15 discount'
+        window.ttq.track('Subscribe', {
+          content_name: 'Exit Intent -10%',
+          content_id: 'tricolor10_exit',
+          description: 'User submitted email for -10% discount'
         });
       }
+      // Conversion log (homepage variant tag = HOME), best-effort.
+      try {
+        var p = JSON.stringify({ variant: 'HOME', event: 'email_capture', meta: { source: 'exit_intent' } });
+        if (navigator.sendBeacon) navigator.sendBeacon('/api/track', new Blob([p], { type: 'application/json' }));
+        else fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: p, keepalive: true });
+      } catch (_) {}
       dismiss();
     }).catch(function () {
       status.classList.add('err');
@@ -2054,11 +2069,11 @@
         }, 1800);
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText('TRICOLOR15').then(done).catch(function () {});
+        navigator.clipboard.writeText('TRICOLOR10').then(done).catch(function () {});
       } else {
         try {
           var ta = document.createElement('textarea');
-          ta.value = 'TRICOLOR15';
+          ta.value = 'TRICOLOR10';
           ta.style.position = 'fixed';
           ta.style.opacity = '0';
           document.body.appendChild(ta);

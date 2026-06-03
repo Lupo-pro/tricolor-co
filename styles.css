@@ -5432,3 +5432,56 @@ body.sticky-buy-on .wa-float { transform: translateY(-72px); }
   .ei-submit:hover, .ei-submit:focus-visible,
   .ei-cta:hover, .ei-cta:focus-visible { transform: none; }
 }
+
+/* ============================================================
+   QUANTITY OFFER — 1 / 2 / 3 bodies block (homepage main offer).
+   3 tight columns even on mobile; dominant 3rd card (3 bodies).
+   Struck prices = real post-Mundial regular ($109K/body + $35K/gorra).
+   ============================================================ */
+.qty-offer { background: var(--blue); color: #fff; padding: 40px 0 0; }
+.qty-offer .section-head { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
+.qty-offer .section-tag { color: var(--yellow); font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; }
+.qty-offer .section-title { font-family: 'Anton', sans-serif; color: #fff; font-size: clamp(28px, 8vw, 46px); text-transform: uppercase; margin-bottom: 18px; }
+.qty-offer .section-title em { color: var(--yellow); font-style: normal; }
+.qty-grid {
+  max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter);
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-items: stretch;
+}
+.qty-card {
+  position: relative; display: flex; flex-direction: column; text-align: center;
+  background: var(--bg); color: var(--ink);
+  border: 2px solid var(--ink); border-radius: 8px; box-shadow: 2px 2px 0 var(--ink);
+  padding: 10px 7px 12px;
+}
+.qty-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border: 2px solid var(--ink); border-radius: 6px; background: #fff; }
+.qty-card .qty-name { font-family: 'Anton', sans-serif; font-size: 15px; text-transform: uppercase; margin-top: 8px; line-height: 1; }
+.qty-card .qty-old  { font-size: 11px; color: #8A867E; text-decoration: line-through; font-weight: 600; }
+.qty-card .qty-now  { font-family: 'Anton', sans-serif; font-size: 23px; color: var(--blue); line-height: 1; margin: 2px 0 5px; }
+.qty-card .qty-tag  { font-size: 10px; font-weight: 700; color: #4A4A48; line-height: 1.15; margin-bottom: 8px; }
+.qty-card .qty-gift { font-size: 10px; font-weight: 800; color: var(--red-deep, #A8141C); line-height: 1.15; margin-bottom: 6px; }
+.qty-card .qty-save { display: inline-block; background: #1f8a3b; color: #fff; font-weight: 700; font-size: 9.5px; padding: 2px 6px; border-radius: 12px; line-height: 1.2; margin-bottom: 8px; }
+.qty-card .qty-cta  { margin-top: auto; width: 100%; font-family: 'Anton', sans-serif; text-transform: uppercase; font-size: 13px; padding: 9px 4px; border: 2px solid var(--ink); border-radius: 5px; background: var(--yellow); color: var(--ink); box-shadow: 2px 2px 0 var(--ink); text-decoration: none; cursor: pointer; }
+.qty-card .qty-cta:active { transform: translate(2px,2px); box-shadow: none; }
+.qty-card.qty-hot {
+  background: #fff; border: 3px solid var(--yellow); box-shadow: 3px 3px 0 var(--ink);
+  transform: scale(1.04); margin-top: -4px; z-index: 2;
+}
+.qty-card.qty-hot .qty-now { color: var(--red-deep, #A8141C); font-size: 24px; }
+.qty-card.qty-hot .qty-cta { background: var(--red); color: #fff; }
+.qty-sticker {
+  position: absolute; top: -11px; left: 50%; transform: translateX(-50%) rotate(-4deg);
+  background: var(--red); color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 11px;
+  letter-spacing: 0.4px; padding: 3px 8px; border: 2px solid var(--ink); border-radius: 3px;
+  box-shadow: 2px 2px 0 var(--ink); white-space: nowrap; z-index: 3;
+}
+.qty-reassure { background: var(--ink); color: var(--yellow); text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: clamp(13px, 3.6vw, 17px); letter-spacing: 0.6px; padding: 13px 14px; margin: 20px 0 0; }
+@media (min-width: 600px) {
+  .qty-grid { gap: 14px; }
+  .qty-card { padding: 18px 14px; }
+  .qty-card .qty-name { font-size: 20px; }
+  .qty-card .qty-now { font-size: 32px; }
+  .qty-card.qty-hot .qty-now { font-size: 34px; }
+  .qty-card .qty-tag, .qty-card .qty-gift, .qty-card .qty-save { font-size: 12px; }
+  .qty-card .qty-cta { font-size: 17px; padding: 13px 8px; }
+  .qty-sticker { font-size: 13px; padding: 4px 12px; }
+}

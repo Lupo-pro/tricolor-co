@@ -94,6 +94,19 @@ document.addEventListener('click', (e) => {
   });
 }, { capture: true });
 
+// /api/track price_cta_click for the homepage 1/2/3 quantity CTAs.
+// variant tag = HOME (organic homepage, kept distinct from A/B/C landings).
+// Best-effort, never blocks the WhatsApp hop.
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('.qty-cta');
+  if (!el) return;
+  try {
+    const p = JSON.stringify({ variant: 'HOME', event: 'price_cta_click', meta: { msg: el.dataset.waMsg || '' } });
+    if (navigator.sendBeacon) navigator.sendBeacon('/api/track', new Blob([p], { type: 'application/json' }));
+    else fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: p, keepalive: true });
+  } catch (_) {}
+}, { capture: true });
+
 // ============================================
 // STOCK URGENCY — randomized scarcity number per card.
 // Each [data-stock] element gets a fresh 8-23 unit count at page load.
@@ -1168,83 +1181,11 @@ document.querySelectorAll('.cta, .product-cta, .nav-cta, .bundle-cta, .card-cta,
 })();
 
 // ============================================
-// SPLASH GATE — first-visit -10% offer screen
-// Loss aversion: the user must actively "activate" the bonus or
-// consciously "continue without it". No auto-dismiss — forcing a
-// choice is the whole point. The activation click is also what
-// unlocks audio.play() (browser autoplay policy).
+// SPLASH GATE — REMOVED.
+// The arrival splash (the -10%-on-load popup) was removed. The -10% now
+// lives in the desktop exit-intent email capture. has-entered is set
+// unconditionally by the inline head gate so body scroll is free.
 // ============================================
-(function initSplash() {
-  const splash = document.getElementById('splash');
-  if (!splash) return;
-  try {
-    if (sessionStorage.getItem('tricolor_entered') === '1') {
-      splash.remove();
-      document.documentElement.classList.add('has-entered');
-      return;
-    }
-  } catch (_) { /* keep going */ }
-
-  const enterBtn = document.getElementById('splashEnter');
-  const skipBtn = document.getElementById('splashSkip');
-
-  let exiting = false;
-
-  function exitSplash({ activatePromo }) {
-    if (exiting) return;
-    exiting = true;
-    splash.classList.add('exiting');
-
-    const audioApi = window.__tricolorAudio;
-
-    if (activatePromo) {
-      // Promo path: audio on + 24h promo code stamped into session.
-      // Audio play() also triggers the hero drama flash via the
-      // existing audio player IIFE.
-      audioApi?.play();
-      const expires = Date.now() + 24 * 60 * 60 * 1000;
-      try {
-        sessionStorage.setItem('tricolor_promo', 'ACTIVE');
-        sessionStorage.setItem('tricolor_promo_code', 'TRICOLOR10');
-        sessionStorage.setItem('tricolor_promo_expires', String(expires));
-      } catch (_) {}
-      document.documentElement.classList.add('promo-active');
-      if (typeof window.__activatePromoBar === 'function') {
-        window.__activatePromoBar();
-      }
-      // Re-stamp every data-wa link with the promo-suffixed message.
-      if (typeof window.__refreshWaLinks === 'function') {
-        window.__refreshWaLinks();
-      }
-    } else {
-      audioApi?.setState('muted');
-    }
-
-    // Mark session entered so a refresh doesn't re-show the splash.
-    try { sessionStorage.setItem('tricolor_entered', '1'); } catch (_) {}
-
-    // Wait through the curtain animation, then drop the splash node.
-    setTimeout(() => {
-      splash.remove();
-      document.documentElement.classList.add('has-entered');
-    }, 850);
-  }
-
-  enterBtn?.addEventListener('click', () => exitSplash({ activatePromo: true }));
-  skipBtn?.addEventListener('click',  () => exitSplash({ activatePromo: false }));
-
-  // Esc = skip (same as Continuar sin bonus).
-  document.addEventListener('keydown', (e) => {
-    if (exiting) return;
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      exitSplash({ activatePromo: false });
-    }
-  });
-
-  // Focus the main CTA so keyboard users can hit Enter to activate.
-  setTimeout(() => enterBtn?.focus({ preventScroll: true }), 80);
-})();
 
 // ============================================
 // CONSOLE EASTER EGG — V5 palette

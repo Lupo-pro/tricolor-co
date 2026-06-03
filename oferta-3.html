@@ -195,58 +195,90 @@
     <h2 class="section-title">La oferta Mundial</h2>
 
     <!-- Reusable price block. Block 12 repeats this exact markup.
-         3 tight horizontal columns, even at 390px. -->
+         3 tight horizontal columns, even at 390px. The DOMINANT card is
+         now the 3rd (3 BODIES). Struck prices = the real post-Mundial
+         regular price ($109.000/body + $35.000/gorra) — honest discounts. -->
     <div class="pricegrid">
       <article class="pcard">
         <!-- TODO: replace with dedicated mini-image (1 body) -->
         <div class="pc-imgwrap">
-          <img class="pc-img" src="/images/products/product-capitana.webp" alt="1 body amarillo La Capitana" loading="lazy" decoding="async" width="300" height="300">
+          <img class="pc-img" src="/images/products/product-capitana.webp" alt="1 body Selección Colombia" loading="lazy" decoding="async" width="300" height="300">
         </div>
         <div class="pc-name">1 Body</div>
-        <div class="pc-old">$129.900</div>
-        <div class="pc-now">$89.000</div>
-        <div class="pc-tag">Para probarlo</div>
+        <div class="pc-old">$109.000</div>
+        <div class="pc-now">$79.000</div>
+        <div class="pc-tag">Para empezar</div>
+        <div class="pc-save">Ahorrás $30.000</div>
         <a class="cta cta--block" href="https://wa.me/34604828758"
-           data-msg="Hola 🇨🇴 quiero la OFERTA: 1 BODY por $89.000 (vengo de la oferta)"
+           data-msg="Hola quiero el pack de 1 BODY por $79.000 (vengo de la oferta)"
            data-ev="InitiateCheckout" data-label="pack-1body">Comprar</a>
+      </article>
+
+      <article class="pcard">
+        <!-- TODO: replace with dedicated mini-image (2 bodies) -->
+        <div class="pc-imgwrap">
+          <img class="pc-img" src="/images/products/product-portera.webp" alt="2 bodies Selección Colombia" loading="lazy" decoding="async" width="300" height="300">
+          <span class="pc-badge pc-badge--gift">🎁</span>
+        </div>
+        <div class="pc-name">2 Bodies</div>
+        <div class="pc-old">$218.000</div>
+        <div class="pc-now">$149.000</div>
+        <div class="pc-gift">+ 1 gorra gratis 🎁</div>
+        <div class="pc-save">Ahorrás $69.000</div>
+        <a class="cta cta--block" href="https://wa.me/34604828758"
+           data-msg="Hola quiero el pack de 2 BODIES + 1 gorra gratis por $149.000 (vengo de la oferta)"
+           data-ev="InitiateCheckout" data-label="pack-2bodies">Comprar</a>
       </article>
 
       <article class="pcard pcard--hot">
         <span class="sticker">★ MÁS VENDIDO</span>
-        <!-- TODO: replace with dedicated mini-image (2 bodies) -->
+        <!-- TODO: replace with dedicated mini-image (3 bodies) -->
         <div class="pc-imgwrap">
-          <img class="pc-img" src="/images/products/product-capitana.webp" alt="2 bodies Selección Colombia" loading="lazy" decoding="async" width="300" height="300">
-          <span class="pc-badge">×2</span>
+          <img class="pc-img" src="/images/products/product-oro-negro.webp" alt="3 bodies Selección Colombia" loading="lazy" decoding="async" width="300" height="300">
+          <span class="pc-badge">×3</span>
         </div>
-        <div class="pc-name">2 Bodies 🔥</div>
-        <div class="pc-old">$258.000</div>
-        <div class="pc-now">$149.000</div>
-        <div class="pc-save">Ahorrás $109.000 · -42%</div>
+        <div class="pc-name">3 Bodies 🔥</div>
+        <div class="pc-old">$327.000</div>
+        <div class="pc-now">$199.000</div>
+        <div class="pc-gift">+ 2 gorras gratis 🎁</div>
+        <div class="pc-save">Ahorrás $128.000</div>
         <a class="cta cta--block" href="https://wa.me/34604828758"
-           data-msg="Hola 🇨🇴 quiero la OFERTA MÁS VENDIDA: 2 BODIES por $149.000 (vengo de la oferta)"
-           data-ev="InitiateCheckout" data-label="pack-2bodies">Comprar</a>
-      </article>
-
-      <article class="pcard">
-        <!-- TODO: replace with dedicated mini-image (pack) -->
-        <div class="pc-imgwrap">
-          <img class="pc-img" src="/images/products/product-oro-negro.webp" alt="Pack El Once — 4 bodies + 2 gorras" loading="lazy" decoding="async" width="300" height="300">
-          <span class="pc-badge pc-badge--pack">PACK</span>
-        </div>
-        <div class="pc-name">Pack El Once</div>
-        <div class="pc-old">$497.000</div>
-        <div class="pc-now">$329.000</div>
-        <div class="pc-tag">El combo total</div>
-        <div class="pc-extra">4 bodies + 2 gorras · Ahorrás $168.000</div>
-        <a class="cta cta--block" href="https://wa.me/34604828758"
-           data-msg="Hola 🇨🇴 quiero el PACK EL ONCE: 4 bodies + 2 gorras por $329.000 (vengo de la oferta)"
-           data-ev="InitiateCheckout" data-label="pack-once">Comprar</a>
+           data-msg="Hola quiero el pack de 3 BODIES + 2 gorras gratis por $199.000 (vengo de la oferta)"
+           data-ev="InitiateCheckout" data-label="pack-3bodies">Comprar</a>
       </article>
     </div>
   </div>
 
   <!-- contrasting full-bleed reassurance strip directly under the price row -->
-  <div class="price-reassure">🚚 Envío gratis · 💵 Contra entrega · 🎁 Regalo sorpresa</div>
+  <div class="price-reassure">🚚 Envío gratis · 💵 Contra entrega · 🎁 Gorras gratis en los packs</div>
+</section>
+
+<!-- ============================================================
+     PACK EL ONCE — separate premium anchor section (below the tiers).
+     Struck $506.000 = 4×$109.000 + 2×$35.000 (honest regular price);
+     its high anchor makes the $199.000 tier look reasonable.
+     ============================================================ -->
+<section class="section elonce-wrap">
+  <div class="wrap">
+    <p class="section-kicker">★ El combo total ★</p>
+    <h2 class="section-title">Pack El Once</h2>
+    <div class="elonce-card">
+      <div class="elonce-img">
+        <!-- TODO: replace with dedicated Pack El Once image -->
+        <img src="/images/products/product-oro-negro.webp" alt="Pack El Once — 4 bodies + 2 gorras tricolor" loading="lazy" decoding="async" width="300" height="300">
+      </div>
+      <div class="elonce-body">
+        <div class="el-trophy">🏆 Para las verdaderas hinchas</div>
+        <div class="el-name">4 bodies + 2 gorras</div>
+        <div class="el-old">$506.000</div>
+        <div class="el-now">$329.000</div>
+        <div class="el-save">Ahorrás $177.000</div>
+        <a class="cta cta--block" href="https://wa.me/34604828758"
+           data-msg="Hola quiero el PACK EL ONCE: 4 bodies + 2 gorras por $329.000 (vengo de la oferta)"
+           data-ev="InitiateCheckout" data-label="pack-once">Quiero el combo total →</a>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ============================================================
@@ -489,47 +521,49 @@
       <article class="pcard">
         <!-- TODO: replace with dedicated mini-image (1 body) -->
         <div class="pc-imgwrap">
-          <img class="pc-img" src="/images/products/product-capitana.webp" alt="1 body amarillo La Capitana" loading="lazy" decoding="async" width="300" height="300">
+          <img class="pc-img" src="/images/products/product-capitana.webp" alt="1 body Selección Colombia" loading="lazy" decoding="async" width="300" height="300">
         </div>
         <div class="pc-name">1 Body</div>
-        <div class="pc-old">$129.900</div>
-        <div class="pc-now">$89.000</div>
-        <div class="pc-tag">Para probarlo</div>
+        <div class="pc-old">$109.000</div>
+        <div class="pc-now">$79.000</div>
+        <div class="pc-tag">Para empezar</div>
+        <div class="pc-save">Ahorrás $30.000</div>
         <a class="cta cta--block" href="https://wa.me/34604828758"
-           data-msg="Hola 🇨🇴 quiero la OFERTA: 1 BODY por $89.000 (vengo de la oferta)"
+           data-msg="Hola quiero el pack de 1 BODY por $79.000 (vengo de la oferta)"
            data-ev="InitiateCheckout" data-label="pack-1body-repeat">Comprar</a>
+      </article>
+
+      <article class="pcard">
+        <!-- TODO: replace with dedicated mini-image (2 bodies) -->
+        <div class="pc-imgwrap">
+          <img class="pc-img" src="/images/products/product-portera.webp" alt="2 bodies Selección Colombia" loading="lazy" decoding="async" width="300" height="300">
+          <span class="pc-badge pc-badge--gift">🎁</span>
+        </div>
+        <div class="pc-name">2 Bodies</div>
+        <div class="pc-old">$218.000</div>
+        <div class="pc-now">$149.000</div>
+        <div class="pc-gift">+ 1 gorra gratis 🎁</div>
+        <div class="pc-save">Ahorrás $69.000</div>
+        <a class="cta cta--block" href="https://wa.me/34604828758"
+           data-msg="Hola quiero el pack de 2 BODIES + 1 gorra gratis por $149.000 (vengo de la oferta)"
+           data-ev="InitiateCheckout" data-label="pack-2bodies-repeat">Comprar</a>
       </article>
 
       <article class="pcard pcard--hot">
         <span class="sticker">★ MÁS VENDIDO</span>
-        <!-- TODO: replace with dedicated mini-image (2 bodies) -->
+        <!-- TODO: replace with dedicated mini-image (3 bodies) -->
         <div class="pc-imgwrap">
-          <img class="pc-img" src="/images/products/product-capitana.webp" alt="2 bodies Selección Colombia" loading="lazy" decoding="async" width="300" height="300">
-          <span class="pc-badge">×2</span>
+          <img class="pc-img" src="/images/products/product-oro-negro.webp" alt="3 bodies Selección Colombia" loading="lazy" decoding="async" width="300" height="300">
+          <span class="pc-badge">×3</span>
         </div>
-        <div class="pc-name">2 Bodies 🔥</div>
-        <div class="pc-old">$258.000</div>
-        <div class="pc-now">$149.000</div>
-        <div class="pc-save">Ahorrás $109.000 · -42%</div>
+        <div class="pc-name">3 Bodies 🔥</div>
+        <div class="pc-old">$327.000</div>
+        <div class="pc-now">$199.000</div>
+        <div class="pc-gift">+ 2 gorras gratis 🎁</div>
+        <div class="pc-save">Ahorrás $128.000</div>
         <a class="cta cta--block" href="https://wa.me/34604828758"
-           data-msg="Hola 🇨🇴 quiero la OFERTA MÁS VENDIDA: 2 BODIES por $149.000 (vengo de la oferta)"
-           data-ev="InitiateCheckout" data-label="pack-2bodies-repeat">Comprar</a>
-      </article>
-
-      <article class="pcard">
-        <!-- TODO: replace with dedicated mini-image (pack) -->
-        <div class="pc-imgwrap">
-          <img class="pc-img" src="/images/products/product-oro-negro.webp" alt="Pack El Once — 4 bodies + 2 gorras" loading="lazy" decoding="async" width="300" height="300">
-          <span class="pc-badge pc-badge--pack">PACK</span>
-        </div>
-        <div class="pc-name">Pack El Once</div>
-        <div class="pc-old">$497.000</div>
-        <div class="pc-now">$329.000</div>
-        <div class="pc-tag">El combo total</div>
-        <div class="pc-extra">4 bodies + 2 gorras · Ahorrás $168.000</div>
-        <a class="cta cta--block" href="https://wa.me/34604828758"
-           data-msg="Hola 🇨🇴 quiero el PACK EL ONCE: 4 bodies + 2 gorras por $329.000 (vengo de la oferta)"
-           data-ev="InitiateCheckout" data-label="pack-once-repeat">Comprar</a>
+           data-msg="Hola quiero el pack de 3 BODIES + 2 gorras gratis por $199.000 (vengo de la oferta)"
+           data-ev="InitiateCheckout" data-label="pack-3bodies-repeat">Comprar</a>
       </article>
     </div>
   </div>
@@ -622,6 +656,26 @@
 </footer>
 
 <!-- ============================================================
+     EXIT-INTENT MODAL (DESKTOP ONLY) — -10% email capture.
+     Shown by JS only on desktop mouse-leave; once per visitor
+     (latricolor_exit_shown, 30 days). Captures via /api/subscribe.
+     ============================================================ -->
+<div class="exit-modal" id="exitModal" aria-hidden="true">
+  <div class="exit-box" role="dialog" aria-modal="true" aria-labelledby="exitTitle">
+    <button class="exit-close" id="exitClose" type="button" aria-label="Cerrar">×</button>
+    <div class="exit-flag" aria-hidden="true">🇨🇴</div>
+    <h2 class="exit-title" id="exitTitle">Esperá!</h2>
+    <p class="exit-sub">Dejá tu correo y te mandamos un <strong>-10%</strong> + las novedades del Mundial 🇨🇴</p>
+    <form class="exit-form" id="exitForm" novalidate>
+      <input type="email" id="exitEmail" name="email" required maxlength="120" autocomplete="email" placeholder="tu@correo.com" inputmode="email">
+      <button type="submit" class="cta cta--wa exit-submit">Quiero mi -10% →</button>
+    </form>
+    <p class="exit-status" id="exitStatus" role="status"></p>
+    <p class="exit-fine">Sin spam. Solo lo del Mundial 🇨🇴</p>
+  </div>
+</div>
+
+<!-- ============================================================
      STICKY BOTTOM WHATSAPP CTA (CRO)
      Fixed to the bottom on mobile the whole scroll; a small floating
      pill on desktop. body has bottom-padding so it never covers content.
@@ -695,6 +749,58 @@
 
   /* ---- Log the page visit once per load ---- */
   track('visit');
+
+  /* ---- Exit-intent (DESKTOP ONLY): -10% email capture → /api/subscribe ----
+     Fires once per visitor (latricolor_exit_shown, 30d). Never on
+     mobile/touch — gated on hover+fine-pointer+width. */
+  (function exitIntent() {
+    var modal = document.getElementById('exitModal');
+    if (!modal) return;
+    var isDesktop = window.matchMedia &&
+      window.matchMedia('(min-width: 760px) and (hover: hover) and (pointer: fine)').matches;
+    if (!isDesktop) return;
+
+    var COOKIE = 'latricolor_exit_shown';
+    function seen() { return document.cookie.indexOf(COOKIE + '=') > -1; }
+    function mark() { var d = new Date(); d.setTime(d.getTime() + 30 * 86400000);
+      document.cookie = COOKIE + '=1; expires=' + d.toUTCString() + '; path=/; SameSite=Lax'; }
+
+    var opened = false;
+    function open() {
+      if (opened || seen()) return;
+      opened = true; mark();
+      modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false');
+      var em = document.getElementById('exitEmail'); if (em) em.focus();
+    }
+    function close() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
+
+    document.addEventListener('mouseout', function (e) {
+      if (e.clientY <= 0 && !e.relatedTarget) open();
+    });
+    document.getElementById('exitClose').addEventListener('click', close);
+    modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+
+    document.getElementById('exitForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = (document.getElementById('exitEmail').value || '').trim();
+      var status = document.getElementById('exitStatus');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+        status.textContent = 'Correo no válido — revisá la dirección.'; return;
+      }
+      status.textContent = 'Enviando…';
+      fetch('/api/subscribe', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, source: 'exit_intent_' + VARIANT })
+      }).then(function () {
+        status.innerHTML = 'Listo! Tu código: <strong>MUNDIAL10</strong> 🎉 También te llega al correo.';
+        if (window.ttq) window.ttq.track('Subscribe', { content_name: 'exit_intent_-10', description: 'Email capture -10%' });
+        track('email_capture', { source: 'exit_intent' });
+      }).catch(function () {
+        status.textContent = 'Hubo un error — intentá de nuevo.';
+      });
+    });
+  })();
 
   /* ---- Live countdown ---- */
   var dayNodes = document.querySelectorAll('[data-days-only]');
