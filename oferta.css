@@ -41,7 +41,6 @@
 
   --bar-h:       38px;
   --maxw:        720px;          /* mobile-first: narrow, even on desktop */
-  --sl:          30px;           /* diagonal divider depth */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -78,18 +77,10 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 /* Centered, bold tunnel-style section headers everywhere */
 .section-title, .cb-title, .fc-title, .section-kicker, .section-subtitle { text-align: center; }
 
-/* Diagonal dividers (pure CSS, no images). The clipped top corner
-   reveals the previous band's colour, so the bands interlock.
-   Two directions so the zig-zag alternates down the page.
-   Applied only to bands with no overflowing children (the price
-   cards' tilted badge is never clipped because price bands stay
-   flat-topped). Tiny ~4° angle at 390px — verified not to break. */
-.slant-top     { clip-path: polygon(0 var(--sl), 100% 0, 100% 100%, 0 100%); padding-top: calc(46px + var(--sl)); }
-.slant-top-rev { clip-path: polygon(0 0, 100% var(--sl), 100% 100%, 0 100%); padding-top: calc(46px + var(--sl)); }
-
-@media (prefers-reduced-motion: no-preference) {
-  /* keep dividers static — purely visual, no animation needed */
-}
+/* Clean straight full-bleed bands, no angled cuts. The colour change
+   alone separates sections — what most high-converting Colombian LPs
+   actually do. (Previous clip-path "slant" dividers produced awkward
+   colored wedges and were removed.) */
 
 /* ============================================================
    STICKY TOP BAR
@@ -421,20 +412,34 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 .colors { background: var(--ink); color: var(--crema); }
 .colors .section-title { font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 6px; color: #fff; }
 .colors .section-subtitle { color: #cfc8ba; margin-bottom: 22px; font-weight: 600; }
-.color-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+
+/* compact 2×2 grid — small cards so the 4 ediciones fit ~one viewport */
+.color-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 .color-card {
   background: #fff;
   color: var(--ink);
-  border: var(--border);
-  box-shadow: var(--shadow-hard);
-  border-radius: 6px;
+  border: var(--border-thin);
+  box-shadow: var(--shadow-mini);
+  border-radius: 8px;
   overflow: hidden;
 }
-.color-card img { width: 100%; height: auto; aspect-ratio: 4/5; object-fit: cover; }
-.color-card .cc-body { padding: 16px; }
-.color-card .cc-name { font-family: 'Anton', sans-serif; font-size: 24px; text-transform: uppercase; }
-.color-card .cc-name .cc-dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--ink); vertical-align: middle; margin-left: 6px; }
-.color-card .cc-desc { font-size: 14px; color: var(--ink-soft); margin: 4px 0 12px; }
+.color-card img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; object-position: center 18%; }
+.color-card .cc-body { padding: 10px 12px 12px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.color-card .cc-name { font-family: 'Anton', sans-serif; font-size: 17px; text-transform: uppercase; line-height: 1; }
+.color-card .cc-name .cc-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); vertical-align: middle; margin-left: 4px; }
+.color-card .cc-pedir {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  color: #fff;
+  background: var(--red);
+  border: 2px solid var(--ink);
+  border-radius: 5px;
+  padding: 5px 14px;
+  box-shadow: var(--shadow-mini);
+}
+.color-card .cc-pedir:active { transform: translate(2px, 2px); box-shadow: none; }
 
 /* ============================================================
    BLOCK 7 — STORYTELLING BAND  ·  photo (red-tinted, vs ink above)
@@ -593,7 +598,7 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
       url('/images/hero/hero-desktop.webp');
     background-position: center 35%;
   }
-  .color-grid { grid-template-columns: repeat(2, 1fr); }
+  .color-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {
