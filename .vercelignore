@@ -16,6 +16,10 @@ mockups/
 images/lifestyle/
 images/hero/hero-balcon.png
 
+# Exception: the /oferta landing uses the stadium/hinchada shot as the
+# background for its storytelling + antes/después bands, so it must ship.
+!images/lifestyle/lifestyle-stadium.png
+
 # Local docs that don't need to ship
 BRIEF.md
 DEPLOY.md

@@ -1,0 +1,505 @@
+/* ============================================================
+   oferta.css — LATRICOLOR · /oferta landing page
+   Standalone, mobile-first conversion landing for paid TikTok
+   traffic. Self-contained: redefines the brand tokens so the
+   page never has to download the full styles.css (~146KB) —
+   speed matters for paid traffic. Keep this lean.
+   Brand system mirrors styles.css :root tokens.
+   ============================================================ */
+
+:root {
+  /* ===== Stadium palette (mirrors styles.css) ===== */
+  --crema:       #F5EFE0;
+  --bg-warm:     #E8E0CF;
+  --bg-deep:     #DCD2BD;
+  --ink:         #1A1A1A;
+  --ink-soft:    #2A2A28;
+  --muted:       #8A867E;
+
+  --yellow:      #FFD300;
+  --yellow-warm: #FFE552;
+  --yellow-deep: #D9B400;
+  --blue:        #0033A0;
+  --blue-deep:   #001D5C;
+  --red:         #E63946;
+  --red-deep:    #A8141C;
+  --green:       #1f8a3b;
+  --wa:          #25D366;
+  --wa-deep:     #1FB855;
+
+  --shadow-hard: 5px 5px 0 var(--ink);
+  --shadow-soft: 3px 3px 0 var(--ink);
+  --shadow-mini: 2px 2px 0 var(--ink);
+  --border:      3px solid var(--ink);
+  --border-thin: 2px solid var(--ink);
+
+  --bar-h:       38px;
+  --maxw:        720px;          /* mobile-first: narrow, even on desktop */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--crema);
+  color: var(--ink);
+  line-height: 1.5;
+  overflow-x: hidden;
+  padding-top: var(--bar-h);
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
+
+.anton  { font-family: 'Anton', 'Inter', sans-serif; text-transform: uppercase; }
+.bebas  { font-family: 'Bebas Neue', 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+
+.wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 18px; }
+
+.section { padding: 44px 0; }
+.section--tight { padding: 28px 0; }
+
+/* ============================================================
+   STICKY TOP BAR
+   ============================================================ */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--bar-h);
+  z-index: 200;
+  background: var(--ink);
+  color: var(--yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.6px;
+  text-align: center;
+  padding: 0 10px;
+  border-bottom: 2px solid var(--yellow);
+}
+.topbar .tb-main { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar .tb-days {
+  background: var(--red);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   CTA BUTTONS
+   ============================================================ */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--yellow);
+  border: var(--border);
+  box-shadow: var(--shadow-hard);
+  padding: 16px 26px;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  line-height: 1;
+  text-align: center;
+}
+.cta:active { transform: translate(3px, 3px); box-shadow: var(--shadow-mini); }
+.cta--giant { width: 100%; font-size: 24px; padding: 20px 22px; }
+.cta--block { width: 100%; }
+.cta--wa { background: var(--wa); color: #fff; }
+.cta--small { font-size: 15px; padding: 11px 16px; box-shadow: var(--shadow-mini); }
+
+.micro {
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+/* ============================================================
+   BLOCK 1 — HERO
+   ============================================================ */
+.hero {
+  position: relative;
+  min-height: calc(100vh - var(--bar-h));
+  display: flex;
+  align-items: flex-end;
+  background-image:
+    linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.78) 100%),
+    url('/images/hero/hero-moto.webp');
+  background-size: cover;
+  background-position: center 28%;
+  background-color: var(--ink);
+  padding: 0 0 34px;
+}
+.hero-inner { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 18px; color: #fff; }
+
+.badge-urg {
+  display: inline-block;
+  background: var(--red);
+  color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+  padding: 6px 12px;
+  border: 2px solid #fff;
+  border-radius: 3px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-mini);
+}
+
+.hero h1 {
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-size: clamp(44px, 14vw, 72px);
+  color: #fff;
+  text-shadow: 3px 3px 0 var(--ink);
+}
+.hero .hero-sub {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(22px, 6.5vw, 34px);
+  color: var(--yellow);
+  margin: 6px 0 16px;
+  text-shadow: 2px 2px 0 var(--ink);
+}
+
+.price-line {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.price-line .old { font-size: 22px; color: #ddd; text-decoration: line-through; font-weight: 600; }
+.price-line .now {
+  font-family: 'Anton', sans-serif;
+  font-size: 40px;
+  color: var(--yellow);
+  text-shadow: 2px 2px 0 var(--ink);
+}
+.price-line .save-tag {
+  background: var(--yellow);
+  color: var(--ink);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  padding: 4px 9px;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   BLOCK 2 / 12 — PRICE BLOCK X1 / X2 / X3
+   ============================================================ */
+.pricegrid-wrap { background: var(--blue); color: #fff; }
+.pricegrid-wrap .section-kicker {
+  text-align: center; color: var(--yellow);
+  font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.pricegrid-wrap .section-title {
+  text-align: center; font-family: 'Anton', sans-serif; color: #fff;
+  font-size: clamp(28px, 8vw, 40px); margin-bottom: 22px; text-transform: uppercase;
+}
+
+.pricegrid { display: flex; flex-direction: column; gap: 16px; }
+
+.pcard {
+  position: relative;
+  background: var(--crema);
+  color: var(--ink);
+  border: var(--border);
+  box-shadow: var(--shadow-hard);
+  border-radius: 6px;
+  padding: 22px 18px;
+  text-align: center;
+}
+.pcard .pc-name { font-family: 'Anton', sans-serif; font-size: 26px; text-transform: uppercase; }
+.pcard .pc-old  { font-size: 17px; color: var(--muted); text-decoration: line-through; font-weight: 600; }
+.pcard .pc-now  { font-family: 'Anton', sans-serif; font-size: 42px; color: var(--blue); line-height: 1; margin: 2px 0 6px; }
+.pcard .pc-tag  { font-size: 14px; font-weight: 700; color: var(--ink-soft); margin-bottom: 4px; }
+.pcard .pc-save { display: inline-block; background: var(--green); color: #fff; font-weight: 700; font-size: 13px; padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; }
+.pcard .pc-extra { font-size: 13px; color: var(--ink-soft); margin-bottom: 12px; font-weight: 600; }
+
+/* dominant middle card */
+.pcard--hot {
+  border: 4px solid var(--yellow);
+  background: #fff;
+  box-shadow: 6px 6px 0 var(--ink);
+  transform: scale(1.03);
+  z-index: 2;
+}
+.pcard--hot .pc-now { color: var(--red-deep); font-size: 48px; }
+.pcard--hot .cta { background: var(--red); color: #fff; }
+.sticker {
+  position: absolute;
+  top: -14px; right: -8px;
+  background: var(--red);
+  color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  padding: 6px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  transform: rotate(7deg);
+  box-shadow: var(--shadow-mini);
+  white-space: nowrap;
+}
+
+.price-reassure {
+  text-align: center;
+  margin-top: 20px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.8px;
+  color: var(--yellow);
+}
+
+/* ============================================================
+   BLOCK 3 — REASSURANCE TRIO
+   ============================================================ */
+.trio { background: var(--ink); color: #fff; }
+.trio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+.trio-item .t-ico { font-size: 30px; }
+.trio-item .t-head { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--yellow); letter-spacing: 0.5px; margin-top: 4px; }
+.trio-item .t-sub  { font-size: 12px; color: #ddd; }
+
+/* ============================================================
+   BLOCK 4 / 15 — COUNTDOWN
+   ============================================================ */
+.countdown-block { background: var(--red); color: #fff; text-align: center; }
+.countdown-block .cb-kicker { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; }
+.countdown-block .cb-title  { font-family: 'Anton', sans-serif; font-size: clamp(26px, 7.5vw, 38px); margin: 6px 0 16px; text-transform: uppercase; }
+
+.countdown {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 auto 18px;
+  max-width: 420px;
+}
+.countdown .cd-unit {
+  background: var(--ink);
+  border: 2px solid #fff;
+  border-radius: 6px;
+  padding: 10px 0;
+  flex: 1;
+}
+.countdown .cd-num { font-family: 'Anton', sans-serif; font-size: clamp(28px, 9vw, 44px); color: var(--yellow); line-height: 1; }
+.countdown .cd-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
+
+.countdown-block .cb-note { font-size: 14px; font-weight: 600; margin-bottom: 18px; }
+
+/* placeholder: real sales counter goes here once we have real numbers
+   (see comment in oferta.html). Intentionally no fake "X% vendido" bar. */
+
+/* ============================================================
+   BLOCK 5 — BENEFITS
+   ============================================================ */
+.benefits { background: var(--crema); }
+.benefits .section-title { text-align: center; font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 24px; }
+.benefits .section-title em { color: var(--blue); font-style: normal; }
+.ben-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.ben-item {
+  background: #fff;
+  border: var(--border-thin);
+  border-radius: 6px;
+  box-shadow: var(--shadow-mini);
+  padding: 16px 14px;
+  text-align: center;
+}
+.ben-item .b-ico { font-size: 30px; }
+.ben-item .b-txt { font-weight: 700; font-size: 14px; margin-top: 6px; }
+
+/* ============================================================
+   BLOCK 6 — THE 4 COLORS
+   ============================================================ */
+.colors { background: var(--bg-warm); }
+.colors .section-title { text-align: center; font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 6px; }
+.colors .section-subtitle { text-align: center; color: var(--ink-soft); margin-bottom: 22px; font-weight: 600; }
+.color-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+.color-card {
+  background: #fff;
+  border: var(--border);
+  box-shadow: var(--shadow-hard);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.color-card img { width: 100%; height: auto; aspect-ratio: 4/5; object-fit: cover; }
+.color-card .cc-body { padding: 16px; }
+.color-card .cc-name { font-family: 'Anton', sans-serif; font-size: 24px; text-transform: uppercase; }
+.color-card .cc-name .cc-dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--ink); vertical-align: middle; margin-left: 6px; }
+.color-card .cc-desc { font-size: 14px; color: var(--ink-soft); margin: 4px 0 12px; }
+
+/* ============================================================
+   BLOCK 7 — STORYTELLING BAND
+   ============================================================ */
+.story {
+  position: relative;
+  background-image:
+    linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65)),
+    url('/images/lifestyle/lifestyle-stadium.png');
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  text-align: center;
+  padding: 80px 0;
+}
+.story p {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(24px, 7vw, 38px);
+  letter-spacing: 0.5px;
+  line-height: 1.15;
+  text-shadow: 2px 2px 0 var(--ink);
+}
+.story .story-punch { font-family: 'Anton', sans-serif; color: var(--yellow); margin-top: 14px; font-size: clamp(28px, 8.5vw, 46px); }
+
+/* ============================================================
+   BLOCK 8 — COMPARISON TABLE
+   ============================================================ */
+.compare { background: var(--crema); }
+.compare .section-title { text-align: center; font-family: 'Anton', sans-serif; font-size: clamp(26px, 7.5vw, 38px); margin-bottom: 22px; }
+.cmp-table { border: var(--border); border-radius: 6px; overflow: hidden; box-shadow: var(--shadow-soft); background: #fff; }
+.cmp-head { display: grid; grid-template-columns: 1fr 1fr; }
+.cmp-head > div { padding: 12px 10px; font-family: 'Anton', sans-serif; font-size: 15px; text-transform: uppercase; text-align: center; line-height: 1.05; }
+.cmp-head .cmp-us  { background: var(--blue); color: #fff; }
+.cmp-head .cmp-them{ background: var(--bg-deep); color: var(--ink-soft); }
+.cmp-row { display: grid; grid-template-columns: 1fr 1fr; border-top: var(--border-thin); }
+.cmp-row > div { padding: 12px 12px; font-size: 13.5px; font-weight: 600; }
+.cmp-row .cmp-us  { border-right: var(--border-thin); color: var(--ink); }
+.cmp-row .cmp-them{ color: var(--muted); }
+.cmp-row .ic { font-weight: 700; margin-right: 5px; }
+.cmp-row .ic-ok { color: var(--green); }
+.cmp-row .ic-no { color: var(--red); }
+
+/* ============================================================
+   BLOCK 9 — TESTIMONIOS
+   ============================================================ */
+.testi { background: var(--bg-warm); }
+.testi .section-title { text-align: center; font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 22px; }
+.testi-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.testi-card {
+  background: #fff;
+  border: var(--border-thin);
+  box-shadow: var(--shadow-soft);
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.testi-card img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ink); flex-shrink: 0; }
+.testi-card .tc-name { font-family: 'Bebas Neue', sans-serif; font-size: 19px; letter-spacing: 0.5px; }
+.testi-card .tc-city { font-size: 12px; color: var(--muted); }
+.testi-card .tc-stars { color: var(--yellow-deep); font-size: 15px; letter-spacing: 1px; }
+.testi-card .tc-quote { font-size: 14px; margin: 6px 0; font-style: italic; }
+.testi-card .tc-verified { display: inline-block; background: #e7f7ec; color: var(--green); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+
+/* ============================================================
+   BLOCK 10 — ANTES / DESPUÉS
+   ============================================================ */
+.beforeafter { display: grid; grid-template-columns: 1fr 1fr; min-height: 230px; }
+.ba-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 16px; }
+.ba-before { background: var(--bg-deep); color: var(--ink-soft); }
+.ba-after  {
+  color: #fff;
+  background-image: linear-gradient(rgba(0,51,160,0.55), rgba(0,29,92,0.8)), url('/images/lifestyle/lifestyle-stadium.png');
+  background-size: cover; background-position: center;
+}
+.ba-panel .ba-kick { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px; opacity: 0.85; }
+.ba-panel .ba-big  { font-family: 'Anton', sans-serif; font-size: clamp(26px, 8vw, 40px); margin-top: 6px; }
+.ba-after .ba-big { color: var(--yellow); text-shadow: 2px 2px 0 var(--ink); }
+
+/* ============================================================
+   BLOCK 11 — DIVARTE UPSELL
+   ============================================================ */
+.divarte { background: var(--ink); color: #fff; }
+.divarte .section-kicker { text-align: center; font-family: 'Bebas Neue', sans-serif; color: var(--yellow); font-size: 20px; letter-spacing: 1px; }
+.divarte .section-title { text-align: center; font-family: 'Anton', sans-serif; font-size: clamp(24px, 7vw, 34px); margin-bottom: 6px; }
+.divarte .gift-flag { text-align: center; color: var(--yellow-warm); font-weight: 700; margin-bottom: 20px; }
+.divarte-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.divarte-card { background: #fff; color: var(--ink); border: var(--border-thin); border-radius: 6px; overflow: hidden; box-shadow: var(--shadow-soft); }
+.divarte-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+.divarte-card .dv-body { padding: 12px; text-align: center; }
+.divarte-card .dv-name { font-family: 'Anton', sans-serif; font-size: 19px; }
+.divarte-card .dv-gift { font-size: 12px; color: var(--red-deep); font-weight: 700; margin-bottom: 10px; }
+
+/* ============================================================
+   BLOCK 13 — FAQ
+   ============================================================ */
+.faq { background: var(--crema); }
+.faq .section-title { text-align: center; font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 22px; }
+.faq-item { background: #fff; border: var(--border-thin); border-radius: 6px; margin-bottom: 10px; box-shadow: var(--shadow-mini); overflow: hidden; }
+.faq-item summary { list-style: none; cursor: pointer; padding: 15px 16px; font-weight: 700; font-size: 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item .faq-ico { font-family: 'Anton', sans-serif; color: var(--blue); font-size: 22px; transition: transform 0.2s; }
+.faq-item[open] .faq-ico { transform: rotate(45deg); }
+.faq-item .faq-ans { padding: 0 16px 16px; font-size: 14px; color: var(--ink-soft); }
+
+/* ============================================================
+   BLOCK 14 — ALIADOS LOGÍSTICOS
+   ============================================================ */
+.aliados { background: #fff; text-align: center; border-top: var(--border-thin); border-bottom: var(--border-thin); }
+.aliados-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 22px; margin-bottom: 12px; }
+.aliados-row span { font-family: 'Bebas Neue', sans-serif; font-size: 19px; letter-spacing: 0.5px; color: var(--muted); }
+.aliados .ali-note { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+.aliados .ali-note strong { color: var(--green); }
+
+/* ============================================================
+   BLOCK 15 — FINAL CTA
+   ============================================================ */
+.finalcta { background: var(--blue-deep); color: #fff; text-align: center; }
+.finalcta .fc-title { font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 42px); margin-bottom: 18px; text-transform: uppercase; }
+.finalcta .micro { color: var(--yellow); margin-top: 14px; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.foot { background: var(--ink); color: #fff; text-align: center; padding: 30px 18px; }
+.foot .foot-logo { font-family: 'Anton', sans-serif; font-size: 26px; letter-spacing: 1px; }
+.foot .foot-logo .t1 { color: var(--yellow); } .foot .foot-logo .t2 { color: var(--blue-light, #3B6FE0); } .foot .foot-logo .t3 { color: var(--red); }
+.foot a { color: var(--yellow); text-decoration: none; font-weight: 600; }
+.foot .foot-meta { font-size: 12px; color: #aaa; margin-top: 10px; }
+
+/* ============================================================
+   RESPONSIVE — tablet / desktop refinements
+   The page stays a narrow single column even on desktop (it's a
+   mobile-first conversion machine), but price cards go 3-up and
+   the hero swaps to the wide desktop crop.
+   ============================================================ */
+@media (min-width: 600px) {
+  .ben-grid { grid-template-columns: repeat(3, 1fr); }
+  .testi-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 760px) {
+  .hero { background-image:
+      linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.78) 100%),
+      url('/images/hero/hero-desktop.webp');
+    background-position: center 35%;
+  }
+  .pricegrid { flex-direction: row; align-items: stretch; }
+  .pricegrid .pcard { flex: 1; }
+  .color-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .cta { transition: none; }
+}
