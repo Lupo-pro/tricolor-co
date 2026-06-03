@@ -1,10 +1,15 @@
 /* ============================================================
    oferta.css — LATRICOLOR · /oferta landing page
-   Standalone, mobile-first conversion landing for paid TikTok
-   traffic. Self-contained: redefines the brand tokens so the
-   page never has to download the full styles.css (~146KB) —
-   speed matters for paid traffic. Keep this lean.
-   Brand system mirrors styles.css :root tokens.
+   Aggressive Colombian conversion-funnel aesthetic.
+   Standalone, mobile-first. Self-contained: redefines the brand
+   tokens so the page never downloads the full styles.css (~146KB).
+
+   Two defining traits of this redesign:
+   1. The "tunnel" — full-bleed colored bands butting edge-to-edge
+      with zero white gaps, alternating crema/red/yellow/blue/ink,
+      interlocked by pure-CSS diagonal (clip-path) dividers.
+   2. Horizontal 3-column price block with product images, tight
+      even at 390px, with a dominant middle "MÁS VENDIDO" card.
    ============================================================ */
 
 :root {
@@ -20,6 +25,7 @@
   --yellow-warm: #FFE552;
   --yellow-deep: #D9B400;
   --blue:        #0033A0;
+  --blue-light:  #3B6FE0;
   --blue-deep:   #001D5C;
   --red:         #E63946;
   --red-deep:    #A8141C;
@@ -35,6 +41,7 @@
 
   --bar-h:       38px;
   --maxw:        720px;          /* mobile-first: narrow, even on desktop */
+  --sl:          30px;           /* diagonal divider depth */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -43,7 +50,7 @@ html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: var(--crema);
+  background: var(--ink);        /* tunnel: never flash white between bands */
   color: var(--ink);
   line-height: 1.5;
   overflow-x: hidden;
@@ -60,8 +67,29 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 
 .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 18px; }
 
-.section { padding: 44px 0; }
-.section--tight { padding: 28px 0; }
+/* ============================================================
+   THE TUNNEL — seamless full-bleed bands, zero gaps
+   Sections stack edge-to-edge (no margins). Big centered Anton
+   headers. Diagonal dividers interlock consecutive bands.
+   ============================================================ */
+.section        { position: relative; padding: 46px 0; margin: 0; }
+.section--tight { position: relative; padding: 26px 0; margin: 0; }
+
+/* Centered, bold tunnel-style section headers everywhere */
+.section-title, .cb-title, .fc-title, .section-kicker, .section-subtitle { text-align: center; }
+
+/* Diagonal dividers (pure CSS, no images). The clipped top corner
+   reveals the previous band's colour, so the bands interlock.
+   Two directions so the zig-zag alternates down the page.
+   Applied only to bands with no overflowing children (the price
+   cards' tilted badge is never clipped because price bands stay
+   flat-topped). Tiny ~4° angle at 390px — verified not to break. */
+.slant-top     { clip-path: polygon(0 var(--sl), 100% 0, 100% 100%, 0 100%); padding-top: calc(46px + var(--sl)); }
+.slant-top-rev { clip-path: polygon(0 0, 100% var(--sl), 100% 100%, 0 100%); padding-top: calc(46px + var(--sl)); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* keep dividers static — purely visual, no animation needed */
+}
 
 /* ============================================================
    STICKY TOP BAR
@@ -133,7 +161,7 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 }
 
 /* ============================================================
-   BLOCK 1 — HERO
+   BLOCK 1 — HERO  (photo band — opens the tunnel)
    ============================================================ */
 .hero {
   position: relative;
@@ -204,86 +232,146 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 }
 
 /* ============================================================
-   BLOCK 2 / 12 — PRICE BLOCK X1 / X2 / X3
+   BLOCK 2 / 12 — HORIZONTAL 3-COLUMN PRICE BLOCK
+   Band: BLUE (white text). Price bands stay flat-topped so the
+   tilted "MÁS VENDIDO" badge is never clipped.
    ============================================================ */
-.pricegrid-wrap { background: var(--blue); color: #fff; }
+.pricegrid-wrap { background: var(--blue); color: #fff; padding-bottom: 0; }
 .pricegrid-wrap .section-kicker {
-  text-align: center; color: var(--yellow);
+  color: var(--yellow);
   font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px;
   margin-bottom: 4px;
 }
 .pricegrid-wrap .section-title {
-  text-align: center; font-family: 'Anton', sans-serif; color: #fff;
+  font-family: 'Anton', sans-serif; color: #fff;
   font-size: clamp(28px, 8vw, 40px); margin-bottom: 22px; text-transform: uppercase;
 }
 
-.pricegrid { display: flex; flex-direction: column; gap: 16px; }
+/* 3 tight columns, even at 390px */
+.pricegrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  align-items: stretch;
+  padding-bottom: 26px;
+}
 
 .pcard {
   position: relative;
+  display: flex;
+  flex-direction: column;
   background: var(--crema);
   color: var(--ink);
-  border: var(--border);
-  box-shadow: var(--shadow-hard);
-  border-radius: 6px;
-  padding: 22px 18px;
+  border: var(--border-thin);
+  box-shadow: var(--shadow-mini);
+  border-radius: 8px;
+  padding: 10px 7px 12px;
   text-align: center;
 }
-.pcard .pc-name { font-family: 'Anton', sans-serif; font-size: 26px; text-transform: uppercase; }
-.pcard .pc-old  { font-size: 17px; color: var(--muted); text-decoration: line-through; font-weight: 600; }
-.pcard .pc-now  { font-family: 'Anton', sans-serif; font-size: 42px; color: var(--blue); line-height: 1; margin: 2px 0 6px; }
-.pcard .pc-tag  { font-size: 14px; font-weight: 700; color: var(--ink-soft); margin-bottom: 4px; }
-.pcard .pc-save { display: inline-block; background: var(--green); color: #fff; font-weight: 700; font-size: 13px; padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; }
-.pcard .pc-extra { font-size: 13px; color: var(--ink-soft); margin-bottom: 12px; font-weight: 600; }
+
+.pc-imgwrap { position: relative; }
+.pc-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: #fff;
+}
+/* "×2" / "PACK" overlay badges on the product image */
+.pc-badge {
+  position: absolute;
+  top: -7px; right: -7px;
+  min-width: 26px;
+  background: var(--red);
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 13px;
+  line-height: 1;
+  padding: 5px 6px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+}
+.pc-badge--pack {
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--yellow);
+  font-size: 12px;
+  padding: 4px 6px;
+  transform: rotate(-8deg);
+}
+
+.pcard .pc-name  { font-family: 'Anton', sans-serif; font-size: 15px; text-transform: uppercase; margin-top: 8px; line-height: 1; }
+.pcard .pc-old   { font-size: 11px; color: var(--muted); text-decoration: line-through; font-weight: 600; }
+.pcard .pc-now   { font-family: 'Anton', sans-serif; font-size: 23px; color: var(--blue); line-height: 1; margin: 2px 0 5px; }
+.pcard .pc-tag   { font-size: 10px; font-weight: 700; color: var(--ink-soft); line-height: 1.15; margin-bottom: 8px; }
+.pcard .pc-save  { display: inline-block; background: var(--green); color: #fff; font-weight: 700; font-size: 9.5px; padding: 2px 6px; border-radius: 12px; line-height: 1.2; margin-bottom: 8px; }
+.pcard .pc-extra { font-size: 9.5px; color: var(--ink-soft); font-weight: 600; line-height: 1.2; margin-bottom: 8px; }
+
+/* button pinned to the bottom so all 3 cards align */
+.pricegrid .cta {
+  margin-top: auto;
+  width: 100%;
+  font-size: 13px;
+  padding: 9px 4px;
+  border-width: 2px;
+  box-shadow: var(--shadow-mini);
+  border-radius: 5px;
+}
 
 /* dominant middle card */
 .pcard--hot {
-  border: 4px solid var(--yellow);
   background: #fff;
-  box-shadow: 6px 6px 0 var(--ink);
-  transform: scale(1.03);
+  border: 3px solid var(--yellow);
+  box-shadow: var(--shadow-soft);
+  transform: scale(1.04);
+  margin-top: -4px;
   z-index: 2;
 }
-.pcard--hot .pc-now { color: var(--red-deep); font-size: 48px; }
+.pcard--hot .pc-now { color: var(--red-deep); font-size: 24px; }
 .pcard--hot .cta { background: var(--red); color: #fff; }
 .sticker {
   position: absolute;
-  top: -14px; right: -8px;
+  top: -11px; left: 50%;
+  transform: translateX(-50%) rotate(-4deg);
   background: var(--red);
   color: #fff;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 15px;
-  letter-spacing: 0.5px;
-  padding: 6px 12px;
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  padding: 3px 8px;
   border: 2px solid var(--ink);
   border-radius: 3px;
-  transform: rotate(7deg);
   box-shadow: var(--shadow-mini);
   white-space: nowrap;
+  z-index: 3;
 }
 
+/* full-bleed contrasting reassurance strip directly under the row */
 .price-reassure {
-  text-align: center;
-  margin-top: 20px;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 16px;
-  letter-spacing: 0.8px;
+  background: var(--ink);
   color: var(--yellow);
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(13px, 3.7vw, 17px);
+  letter-spacing: 0.6px;
+  padding: 13px 14px;
+  margin: 0;
 }
 
 /* ============================================================
-   BLOCK 3 — REASSURANCE TRIO
+   BLOCK 3 — REASSURANCE TRIO  ·  band: YELLOW (ink text)
    ============================================================ */
-.trio { background: var(--ink); color: #fff; }
+.trio { background: var(--yellow); color: var(--ink); }
 .trio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
 .trio-item .t-ico { font-size: 30px; }
-.trio-item .t-head { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--yellow); letter-spacing: 0.5px; margin-top: 4px; }
-.trio-item .t-sub  { font-size: 12px; color: #ddd; }
+.trio-item .t-head { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--red-deep); letter-spacing: 0.5px; margin-top: 4px; }
+.trio-item .t-sub  { font-size: 12px; color: var(--ink-soft); }
 
 /* ============================================================
-   BLOCK 4 / 15 — COUNTDOWN
+   BLOCK 4 / 15 — COUNTDOWN  ·  band: RED (white text)
    ============================================================ */
-.countdown-block { background: var(--red); color: #fff; text-align: center; }
+.countdown-block { background: var(--red); color: #fff; }
 .countdown-block .cb-kicker { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; }
 .countdown-block .cb-title  { font-family: 'Anton', sans-serif; font-size: clamp(26px, 7.5vw, 38px); margin: 6px 0 16px; text-transform: uppercase; }
 
@@ -304,16 +392,16 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 .countdown .cd-num { font-family: 'Anton', sans-serif; font-size: clamp(28px, 9vw, 44px); color: var(--yellow); line-height: 1; }
 .countdown .cd-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
 
-.countdown-block .cb-note { font-size: 14px; font-weight: 600; margin-bottom: 18px; }
+.countdown-block .cb-note { font-size: 14px; font-weight: 600; margin-bottom: 18px; text-align: center; }
 
 /* placeholder: real sales counter goes here once we have real numbers
    (see comment in oferta.html). Intentionally no fake "X% vendido" bar. */
 
 /* ============================================================
-   BLOCK 5 — BENEFITS
+   BLOCK 5 — BENEFITS  ·  band: CREMA (ink text)
    ============================================================ */
-.benefits { background: var(--crema); }
-.benefits .section-title { text-align: center; font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 24px; }
+.benefits { background: var(--crema); color: var(--ink); }
+.benefits .section-title { font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 24px; }
 .benefits .section-title em { color: var(--blue); font-style: normal; }
 .ben-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
 .ben-item {
@@ -328,14 +416,15 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 .ben-item .b-txt { font-weight: 700; font-size: 14px; margin-top: 6px; }
 
 /* ============================================================
-   BLOCK 6 — THE 4 COLORS
+   BLOCK 6 — THE 4 COLORS  ·  band: INK (light text)
    ============================================================ */
-.colors { background: var(--bg-warm); }
-.colors .section-title { text-align: center; font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 6px; }
-.colors .section-subtitle { text-align: center; color: var(--ink-soft); margin-bottom: 22px; font-weight: 600; }
+.colors { background: var(--ink); color: var(--crema); }
+.colors .section-title { font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 6px; color: #fff; }
+.colors .section-subtitle { color: #cfc8ba; margin-bottom: 22px; font-weight: 600; }
 .color-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
 .color-card {
   background: #fff;
+  color: var(--ink);
   border: var(--border);
   box-shadow: var(--shadow-hard);
   border-radius: 6px;
@@ -348,12 +437,12 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 .color-card .cc-desc { font-size: 14px; color: var(--ink-soft); margin: 4px 0 12px; }
 
 /* ============================================================
-   BLOCK 7 — STORYTELLING BAND
+   BLOCK 7 — STORYTELLING BAND  ·  photo (red-tinted, vs ink above)
    ============================================================ */
 .story {
   position: relative;
   background-image:
-    linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65)),
+    linear-gradient(180deg, rgba(166,20,28,0.55), rgba(0,0,0,0.72)),
     url('/images/lifestyle/lifestyle-stadium.png');
   background-size: cover;
   background-position: center;
@@ -371,10 +460,10 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 .story .story-punch { font-family: 'Anton', sans-serif; color: var(--yellow); margin-top: 14px; font-size: clamp(28px, 8.5vw, 46px); }
 
 /* ============================================================
-   BLOCK 8 — COMPARISON TABLE
+   BLOCK 8 — COMPARISON TABLE  ·  band: YELLOW (ink text)
    ============================================================ */
-.compare { background: var(--crema); }
-.compare .section-title { text-align: center; font-family: 'Anton', sans-serif; font-size: clamp(26px, 7.5vw, 38px); margin-bottom: 22px; }
+.compare { background: var(--yellow); color: var(--ink); }
+.compare .section-title { font-family: 'Anton', sans-serif; font-size: clamp(26px, 7.5vw, 38px); margin-bottom: 22px; color: var(--ink); }
 .cmp-table { border: var(--border); border-radius: 6px; overflow: hidden; box-shadow: var(--shadow-soft); background: #fff; }
 .cmp-head { display: grid; grid-template-columns: 1fr 1fr; }
 .cmp-head > div { padding: 12px 10px; font-family: 'Anton', sans-serif; font-size: 15px; text-transform: uppercase; text-align: center; line-height: 1.05; }
@@ -389,13 +478,14 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 .cmp-row .ic-no { color: var(--red); }
 
 /* ============================================================
-   BLOCK 9 — TESTIMONIOS
+   BLOCK 9 — TESTIMONIOS  ·  band: BLUE (white text)
    ============================================================ */
-.testi { background: var(--bg-warm); }
-.testi .section-title { text-align: center; font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 22px; }
+.testi { background: var(--blue); color: #fff; }
+.testi .section-title { font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 22px; color: #fff; }
 .testi-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
 .testi-card {
   background: #fff;
+  color: var(--ink);
   border: var(--border-thin);
   box-shadow: var(--shadow-soft);
   border-radius: 6px;
@@ -412,11 +502,11 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 .testi-card .tc-verified { display: inline-block; background: #e7f7ec; color: var(--green); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
 
 /* ============================================================
-   BLOCK 10 — ANTES / DESPUÉS
+   BLOCK 10 — ANTES / DESPUÉS  ·  split: INK panel + photo panel
    ============================================================ */
 .beforeafter { display: grid; grid-template-columns: 1fr 1fr; min-height: 230px; }
 .ba-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 16px; }
-.ba-before { background: var(--bg-deep); color: var(--ink-soft); }
+.ba-before { background: var(--ink); color: #cfc8ba; }
 .ba-after  {
   color: #fff;
   background-image: linear-gradient(rgba(0,51,160,0.55), rgba(0,29,92,0.8)), url('/images/lifestyle/lifestyle-stadium.png');
@@ -427,11 +517,11 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 .ba-after .ba-big { color: var(--yellow); text-shadow: 2px 2px 0 var(--ink); }
 
 /* ============================================================
-   BLOCK 11 — DIVARTE UPSELL
+   BLOCK 11 — DIVARTE UPSELL  ·  band: RED (white text)
    ============================================================ */
-.divarte { background: var(--ink); color: #fff; }
-.divarte .section-kicker { text-align: center; font-family: 'Bebas Neue', sans-serif; color: var(--yellow); font-size: 20px; letter-spacing: 1px; }
-.divarte .section-title { text-align: center; font-family: 'Anton', sans-serif; font-size: clamp(24px, 7vw, 34px); margin-bottom: 6px; }
+.divarte { background: var(--red); color: #fff; }
+.divarte .section-kicker { font-family: 'Bebas Neue', sans-serif; color: var(--yellow); font-size: 20px; letter-spacing: 1px; }
+.divarte .section-title { font-family: 'Anton', sans-serif; font-size: clamp(24px, 7vw, 34px); margin-bottom: 6px; color: #fff; }
 .divarte .gift-flag { text-align: center; color: var(--yellow-warm); font-weight: 700; margin-bottom: 20px; }
 .divarte-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .divarte-card { background: #fff; color: var(--ink); border: var(--border-thin); border-radius: 6px; overflow: hidden; box-shadow: var(--shadow-soft); }
@@ -441,10 +531,10 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 .divarte-card .dv-gift { font-size: 12px; color: var(--red-deep); font-weight: 700; margin-bottom: 10px; }
 
 /* ============================================================
-   BLOCK 13 — FAQ
+   BLOCK 13 — FAQ  ·  band: CREMA (ink text)
    ============================================================ */
-.faq { background: var(--crema); }
-.faq .section-title { text-align: center; font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 22px; }
+.faq { background: var(--crema); color: var(--ink); }
+.faq .section-title { font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 40px); margin-bottom: 22px; }
 .faq-item { background: #fff; border: var(--border-thin); border-radius: 6px; margin-bottom: 10px; box-shadow: var(--shadow-mini); overflow: hidden; }
 .faq-item summary { list-style: none; cursor: pointer; padding: 15px 16px; font-weight: 700; font-size: 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .faq-item summary::-webkit-details-marker { display: none; }
@@ -453,39 +543,48 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 .faq-item .faq-ans { padding: 0 16px 16px; font-size: 14px; color: var(--ink-soft); }
 
 /* ============================================================
-   BLOCK 14 — ALIADOS LOGÍSTICOS
+   BLOCK 14 — ALIADOS LOGÍSTICOS  ·  band: YELLOW (ink text)
    ============================================================ */
-.aliados { background: #fff; text-align: center; border-top: var(--border-thin); border-bottom: var(--border-thin); }
+.aliados { background: var(--yellow); color: var(--ink); text-align: center; }
 .aliados-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 22px; margin-bottom: 12px; }
-.aliados-row span { font-family: 'Bebas Neue', sans-serif; font-size: 19px; letter-spacing: 0.5px; color: var(--muted); }
+.aliados-row span { font-family: 'Bebas Neue', sans-serif; font-size: 19px; letter-spacing: 0.5px; color: var(--ink-soft); }
 .aliados .ali-note { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
-.aliados .ali-note strong { color: var(--green); }
+.aliados .ali-note strong { color: var(--red-deep); }
 
 /* ============================================================
-   BLOCK 15 — FINAL CTA
+   BLOCK 15 — FINAL CTA  ·  band: RED (white text)
    ============================================================ */
-.finalcta { background: var(--blue-deep); color: #fff; text-align: center; }
+.finalcta { background: var(--red); color: #fff; text-align: center; }
 .finalcta .fc-title { font-family: 'Anton', sans-serif; font-size: clamp(28px, 8vw, 42px); margin-bottom: 18px; text-transform: uppercase; }
 .finalcta .micro { color: var(--yellow); margin-top: 14px; }
 
 /* ============================================================
-   FOOTER
+   FOOTER  ·  band: INK
    ============================================================ */
 .foot { background: var(--ink); color: #fff; text-align: center; padding: 30px 18px; }
 .foot .foot-logo { font-family: 'Anton', sans-serif; font-size: 26px; letter-spacing: 1px; }
-.foot .foot-logo .t1 { color: var(--yellow); } .foot .foot-logo .t2 { color: var(--blue-light, #3B6FE0); } .foot .foot-logo .t3 { color: var(--red); }
+.foot .foot-logo .t1 { color: var(--yellow); } .foot .foot-logo .t2 { color: var(--blue-light); } .foot .foot-logo .t3 { color: var(--red); }
 .foot a { color: var(--yellow); text-decoration: none; font-weight: 600; }
 .foot .foot-meta { font-size: 12px; color: #aaa; margin-top: 10px; }
 
 /* ============================================================
    RESPONSIVE — tablet / desktop refinements
-   The page stays a narrow single column even on desktop (it's a
-   mobile-first conversion machine), but price cards go 3-up and
-   the hero swaps to the wide desktop crop.
+   Page stays a narrow single column even on desktop (mobile-first
+   conversion machine). Price block is already 3-up at every width;
+   here it just gets more room. Hero swaps to the wide desktop crop.
    ============================================================ */
 @media (min-width: 600px) {
   .ben-grid { grid-template-columns: repeat(3, 1fr); }
   .testi-grid { grid-template-columns: 1fr 1fr; }
+  /* roomier price cards on bigger screens */
+  .pricegrid { gap: 12px; }
+  .pcard { padding: 16px 12px 16px; }
+  .pcard .pc-name { font-size: 19px; }
+  .pcard .pc-now  { font-size: 30px; }
+  .pcard--hot .pc-now { font-size: 32px; }
+  .pcard .pc-tag, .pcard .pc-save, .pcard .pc-extra { font-size: 12px; }
+  .pricegrid .cta { font-size: 16px; padding: 12px 6px; }
+  .sticker { font-size: 13px; padding: 4px 11px; }
 }
 
 @media (min-width: 760px) {
@@ -494,8 +593,6 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
       url('/images/hero/hero-desktop.webp');
     background-position: center 35%;
   }
-  .pricegrid { flex-direction: row; align-items: stretch; }
-  .pricegrid .pcard { flex: 1; }
   .color-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
