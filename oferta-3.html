@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1A1A1A">
 
-<!-- A/B/C variant flag. Read by the script at the bottom to (a) report the
-     variant and (b) append a "(ref: A|B|C)" tag to every WhatsApp pre-filled
-     message for conversion attribution. This is variant C (social proof). -->
-<script>window.LANDING_VARIANT = 'C';</script>
+<!-- A/B/C variant flag — attributes orders/events + tags WhatsApp messages.
+     Variant C = OFFER / SOCIAL-PROOF recipe. Same shared checkout as A;
+     only the page framing and the default-selected offer (3) differ. -->
+<script>window.LANDING_VARIANT = 'C'; window.LANDING_DEFAULT_OFFER = '3';</script>
 
 <!-- Performance: preconnect fonts, dns-prefetch WhatsApp. This page is the
      destination for paid TikTok ads — keep it fast. Only the hero is
@@ -22,8 +22,8 @@
 <link rel="preload" as="image" href="/images/hero/hero-moto.webp" type="image/webp" fetchpriority="high" media="(max-width: 759px)">
 <link rel="preload" as="image" href="/images/hero/hero-desktop.webp" type="image/webp" fetchpriority="high" media="(min-width: 760px)">
 
-<title>La Tricolor que todas quieren este Mundial · Bodysuit Selección Colombia | LATRICOLOR 🇨🇴</title>
-<meta name="description" content="La Tricolor que todas quieren este Mundial 2026. Compras verificadas en Medellín, Cali, Bogotá y Barranquilla. Envío GRATIS + contra entrega a toda Colombia.">
+<title>Apoya a la Sele este Mundial · LATRICOLOR 🇨🇴</title>
+<meta name="description" content="Apoya a la Sele este Mundial: bodysuit Selección Colombia con envío GRATIS + pago contra entrega. Revisás antes de pagar. La favorita de la hinchada.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta http-equiv="content-language" content="es-CO">
 <link rel="canonical" href="https://latricolor.co/oferta-3">
@@ -33,8 +33,8 @@
 <meta property="og:locale" content="es_CO">
 <meta property="og:site_name" content="LATRICOLOR.CO">
 <meta property="og:url" content="https://latricolor.co/oferta-3">
-<meta property="og:title" content="La Tricolor que todas quieren este Mundial 🇨🇴">
-<meta property="og:description" content="Compras verificadas en toda Colombia · Envío GRATIS + contra entrega. Edición Mundial 2026.">
+<meta property="og:title" content="Apoya a la Sele este Mundial 🇨🇴">
+<meta property="og:description" content="Envío GRATIS + contra entrega · Revisás antes de pagar. La favorita de la hinchada.">
 <meta property="og:image" content="https://latricolor.co/assets/og-image.png">
 
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -61,7 +61,7 @@
 </script>
 <!-- TikTok Pixel Code End -->
 </head>
-<body class="v3">
+<body>
 
 <!-- ============================================================
      STICKY TOP BAR
@@ -76,113 +76,22 @@
      ============================================================ -->
 <header class="hero">
   <div class="hero-inner">
-    <span class="badge-urg">★★★★★ · COMPRAS VERIFICADAS</span>
-    <h1>La Tricolor que<br>todas quieren<br>este Mundial.</h1>
-    <p class="hero-sub">La favorita de la hinchada. 🇨🇴</p>
+    <span class="badge-urg">★★★★★ · LA FAVORITA DE LA HINCHADA</span>
+    <h1>Apoya a la Sele<br>este Mundial.</h1>
+    <p class="hero-sub">La Tricolor que todas están pidiendo. 🇨🇴</p>
     <a class="cta cta--giant" href="#pedido"
        data-ev="InitiateCheckout" data-label="hero">Quiero el mío →</a>
-    <!-- price present but trust leads -->
-    <p class="hero-price-mini"><span class="old">$129.900</span> <span class="now">$89.000</span> · 💵 contra entrega · 🚚 envío gratis</p>
+    <p class="micro" style="color:#fff;">💵 Pagás cuando lo recibís · 🚚 Envío gratis a toda Colombia</p>
   </div>
 </header>
 
 <!-- ============================================================
-     VARIANT C: TRUST STRIP under the hero
-     Stars + city tags + verified badges. No invented counts.
+     VARIANT C — reassurance strip right under the hero (trust-first),
+     leading straight into the offer block below.
      ============================================================ -->
-<section class="trust-strip section--tight">
+<section class="reassure-strip">
   <div class="wrap">
-    <div class="ts-stars" aria-label="5 estrellas">★★★★★ <span>La favorita de la hinchada</span></div>
-    <div class="ts-cities">
-      <span>📍 Medellín</span><span>📍 Cali</span><span>📍 Bogotá</span><span>📍 Barranquilla</span>
-    </div>
-    <div class="ts-badges">
-      <span class="ts-badge">✓ Compra verificada</span>
-      <span class="ts-badge">💵 Contra entrega</span>
-      <span class="ts-badge">🚚 Envío gratis</span>
-    </div>
-    <!-- ============================================================
-         REAL VERIFIED-SALES COUNTER PLACEHOLDER
-         Wire a genuine "X colombianas ya pidieron" figure here ONLY
-         once we have real, verifiable numbers. Do NOT invent counts
-         (no "+8.589 clientes" / "+10.000 hinchas"). Trust here is built
-         on the real testimonios + verified badges below, not stats.
-         e.g. <p class="ts-count"><strong data-real-sales></strong> ...</p>
-         ============================================================ -->
-  </div>
-</section>
-
-<!-- ============================================================
-     VARIANT C ORDER: TESTIMONIOS FIRST (right after hero)
-     Real testimonios + a WhatsApp-chat-style proof mock. Trust before
-     the offer. (Moved up from block 9.)
-     ============================================================ -->
-<section class="section testi">
-  <div class="wrap">
-    <h2 class="section-title">La hinchada habla</h2>
-    <div class="testi-grid">
-
-      <figure class="testi-card">
-        <img src="/images/testimonios/selfie-2.webp" alt="Sara — Medellín" loading="lazy" decoding="async" width="64" height="64">
-        <div>
-          <div class="tc-name">Sara C.</div>
-          <div class="tc-city">Medellín</div>
-          <div class="tc-stars">★★★★★</div>
-          <blockquote class="tc-quote">"Llegó en 48 horas. Calidad premium real, no es réplica. Me sentí la dueña del estadio."</blockquote>
-          <span class="tc-verified">✓ Compra verificada</span>
-        </div>
-      </figure>
-
-      <figure class="testi-card">
-        <img src="/images/testimonios/selfie-3.webp" alt="María Camila — Cali" loading="lazy" decoding="async" width="64" height="64">
-        <div>
-          <div class="tc-name">María Camila R.</div>
-          <div class="tc-city">Cali</div>
-          <div class="tc-stars">★★★★★</div>
-          <blockquote class="tc-quote">"La Capitana queda como guante. Es bandera literal. No me la quiero quitar."</blockquote>
-          <span class="tc-verified">✓ Compra verificada</span>
-        </div>
-      </figure>
-
-      <figure class="testi-card">
-        <img src="/images/testimonios/selfie-4.webp" alt="Valentina — Bogotá" loading="lazy" decoding="async" width="64" height="64">
-        <div>
-          <div class="tc-name">Valentina M.</div>
-          <div class="tc-city">Bogotá</div>
-          <div class="tc-stars">★★★★★</div>
-          <blockquote class="tc-quote">"Lo recibí y lloré. Es exactamente lo que necesitaba para el primer partido. La tela es brutal."</blockquote>
-          <span class="tc-verified">✓ Compra verificada</span>
-        </div>
-      </figure>
-
-      <figure class="testi-card">
-        <img src="/images/testimonios/selfie-5.webp" alt="Andrea — Barranquilla" loading="lazy" decoding="async" width="64" height="64">
-        <div>
-          <div class="tc-name">Andrea V.</div>
-          <div class="tc-city">Barranquilla</div>
-          <div class="tc-stars">★★★★★</div>
-          <blockquote class="tc-quote">"Contra entrega de verdad, sin trucos. Mi mamá quedó tranquila. Ahora ella también quiere el suyo."</blockquote>
-          <span class="tc-verified">✓ Compra verificada</span>
-        </div>
-      </figure>
-
-    </div>
-
-    <!-- WhatsApp-chat-style proof. Illustrative/representative of typical
-         customer messages — no specific verifiable claims fabricated. -->
-    <div class="wa-chat" aria-label="Mensajes de clientas (representativo)">
-      <div class="wa-chat-head">
-        <span class="wa-chat-dot"></span> LATRICOLOR · en línea
-      </div>
-      <div class="wa-chat-body">
-        <div class="wa-bubble wa-in">Ya salió mi pedido? 🙈</div>
-        <div class="wa-bubble wa-out">Va en camino! Pagás al recibir 💵</div>
-        <div class="wa-bubble wa-in">Ya me llegó 😍😍 quedó hermoso</div>
-        <div class="wa-bubble wa-in">Gracias, me lo voy a poner para el primer partido 🇨🇴</div>
-        <div class="wa-bubble wa-out">Eso es ser Tricolor! 🙌</div>
-      </div>
-      <p class="wa-chat-note">Mensajes ilustrativos de clientas · representativos</p>
-    </div>
+    <span>💵 Contra entrega</span><span>🚚 Envío gratis a todo Colombia</span><span>👀 Revisás antes de pagar</span>
   </div>
 </section>
 
@@ -454,6 +363,62 @@
 </section>
 
 <!-- ============================================================
+     BLOCK 9 — TESTIMONIOS REALES
+     ============================================================ -->
+<section class="section testi">
+  <div class="wrap">
+    <h2 class="section-title">La hinchada habla</h2>
+    <div class="testi-grid">
+
+      <figure class="testi-card">
+        <img src="/images/testimonios/selfie-2.webp" alt="Sara — Medellín" loading="lazy" decoding="async" width="64" height="64">
+        <div>
+          <div class="tc-name">Sara C.</div>
+          <div class="tc-city">Medellín</div>
+          <div class="tc-stars">★★★★★</div>
+          <blockquote class="tc-quote">"Llegó en 48 horas. Calidad premium real, no es réplica. Me sentí la dueña del estadio."</blockquote>
+          <span class="tc-verified">✓ Compra verificada</span>
+        </div>
+      </figure>
+
+      <figure class="testi-card">
+        <img src="/images/testimonios/selfie-3.webp" alt="María Camila — Cali" loading="lazy" decoding="async" width="64" height="64">
+        <div>
+          <div class="tc-name">María Camila R.</div>
+          <div class="tc-city">Cali</div>
+          <div class="tc-stars">★★★★★</div>
+          <blockquote class="tc-quote">"La Capitana queda como guante. Es bandera literal. No me la quiero quitar."</blockquote>
+          <span class="tc-verified">✓ Compra verificada</span>
+        </div>
+      </figure>
+
+      <figure class="testi-card">
+        <img src="/images/testimonios/selfie-4.webp" alt="Valentina — Bogotá" loading="lazy" decoding="async" width="64" height="64">
+        <div>
+          <div class="tc-name">Valentina M.</div>
+          <div class="tc-city">Bogotá</div>
+          <div class="tc-stars">★★★★★</div>
+          <blockquote class="tc-quote">"Lo recibí y lloré. Es exactamente lo que necesitaba para el primer partido. La tela es brutal."</blockquote>
+          <span class="tc-verified">✓ Compra verificada</span>
+        </div>
+      </figure>
+
+      <figure class="testi-card">
+        <img src="/images/testimonios/selfie-5.webp" alt="Andrea — Barranquilla" loading="lazy" decoding="async" width="64" height="64">
+        <div>
+          <div class="tc-name">Andrea V.</div>
+          <div class="tc-city">Barranquilla</div>
+          <div class="tc-stars">★★★★★</div>
+          <blockquote class="tc-quote">"Contra entrega de verdad, sin trucos. Mi mamá quedó tranquila. Ahora ella también quiere el suyo."</blockquote>
+          <span class="tc-verified">✓ Compra verificada</span>
+        </div>
+      </figure>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
      BLOCK 10 — ANTES / DESPUÉS
      ============================================================ -->
 <section class="beforeafter">
@@ -673,7 +638,7 @@
      pill on desktop. body has bottom-padding so it never covers content.
      ============================================================ -->
 <a class="sticky-cta" href="#pedido"
-   data-ev="ClickButton" data-label="sticky-bottom">Quiero el mío →</a>
+   data-ev="ClickButton" data-label="sticky-bottom">Pedir por WhatsApp →</a>
 
 <!-- ============================================================
      SCRIPTS — countdown + WhatsApp link builder + pixel tracking

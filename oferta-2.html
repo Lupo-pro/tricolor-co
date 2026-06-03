@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1A1A1A">
 
-<!-- A/B/C variant flag. Read by the script at the bottom to (a) report the
-     variant and (b) append a "(ref: A|B|C)" tag to every WhatsApp pre-filled
-     message for conversion attribution. This is variant B (emotional). -->
-<script>window.LANDING_VARIANT = 'B';</script>
+<!-- A/B/C variant flag — attributes orders/events + tags WhatsApp messages.
+     Variant B = EMOTIONAL recipe. Same shared checkout as A; only the page
+     framing (hook + intro) and the default-selected offer differ. -->
+<script>window.LANDING_VARIANT = 'B'; window.LANDING_DEFAULT_OFFER = '2';</script>
 
 <!-- Performance: preconnect fonts, dns-prefetch WhatsApp. This page is the
      destination for paid TikTok ads — keep it fast. Only the hero is
@@ -22,8 +22,8 @@
 <link rel="preload" as="image" href="/images/hero/hero-moto.webp" type="image/webp" fetchpriority="high" media="(max-width: 759px)">
 <link rel="preload" as="image" href="/images/hero/hero-desktop.webp" type="image/webp" fetchpriority="high" media="(min-width: 760px)">
 
-<title>La que se pone la Tricolor, ya ganó · Bodysuit Selección Colombia | LATRICOLOR 🇨🇴</title>
-<meta name="description" content="El cuerpo que late con la Selección. Bodysuit Selección Colombia edición Mundial 2026 — envío GRATIS + contra entrega a toda Colombia. La bandera en la piel.">
+<title>La que se pone la Tricolor, ya ganó · LATRICOLOR 🇨🇴</title>
+<meta name="description" content="Más que un body. Una bandera. Bodysuit Selección Colombia edición Mundial — contra entrega + envío gratis a toda Colombia.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta http-equiv="content-language" content="es-CO">
 <link rel="canonical" href="https://latricolor.co/oferta-2">
@@ -34,7 +34,7 @@
 <meta property="og:site_name" content="LATRICOLOR.CO">
 <meta property="og:url" content="https://latricolor.co/oferta-2">
 <meta property="og:title" content="La que se pone la Tricolor, ya ganó 🇨🇴">
-<meta property="og:description" content="El cuerpo que late con la Selección. Envío GRATIS + contra entrega a toda Colombia. Edición Mundial 2026.">
+<meta property="og:description" content="Más que un body. Una bandera. Contra entrega + envío gratis a toda Colombia.">
 <meta property="og:image" content="https://latricolor.co/assets/og-image.png">
 
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -61,7 +61,7 @@
 </script>
 <!-- TikTok Pixel Code End -->
 </head>
-<body class="v2">
+<body>
 
 <!-- ============================================================
      STICKY TOP BAR
@@ -78,22 +78,21 @@
   <div class="hero-inner">
     <span class="badge-urg">🇨🇴 EDICIÓN MUNDIAL 2026</span>
     <h1>La que se pone<br>la Tricolor,<br>ya ganó.</h1>
-    <p class="hero-sub">El cuerpo que late con la Selección. 🇨🇴</p>
+    <p class="hero-sub">Más que un body. Una bandera. 🇨🇴</p>
     <a class="cta cta--giant" href="#pedido"
-       data-ev="InitiateCheckout" data-label="hero">Quiero sentirlo →</a>
-    <!-- price present but secondary (below the emotional hook) -->
-    <p class="hero-price-mini"><span class="old">$129.900</span> <span class="now">$89.000</span> · 💵 contra entrega · 🚚 envío gratis</p>
+       data-ev="InitiateCheckout" data-label="hero">Quiero el mío →</a>
+    <p class="micro" style="color:#fff;">💵 Pagás cuando lo recibís · 🚚 Envío gratis a toda Colombia</p>
   </div>
 </header>
 
 <!-- ============================================================
-     VARIANT B ORDER: EMOTIONAL STORYTELLING BAND FIRST
-     (moved up from block 7 — lead with feeling, then the offer)
+     VARIANT B — emotional micro-story (sets the feeling, then the offer)
      ============================================================ -->
-<section class="story">
+<section class="section--tight story-intro">
   <div class="wrap">
-    <p>Con este body, llevás la pasión de Colombia<br>en cada grito, en cada gol.</p>
-    <p class="story-punch">No vinimos a pertenecer.<br>Vinimos a representar.</p>
+    <p>No es la tela. Es lo que sentís cuando te la ponés.</p>
+    <p>El amarillo que llevás en la piel, el grito que se te sale solo, la hinchada que te abraza sin conocerte.</p>
+    <p class="story-intro-punch">Vos no la apoyás desde la tribuna. La llevás puesta.</p>
   </div>
 </section>
 
@@ -316,6 +315,16 @@
       <a class="cta" href="#pedido"
          data-ev="ClickButton" data-label="ver-toda-oferta">Ver toda la oferta →</a>
     </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     BLOCK 7 — EMOTIONAL STORYTELLING BAND
+     ============================================================ -->
+<section class="story">
+  <div class="wrap">
+    <p>Con este body, llevás la pasión de Colombia<br>en cada grito, en cada gol.</p>
+    <p class="story-punch">No vinimos a pertenecer.<br>Vinimos a representar.</p>
   </div>
 </section>
 
@@ -630,7 +639,7 @@
      pill on desktop. body has bottom-padding so it never covers content.
      ============================================================ -->
 <a class="sticky-cta" href="#pedido"
-   data-ev="ClickButton" data-label="sticky-bottom">Quiero el mío →</a>
+   data-ev="ClickButton" data-label="sticky-bottom">Pedir por WhatsApp →</a>
 
 <!-- ============================================================
      SCRIPTS — countdown + WhatsApp link builder + pixel tracking

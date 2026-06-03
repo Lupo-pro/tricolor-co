@@ -38,7 +38,12 @@
     '3': ['product-capitana', 'product-portera', 'product-cafetera']
   };
 
-  var state = { offer: '2', priority: false, recovery: false, interacted: false };
+  // Default-selected offer is per-variant framing only (A=2, B=2, C=3).
+  // Read from a page-level hook; the modal/flow/styling are unchanged.
+  var DEFAULT_OFFER = (window.LANDING_DEFAULT_OFFER && OFFERS[window.LANDING_DEFAULT_OFFER])
+    ? String(window.LANDING_DEFAULT_OFFER)
+    : (VARIANT === 'C' ? '3' : '2');
+  var state = { offer: DEFAULT_OFFER, priority: false, recovery: false, interacted: false };
   var DEPTOS = null;
   var icFired = false;
 
