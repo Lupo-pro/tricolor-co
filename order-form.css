@@ -108,10 +108,13 @@ body.lt-modal-lock { position:fixed; left:0; right:0; width:100%; overflow:hidde
 /* Single rounded-rect stroke = dashes travel seamlessly around all four
    corners with no desync/gaps (vs. the old 4 separate gradient edges). */
 .pg-bump-outline {
-  position:absolute; inset:1.5px; width:auto; height:auto;
-  overflow:visible; pointer-events:none;
+  position:absolute; top:0; left:0; width:100%; height:100%;
+  overflow:hidden; pointer-events:none;
 }
+/* rect inset by half the stroke so the full 3px sits INSIDE the box (no
+   bleed); CSS geometry props (calc) keep it pinned to the .pg-bump size. */
 .pg-bump-outline rect {
+  x:1.5px; y:1.5px; width:calc(100% - 3px); height:calc(100% - 3px); rx:7px; ry:7px;
   fill:none; stroke:var(--red); stroke-width:3;
   stroke-dasharray:9 5; vector-effect:non-scaling-stroke;
   animation:lt-dash 1.5s linear infinite;
