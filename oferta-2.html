@@ -600,6 +600,21 @@
   var UTM        = 'utm_source=tiktok&utm_medium=paid_social&utm_campaign=oferta_mundial';
   var VARIANT    = window.LANDING_VARIANT || 'A';
 
+  /* ---- Per-variant conversion logging → /api/track ----
+     sendBeacon fires reliably even if the click navigates away; falls
+     back to fetch(keepalive). Best-effort: any failure is swallowed so
+     it never affects the user or the WhatsApp hop. */
+  function track(event, meta) {
+    try {
+      var payload = JSON.stringify({ variant: VARIANT, event: event, meta: meta || {} });
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' }));
+      } else {
+        fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true });
+      }
+    } catch (_) { /* never block the user */ }
+  }
+
   /* ---- Build WhatsApp links with encoded pre-filled message + UTM ----
      Every message gets a "(ref: A|B|C)" tag appended for A/B/C attribution,
      so the sales team can see which landing variant a lead came from. */
@@ -614,20 +629,29 @@
     a.setAttribute('rel', 'noopener');
   }
 
-  /* ---- TikTok pixel tracking on every CTA ----
-     Price-block CTAs fire InitiateCheckout; all others ClickButton. */
+  /* ---- TikTok pixel + conversion logging on every CTA ----
+     Price-block CTAs fire InitiateCheckout; all others ClickButton.
+     Alongside the pixel we POST to /api/track: every WhatsApp CTA is a
+     whatsapp_click; the X1/X2/X3 COMPRAR buttons (data-label "pack-…")
+     also log price_cta_click. */
   document.addEventListener('click', function (e) {
     var el = e.target.closest ? e.target.closest('[data-ev]') : null;
     if (!el) return;
     var ev = el.getAttribute('data-ev');
+    var label = el.getAttribute('data-label') || 'cta';
     if (window.ttq) {
       window.ttq.track(ev, {
-        content_name: el.getAttribute('data-label') || 'cta',
+        content_name: label,
         content_type: 'product',
         currency: 'COP'
       });
     }
+    track('whatsapp_click', { label: label });
+    if (label.indexOf('pack-') === 0) track('price_cta_click', { label: label });
   });
+
+  /* ---- Log the page visit once per load ---- */
+  track('visit');
 
   /* ---- Live countdown ---- */
   var dayNodes = document.querySelectorAll('[data-days-only]');
