@@ -92,7 +92,9 @@
       '<div class="pg-variants" id="pgVariants"></div>' +
       '<p class="pg-talla-note">Talla única S a XL — se adapta a tu cuerpo.</p>' +
 
-      '<label class="pg-bump"><input type="checkbox" id="pgPriority">' +
+      '<label class="pg-bump">' +
+        '<svg class="pg-bump-outline" aria-hidden="true" preserveAspectRatio="none"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8"/></svg>' +
+        '<input type="checkbox" id="pgPriority">' +
         '<span class="pg-bump-txt">Agrega <strong>Envío prioritario por solo $5.000</strong> — despachamos tu pedido primero.</span></label>' +
 
       '<div class="pg-summary" id="pgSummary"></div>' +

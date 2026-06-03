@@ -99,21 +99,22 @@ body.lt-modal-lock { position:fixed; left:0; right:0; width:100%; overflow:hidde
 .pedido .pg-field.pg-invalid .pg-err { display:block; }
 .pg-two { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 
-/* ---- Order bump (marching-dashes border) ---- */
+/* ---- Order bump (one continuous SVG marching-dash outline) ---- */
 .pg-bump {
+  position:relative;
   display:flex; gap:10px; align-items:flex-start; background-color:#fff;
   border:none; border-radius:9px; padding:11px 12px; margin-top:14px; cursor:pointer;
-  /* four 3px dashed edges drawn with gradients so they can "march" — thicker
-     + higher-contrast so the motion clearly reads on the cream bg */
-  background-image:
-    repeating-linear-gradient(90deg, var(--ink) 0 7px, transparent 7px 12px),
-    repeating-linear-gradient(90deg, var(--ink) 0 7px, transparent 7px 12px),
-    repeating-linear-gradient(0deg, var(--ink) 0 7px, transparent 7px 12px),
-    repeating-linear-gradient(0deg, var(--ink) 0 7px, transparent 7px 12px);
-  background-size:100% 3px, 100% 3px, 3px 100%, 3px 100%;
-  background-position:0 0, 0 100%, 0 0, 100% 0;
-  background-repeat:no-repeat;
-  animation:lt-march 1.5s linear infinite;
+}
+/* Single rounded-rect stroke = dashes travel seamlessly around all four
+   corners with no desync/gaps (vs. the old 4 separate gradient edges). */
+.pg-bump-outline {
+  position:absolute; inset:1.5px; width:auto; height:auto;
+  overflow:visible; pointer-events:none;
+}
+.pg-bump-outline rect {
+  fill:none; stroke:var(--red); stroke-width:3;
+  stroke-dasharray:9 5; vector-effect:non-scaling-stroke;
+  animation:lt-dash 1.5s linear infinite;
 }
 .pg-bump input { width:20px; height:20px; flex:0 0 auto; margin-top:1px; accent-color:var(--blue); animation:lt-nudge 2.5s ease-in-out infinite; }
 .pg-bump .pg-bump-txt { font-size:13px; line-height:1.35; }
@@ -224,10 +225,11 @@ body.lt-modal-lock .lt-sticky { display:none !important; }
   0%, 25%, 100% { transform: scale(1);    box-shadow: 0 6px 20px rgba(0,0,0,0.28); }
   12%           { transform: scale(1.06); box-shadow: 0 14px 36px rgba(0,0,0,0.45); }
 }
-/* marching dashes around the order-bump — shift 3 full 12px periods (36px)
-   per 1.5s loop so the dashes visibly race; 36 = 3×12 keeps it seamless */
-@keyframes lt-march {
-  to { background-position: 36px 0, -36px 100%, 0 -36px, 100% 36px; }
+/* marching dashes around the order-bump — one continuous SVG rect stroke,
+   travels via stroke-dashoffset (shift 2 full 14px periods = 28 per 1.5s
+   loop → fast + seamless, no corner desync) */
+@keyframes lt-dash {
+  to { stroke-dashoffset: -28; }
 }
 /* "tap me" nudge on the bump checkbox — pronounced scale + little tilt */
 @keyframes lt-nudge {
@@ -239,5 +241,5 @@ body.lt-modal-lock .lt-sticky { display:none !important; }
 body.lt-modal-lock .lt-sticky { animation: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
-  .pg-submit, .pg-submit:not(:disabled), .lt-sticky, .pg-bump, .pg-bump input { animation: none !important; }
+  .pg-submit, .pg-submit:not(:disabled), .lt-sticky, .pg-bump, .pg-bump input, .pg-bump-outline rect { animation: none !important; }
 }
