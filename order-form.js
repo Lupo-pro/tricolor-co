@@ -58,11 +58,17 @@
       '</div></label>';
   }
 
-  mount.className = 'pedido';
+  // The checkout lives in a modal overlay (hidden by default). #pedido is
+  // the overlay; the inner .pedido sheet keeps the brand tokens + .pg-*
+  // scoping so all form styles still apply unchanged.
+  mount.className = 'lt-modal';
+  mount.setAttribute('aria-hidden', 'true');
   mount.innerHTML =
-    '<div class="pedido-wrap">' +
+    '<div class="lt-modal-sheet pedido" role="dialog" aria-modal="true" aria-label="Tu pedido">' +
+      '<button type="button" class="lt-modal-close" id="pgClose" aria-label="Cerrar">×</button>' +
+      '<div class="pedido-wrap">' +
       '<p class="pedido-kicker">★ Pedí en 1 minuto</p>' +
-      '<h2 class="pedido-title">Hacé tu <em>pedido</em></h2>' +
+      '<h2 class="pedido-title">Selecciona tu <em>oferta</em></h2>' +
 
       '<div class="pg-step">1 · Elegí tu pack</div>' +
       '<div class="pg-offers">' + offerCard('1') + offerCard('2') + offerCard('3') + '</div>' +
@@ -111,7 +117,8 @@
       '<p class="pg-secondary"><a href="https://wa.me/' + WA + '?text=' +
         encodeURIComponent('Hola! Tengo una duda antes de pedir mi body LATRICOLOR 🇨🇴') +
         '" target="_blank" rel="noopener">Dudas? Escríbenos por WhatsApp</a></p>' +
-    '</div>';
+      '</div>' +   // /.pedido-wrap
+    '</div>';      // /.lt-modal-sheet
 
   var elVariants = document.getElementById('pgVariants');
   var elSummary = document.getElementById('pgSummary');
@@ -214,11 +221,13 @@
     }
   });
   mount.addEventListener('input', function (e) {
-    if (e.target.closest && e.target.closest('.pg-field')) validate();
+    if (e.target.closest && e.target.closest('.pg-field')) { markInteracted(); validate(); }
   });
   mount.addEventListener('focusin', function (e) {
     if (e.target.matches && e.target.matches('input,select')) markInteracted();
   });
+  // also count any selection/change as interaction (covers the variant selects)
+  mount.addEventListener('change', function () { markInteracted(); });
   // inline validation on blur for required text fields
   ['pgWhatsapp', 'pgNombre', 'pgApellidos', 'pgDireccion'].forEach(function (id) {
     document.getElementById(id).addEventListener('blur', function () {
@@ -276,14 +285,6 @@
       });
   });
 
-  /* ---- InitiateCheckout when #pedido scrolls into view ---- */
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { if (en.isIntersecting) { fireInitiate(); io.disconnect(); } });
-    }, { threshold: 0.25 });
-    io.observe(mount);
-  }
-
   /* ---- Load Colombia dataset (local, no external API) ---- */
   fetch('/data/colombia-municipios.json').then(function (r) { return r.json(); }).then(function (data) {
     DEPTOS = data; fillDeptos();
@@ -291,41 +292,6 @@
 
   renderVariants();
   recalc();
-
-  /* ============================================================
-     UNIFIED STICKY CTA — injected once, hides the native stickies.
-     ============================================================ */
-  var sticky = document.createElement('a');
-  sticky.className = 'lt-sticky';
-  sticky.href = '#pedido';
-  sticky.innerHTML = '<span class="lt-s-main">LO QUIERO YA 🇨🇴</span><span class="lt-s-sub">Pago contra entrega · Envío gratis</span>';
-  document.body.appendChild(sticky);
-
-  function scrollToPedido() {
-    fireInitiate();
-    mount.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  /* Route primary CTAs to the form. Body-purchase CTAs scroll to #pedido
-     instead of opening WhatsApp (WhatsApp is now the confirmation step).
-     Divarte bags, Pack El Once, catalog "Pedir", and the secondary
-     "Dudas?" link keep their WhatsApp behavior. */
-  var SCROLL_LABELS = /^(hero|final|countdown-asegurar|ver-toda-oferta|pack-[123]body(-repeat)?)$/;
-  document.addEventListener('click', function (e) {
-    var a = e.target.closest('.lt-sticky, a[data-label], .qty-cta');
-    if (!a) return;
-    var label = a.getAttribute && a.getAttribute('data-label') || '';
-    var isScroll = a.classList.contains('lt-sticky') || a.classList.contains('qty-cta') || SCROLL_LABELS.test(label);
-    if (!isScroll) return;
-    e.preventDefault();
-    var m = label.match(/pack-([123])body/);
-    if (m) selectOffer(m[1]);
-    else if (a.classList.contains('qty-cta')) {
-      var card = a.closest('.qty-card');
-      if (card) { var idx = [].indexOf.call(card.parentNode.children, card); if (idx >= 0 && idx <= 2) selectOffer(String(idx + 1)); }
-    }
-    scrollToPedido();
-  }, true);
 
   function selectOffer(id) {
     if (!OFFERS[id]) return;
@@ -336,9 +302,84 @@
   }
 
   /* ============================================================
-     SUPPRESS the older email exit-intents so the exit-recovery popup
-     is the single exit experience (they listened on mouseleave too).
-     Setting their "already shown" cookies neutralizes them cleanly.
+     MODAL OVERLAY — open/close, body scroll lock, back-button + ESC.
+     ============================================================ */
+  var modalOpen = false, savedScrollY = 0;
+  function lockScroll() { savedScrollY = window.scrollY || 0; document.body.style.top = (-savedScrollY) + 'px'; document.body.classList.add('lt-modal-lock'); }
+  function unlockScroll() { document.body.classList.remove('lt-modal-lock'); document.body.style.top = ''; window.scrollTo(0, savedScrollY); }
+
+  function openModal(offerId) {
+    if (offerId) selectOffer(offerId);
+    if (modalOpen) return;
+    modalOpen = true;
+    mount.classList.add('open');
+    mount.setAttribute('aria-hidden', 'false');
+    lockScroll();
+    fireInitiate();                       // pixel: InitiateCheckout on MODAL OPEN
+    try { history.pushState({ ltModal: 1 }, ''); } catch (_) {}
+    var c = document.getElementById('pgClose'); if (c) c.focus();
+  }
+  function realClose() {
+    if (!modalOpen) return;
+    modalOpen = false;
+    mount.classList.remove('open');
+    mount.setAttribute('aria-hidden', 'true');
+    unlockScroll();
+  }
+  // Close INTENT. If the user earned the recovery offer (interacted, not yet
+  // shown this session, not expired), intercept: show recovery, keep the
+  // checkout modal open underneath. Otherwise close for real.
+  function attemptClose(via) {
+    if (recoveryEligible()) {
+      openRec();
+      if (via === 'back') { try { history.pushState({ ltModal: 1 }, ''); } catch (_) {} } // re-guard
+      return;
+    }
+    realClose();
+    if (via !== 'back') { try { if (history.state && history.state.ltModal) history.back(); } catch (_) {} }
+  }
+
+  document.getElementById('pgClose').addEventListener('click', function () { attemptClose('btn'); });
+  mount.addEventListener('click', function (e) { if (e.target === mount) attemptClose('backdrop'); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (rec.classList.contains('open')) closeRec();
+    else if (modalOpen) attemptClose('esc');
+  });
+  window.addEventListener('popstate', function () { if (modalOpen) attemptClose('back'); });
+
+  /* ============================================================
+     UNIFIED STICKY CTA — injected once, hides the native stickies.
+     ============================================================ */
+  var sticky = document.createElement('a');
+  sticky.className = 'lt-sticky';
+  sticky.href = '#pedido';
+  sticky.innerHTML = '<span class="lt-s-main">LO QUIERO YA 🇨🇴</span><span class="lt-s-sub">Pago contra entrega · Envío gratis</span>';
+  document.body.appendChild(sticky);
+
+  /* Route primary CTAs to OPEN the checkout modal (WhatsApp is now the
+     merchant's confirmation step). Divarte bags, Pack El Once, catalog
+     "Pedir", and the secondary "Dudas?" link keep WhatsApp behavior. */
+  var OPEN_LABELS = /^(hero|final|countdown-asegurar|ver-toda-oferta|pack-[123]body(-repeat)?)$/;
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('.lt-sticky, a[data-label], .qty-cta');
+    if (!a) return;
+    var label = a.getAttribute && a.getAttribute('data-label') || '';
+    var isOpen = a.classList.contains('lt-sticky') || a.classList.contains('qty-cta') || OPEN_LABELS.test(label);
+    if (!isOpen) return;
+    e.preventDefault();
+    var offerId = null;
+    var m = label.match(/pack-([123])body/);
+    if (m) offerId = m[1];
+    else if (a.classList.contains('qty-cta')) {
+      var card = a.closest('.qty-card');
+      if (card) { var idx = [].indexOf.call(card.parentNode.children, card); if (idx >= 0 && idx <= 2) offerId = String(idx + 1); }
+    }
+    openModal(offerId);
+  }, true);
+
+  /* ============================================================
+     SUPPRESS the older email exit-intents (kept) so they never fire.
      ============================================================ */
   (function suppressLegacyExit() {
     var d = new Date(); d.setTime(d.getTime() + 30 * 86400000);
@@ -348,9 +389,9 @@
 
   /* ============================================================
      EXIT-RECOVERY POPUP — −$10.000, honest persistent countdown.
-     Fires only after the user INTERACTED with #pedido AND a genuine
-     exit signal, at most once per session. Timer persists in
-     localStorage and truly expires (no resetting trickery).
+     Now triggered ONLY by modal-close intent (see attemptClose), after
+     the user interacted, once per session. Timer persists in localStorage
+     and truly expires (no resetting trickery). No page-level exit signals.
      ============================================================ */
   var REC_KEY = 'lt_recoveryExpiresAt';
   var REC_SESSION = 'lt_recovery_shown';
@@ -359,6 +400,9 @@
 
   function recExpiry() { var v = parseInt(localStorage.getItem(REC_KEY) || '0', 10); return isNaN(v) ? 0 : v; }
   function recoveryExpired() { var e = recExpiry(); return e > 0 && Date.now() >= e; }
+  function recoveryEligible() {
+    return state.interacted && sessionStorage.getItem(REC_SESSION) !== '1' && !recoveryExpired();
+  }
 
   var rec = document.createElement('div');
   rec.className = 'lt-recovery';
@@ -392,10 +436,8 @@
       }
     }, 1000);
   }
+  // Shown layered above the open checkout modal; never closes the modal.
   function openRec() {
-    if (sessionStorage.getItem(REC_SESSION) === '1') return;
-    if (!state.interacted) return;
-    if (recoveryExpired()) return;            // already expired earlier → never re-offer
     if (rec.classList.contains('open')) return;
     sessionStorage.setItem(REC_SESSION, '1');
     if (recExpiry() === 0) { try { localStorage.setItem(REC_KEY, String(Date.now() + REC_MS)); } catch (_) {} }
@@ -405,37 +447,22 @@
   }
   function closeRec() { rec.classList.remove('open'); }
 
+  // Primary: apply −$10.000, close recovery, RETURN to the open modal.
   document.getElementById('ltRecApply').addEventListener('click', function () {
     if (!recoveryExpired()) { state.recovery = true; recalc(); startRecTick(); }
     closeRec();
-    scrollToPedido();
   });
-  document.getElementById('ltRecDismiss').addEventListener('click', closeRec);
-  rec.querySelector('.lt-rec-close').addEventListener('click', closeRec);
-  rec.addEventListener('click', function (e) { if (e.target === rec) closeRec(); });
+  // Dismiss / X / backdrop on the recovery: close it AND close the modal.
+  function dismissRecovery() {
+    closeRec();
+    realClose();
+    try { if (history.state && history.state.ltModal) history.back(); } catch (_) {}
+  }
+  document.getElementById('ltRecDismiss').addEventListener('click', dismissRecovery);
+  rec.querySelector('.lt-rec-close').addEventListener('click', dismissRecovery);
+  rec.addEventListener('click', function (e) { if (e.target === rec) dismissRecovery(); });
 
   // If a non-expired timer is already running from a previous view, keep
   // counting (and keep the discount live in the summary) on this load.
   if (recExpiry() > 0 && !recoveryExpired()) startRecTick();
-
-  /* ---- Exit signals ---- */
-  // Desktop: cursor leaves toward the top.
-  document.addEventListener('mouseleave', function (e) { if (e.clientY <= 0) openRec(); });
-  document.addEventListener('mouseout', function (e) { if (e.clientY <= 0 && !e.relatedTarget) openRec(); });
-
-  // Mobile: back-button (history sentinel) + fast scroll-up after dwell.
-  var isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-  if (isTouch) {
-    var landed = Date.now();
-    try { history.pushState({ lt: 1 }, ''); } catch (_) {}
-    window.addEventListener('popstate', function () {
-      if (state.interacted && (Date.now() - landed) > 4000) openRec();
-    });
-    var lastY = window.scrollY, lastT = Date.now();
-    window.addEventListener('scroll', function () {
-      var y = window.scrollY, t = Date.now();
-      if (lastY - y > 240 && (t - lastT) < 350 && state.interacted && (t - landed) > 6000) openRec();
-      lastY = y; lastT = t;
-    }, { passive: true });
-  }
 })();
