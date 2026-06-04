@@ -59,10 +59,10 @@
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = (emailInput?.value || '').trim();
+    const email = ((emailInput && emailInput.value) || '').trim();
     if (!EMAIL_RE.test(email)) {
       setState('invalid');
-      emailInput?.focus();
+      if (emailInput) emailInput.focus();
       return;
     }
     setState('loading');
@@ -87,8 +87,8 @@
     }
   });
 
-  emailInput?.addEventListener('input', () => {
-    if (feedback?.dataset.state !== 'idle') setState('idle');
+  if (emailInput) emailInput.addEventListener('input', () => {
+    if (!feedback || feedback.dataset.state !== 'idle') setState('idle');
   });
 })();
 

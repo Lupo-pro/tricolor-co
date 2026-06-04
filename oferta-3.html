@@ -701,11 +701,13 @@
     var ev = el.getAttribute('data-ev');
     var label = el.getAttribute('data-label') || 'cta';
     if (window.ttq) {
-      window.ttq.track(ev, {
-        content_name: label,
-        content_type: 'product',
-        currency: 'COP'
-      });
+      try {
+        window.ttq.track(ev, {
+          content_name: label,
+          content_type: 'product',
+          currency: 'COP'
+        });
+      } catch (_) {}
     }
     track('whatsapp_click', { label: label });
     if (label.indexOf('pack-') === 0) track('price_cta_click', { label: label });

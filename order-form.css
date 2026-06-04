@@ -243,6 +243,22 @@ body.lt-modal-lock .lt-sticky { display:none !important; }
 /* sticky doesn't pulse while the modal is open (it's hidden then anyway) */
 body.lt-modal-lock .lt-sticky { animation: none !important; }
 
+/* Compatible fallback — older engines (Chrome < 104, old Android System
+   WebView) lack the independent `scale`/`translate` properties used by
+   lt-pulse-cod + lt-wiggle-cod. There they degrade to no animation, which is
+   harmless (the button stays fully visible + tappable). This restores a
+   transform-based pulse so the COD CTA still draws the eye. The wiggle is
+   dropped on those engines (transform can't run two competing animations);
+   the pulse is the primary cue. Nothing about layout or interaction depends
+   on any of this. */
+@supports not (translate: 0px) {
+  @keyframes lt-pulse-cod-fb {
+    0%, 25%, 100% { transform: scale(1);    box-shadow: 4px 4px 0 #1A1A1A; }
+    12%           { transform: scale(1.06); box-shadow: 6px 6px 0 #1A1A1A, 0 12px 30px rgba(0,0,0,0.32); }
+  }
+  .pg-submit:not(:disabled) { animation: lt-pulse-cod-fb 2s ease-in-out infinite; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pg-submit, .pg-submit:not(:disabled), .lt-sticky, .pg-bump, .pg-bump input, .pg-bump-outline rect { animation: none !important; }
 }

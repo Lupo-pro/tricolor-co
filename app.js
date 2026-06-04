@@ -988,7 +988,7 @@ document.querySelectorAll('.cta, .product-cta, .nav-cta, .bundle-cta, .card-cta,
   });
 
   function safeGet(key, fallback) {
-    try { return sessionStorage.getItem(key) ?? fallback; }
+    try { var v = sessionStorage.getItem(key); return v === null ? fallback : v; }
     catch (_) { return fallback; }
   }
   function safeSet(key, value) {
@@ -1144,7 +1144,7 @@ document.querySelectorAll('.cta, .product-cta, .nav-cta, .bundle-cta, .card-cta,
 
   // Copy to clipboard with toast feedback. Falls back to execCommand
   // for HTTP-served dev environments where clipboard API is gated.
-  copyBtn?.addEventListener('click', async () => {
+  if (copyBtn) copyBtn.addEventListener('click', async () => {
     // Read the live code so the bar copies TRICOLOR15 once it's
     // activated (e.g. by the exit-intent flow), not the hard-coded
     // TRICOLOR10.
