@@ -245,13 +245,31 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
   min-height: calc(100vh - var(--bar-h));
   display: flex;
   align-items: flex-end;
+  /* Brand-gradient fallback so the hero is NEVER an empty black box while the
+     photo downloads on slow Android — or if it fails entirely. Base layer is
+     the JPG (universally decodable; old Android System WebView + the TikTok
+     in-app browser can choke on WebP-in-background-image, where this previously
+     fell back to a solid black --ink). WebP is layered on via image-set below
+     for browsers that support it. */
+  background-color: var(--blue);
   background-image:
     linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.78) 100%),
-    url('/images/hero/hero-moto.webp');
+    url('/images/hero/hero-moto.jpg'),
+    linear-gradient(160deg, var(--blue) 0%, var(--red-deep) 55%, var(--yellow-deep) 115%);
   background-size: cover;
   background-position: center 28%;
-  background-color: var(--ink);
   padding: 0 0 34px;
+}
+/* Prefer WebP (≈half the bytes) where image-set with type() is supported. */
+@supports (background-image: image-set('x' type('image/webp'))) {
+  .hero {
+    background-image:
+      linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.78) 100%),
+      image-set(
+        url('/images/hero/hero-moto.webp') type('image/webp'),
+        url('/images/hero/hero-moto.jpg') type('image/jpeg')),
+      linear-gradient(160deg, var(--blue) 0%, var(--red-deep) 55%, var(--yellow-deep) 115%);
+  }
 }
 .hero-inner { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 18px; color: #fff; }
 
@@ -618,6 +636,9 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
    ============================================================ */
 .story {
   position: relative;
+  /* Brand-red base so this band reads as intentional (not a broken/empty box)
+     while the stadium photo loads on slow Android, or if it ever fails. */
+  background-color: var(--red-deep);
   background-image:
     linear-gradient(180deg, rgba(166,20,28,0.55), rgba(0,0,0,0.72)),
     url('/images/lifestyle/lifestyle-stadium.png');
@@ -686,6 +707,7 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 .ba-before { background: var(--ink); color: #cfc8ba; }
 .ba-after  {
   color: #fff;
+  background-color: var(--blue);   /* brand-blue base — never an empty box while the photo loads */
   background-image: linear-gradient(rgba(0,51,160,0.55), rgba(0,29,92,0.8)), url('/images/lifestyle/lifestyle-stadium.png');
   background-size: cover; background-position: center;
 }
@@ -765,10 +787,22 @@ h1, h2, h3 { line-height: 0.95; letter-spacing: 0.5px; }
 }
 
 @media (min-width: 760px) {
-  .hero { background-image:
+  .hero {
+    background-image:
       linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.78) 100%),
-      url('/images/hero/hero-desktop.webp');
+      url('/images/hero/hero-desktop.jpg'),
+      linear-gradient(160deg, var(--blue) 0%, var(--red-deep) 55%, var(--yellow-deep) 115%);
     background-position: center 35%;
+  }
+  @supports (background-image: image-set('x' type('image/webp'))) {
+    .hero {
+      background-image:
+        linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.78) 100%),
+        image-set(
+          url('/images/hero/hero-desktop.webp') type('image/webp'),
+          url('/images/hero/hero-desktop.jpg') type('image/jpeg')),
+        linear-gradient(160deg, var(--blue) 0%, var(--red-deep) 55%, var(--yellow-deep) 115%);
+    }
   }
   .color-grid { grid-template-columns: repeat(4, 1fr); }
 }

@@ -16,6 +16,40 @@
 (function () {
   'use strict';
 
+  /* ---- Global image fallback (all funnel pages load this file) ----
+     Every <img> on the site references a .webp. If a .webp fails to decode
+     (old Android System WebView / the TikTok in-app browser without WebP) or
+     404s, swap to the .jpg twin, then .png, so an image never leaves a broken
+     box. Covers every current + injected <img> (the modal offer thumbnails
+     included). */
+  function imgFallback(img) {
+    if (!img || img.tagName !== 'IMG') return;
+    // <img> inside <picture> already has native <source> webp→jpg fallback
+    // (the homepage uses this). Touching its src would fight that mechanism.
+    if (img.parentElement && img.parentElement.tagName === 'PICTURE') return;
+    var src = img.getAttribute('src') || '';
+    var step = img.getAttribute('data-imgfb') || '';
+    var base = src.replace(/\.(webp|jpe?g|png)(\?.*)?$/i, '');
+    if (!base || base === src) return;            // no known extension → leave it
+    if (step === '' && /\.webp/i.test(src))      { img.setAttribute('data-imgfb', 'jpg'); img.src = base + '.jpg'; }
+    else if (step === '' || step === 'jpg')      { img.setAttribute('data-imgfb', 'png'); img.src = base + '.png'; }
+    // step === 'png' → already tried both twins; stop (avoid a loop).
+  }
+  // (1) Future errors — image 'error' events don't bubble, hence capture:true.
+  document.addEventListener('error', function (e) { imgFallback(e.target); }, true);
+  // (2) Images that ALREADY errored before this deferred script ran (e.g.
+  // above-the-fold eager images that finish during HTML parse). Sweep now and
+  // again at window 'load' to catch any that resolve in between.
+  function sweepBrokenImgs() {
+    var imgs = document.getElementsByTagName('img');
+    for (var i = 0; i < imgs.length; i++) {
+      if (imgs[i].complete && imgs[i].naturalWidth === 0) imgFallback(imgs[i]);
+    }
+  }
+  sweepBrokenImgs();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sweepBrokenImgs);
+  window.addEventListener('load', sweepBrokenImgs);
+
   var mount = document.getElementById('pedido');
   if (!mount) return;
 

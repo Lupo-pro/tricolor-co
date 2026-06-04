@@ -9,16 +9,19 @@ archive-v1/
 # Mockups + raw assets
 mockups/
 
-# Source images used only by /content-machine and /outreach local
-# scripts (ad creatives, social posts) — never referenced by the live
-# site HTML/CSS. ~14MB combined; shipping them bloats the deploy and
-# the CDN cache without serving a single visitor.
-images/lifestyle/
+# Source images used only by /content-machine and /outreach local scripts
+# (ad creatives, social posts) — never referenced by the live site HTML/CSS.
+# Listed FILE-BY-FILE on purpose: .vercelignore (like .gitignore) cannot
+# re-include a file once its parent directory is excluded, so the old
+# `images/lifestyle/` + `!...lifestyle-stadium.png` silently DROPPED the
+# stadium shot (404 in prod -> black /oferta storytelling + antes/después
+# bands). lifestyle-stadium.png IS used by those bands and must ship, so it
+# is simply absent from this exclude list.
+images/lifestyle/lifestyle-coffee.png
+images/lifestyle/lifestyle-mecanico.png
+images/lifestyle/lifestyle-partido.png
+images/lifestyle/lifestyle-pescado.png
 images/hero/hero-balcon.png
-
-# Exception: the /oferta landing uses the stadium/hinchada shot as the
-# background for its storytelling + antes/después bands, so it must ship.
-!images/lifestyle/lifestyle-stadium.png
 
 # Local docs that don't need to ship
 BRIEF.md
