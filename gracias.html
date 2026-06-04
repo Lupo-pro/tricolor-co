@@ -68,13 +68,60 @@
     <a class="g-home" href="/">Volver al inicio <span aria-hidden="true">→</span></a>
   </main>
   <script>
-    // Show the order reference passed as ?ref= (purely cosmetic confirmation).
+    /* Confirmation reference + the canonical TikTok Purchase (CompletePayment).
+       Fires ONCE per order with a COMPLETE payload: value + currency +
+       content_id/type, and SHA-256-hashed email/phone for Event Match Quality.
+       total+offer come from the redirect query; email/phone from sessionStorage
+       (never the URL). Guarded so a refresh of /gracias never double-counts. */
     (function () {
-      try {
-        var ref = new URLSearchParams(location.search).get('ref');
-        if (ref) document.getElementById('gRef').textContent = ref;
-      } catch (_) {}
-      if (window.ttq) window.ttq.track('CompletePayment', { content_name: 'COD order confirmed' });
+      var p = new URLSearchParams(location.search);
+      var ref = p.get('ref') || '';
+      if (ref) { try { document.getElementById('gRef').textContent = ref; } catch (_) {} }
+
+      var SKU = { '1': 'body-1', '2': 'body-2pack', '3': 'body-3pack' };
+      var total = parseInt(p.get('t') || '0', 10) || 0;
+      var offer = p.get('o') || '';
+      var ident = {};
+      try { ident = JSON.parse(sessionStorage.getItem('lt_lastOrder') || '{}') || {}; } catch (_) {}
+      if (!total && ident.total) total = parseInt(ident.total, 10) || 0;
+      if (!offer && ident.offer) offer = String(ident.offer);
+
+      // once-per-reference guard (survives refresh within the session)
+      var FIRED = 'lt_purchase_fired';
+      var done = false;
+      try { done = ref && sessionStorage.getItem(FIRED) === ref; } catch (_) {}
+      if (done || !window.ttq) return;
+      try { if (ref) sessionStorage.setItem(FIRED, ref); } catch (_) {}
+
+      function sha256(s) {
+        if (!s || !(window.crypto && window.crypto.subtle)) return Promise.resolve(undefined);
+        return window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function (buf) {
+          return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+        }).catch(function () { return undefined; });
+      }
+
+      var email = String(ident.email || '').trim().toLowerCase();
+      var digits = String(ident.whatsapp || '').replace(/\D/g, '').replace(/^57/, '');
+      var phone = digits ? '+57' + digits : '';            // E.164 for hashing
+      var contentId = SKU[offer] || (offer ? 'body-' + offer : 'body');
+
+      Promise.all([sha256(email), sha256(phone)]).then(function (h) {
+        if ((h[0] || h[1]) && typeof window.ttq.identify === 'function') {
+          var id = {};
+          if (h[0]) id.email = h[0];
+          if (h[1]) id.phone_number = h[1];
+          try { window.ttq.identify(id); } catch (_) {}
+        }
+        try {
+          window.ttq.track('CompletePayment', {
+            value: total,
+            currency: 'COP',
+            content_type: 'product',
+            content_id: contentId,
+            contents: [{ content_id: contentId, content_type: 'product', quantity: 1, price: total }]
+          });
+        } catch (_) {}
+      });
     })();
   </script>
 </body>

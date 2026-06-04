@@ -288,8 +288,21 @@
     }).then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
       .then(function (data) {
         if (data && data.ok) {
-          px('SubmitForm', { content_name: 'COD order', value: total, currency: 'COP' });
-          window.location.href = '/gracias?ref=' + encodeURIComponent(data.reference || '');
+          // SubmitForm = mid-funnel form signal (NOT the purchase). The
+          // canonical Purchase (CompletePayment) fires once on /gracias with
+          // the full payload — never here — to avoid double-counting.
+          px('SubmitForm', { content_name: 'COD order' });
+          // Stash identifiers for the /gracias Purchase event match quality.
+          // email/phone go via sessionStorage (never the URL); total+offer
+          // are non-private and ride the redirect query.
+          try {
+            sessionStorage.setItem('lt_lastOrder', JSON.stringify({
+              ref: data.reference || '', total: total, offer: state.offer,
+              email: payload.email || '', whatsapp: payload.whatsapp || ''
+            }));
+          } catch (_) {}
+          window.location.href = '/gracias?ref=' + encodeURIComponent(data.reference || '') +
+            '&t=' + encodeURIComponent(total) + '&o=' + encodeURIComponent(state.offer);
         } else { throw new Error((data && data.error) || 'error'); }
       }).catch(function () {
         elSubmit.disabled = false;
