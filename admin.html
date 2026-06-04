@@ -56,6 +56,11 @@
   .o-wa{ font-size:12px; font-weight:800; color:var(--green); text-decoration:none; border:1.5px solid var(--green);
     border-radius:7px; padding:5px 9px; white-space:nowrap; }
   .o-status{ font-size:13px; font-weight:800; border:2px solid var(--ink); border-radius:7px; padding:6px 8px; color:#fff; }
+  .o-actions{ display:flex; align-items:center; gap:7px; }
+  .o-del{ font-size:12px; font-weight:700; color:var(--muted); background:none; border:1.5px solid var(--line); border-radius:7px; padding:6px 9px; cursor:pointer; }
+  .o-del:hover{ color:var(--red); border-color:var(--red); }
+  .o-del:active{ transform:translateY(1px); }
+  .o-del:disabled{ opacity:0.5; cursor:default; }
   .v-pill{ display:inline-block; font-size:11px; font-weight:900; padding:1px 7px; border-radius:20px; background:var(--ink); color:#fff; }
   /* status colors */
   .st-pendiente{ border-left-color:var(--amber); } .st-pendiente .o-status{ background:var(--amber); }
@@ -194,7 +199,10 @@
         '<div class="o-meta">' + esc(o.direccion) + (o.barrio ? ' (' + esc(o.barrio) + ')' : '') + '</div>' +
         '<div class="o-foot">' +
           '<a class="o-wa" href="' + wa + '" target="_blank" rel="noopener">WhatsApp ' + esc(o.whatsapp) + '</a>' +
-          '<select class="o-status" data-ref="' + esc(o.reference) + '">' + opts + '</select>' +
+          '<div class="o-actions">' +
+            '<select class="o-status" data-ref="' + esc(o.reference) + '">' + opts + '</select>' +
+            '<button type="button" class="o-del" data-ref="' + esc(o.reference) + '" aria-label="Eliminar pedido">Eliminar</button>' +
+          '</div>' +
         '</div></div>';
     });
     $('orders').innerHTML = html;
@@ -215,6 +223,20 @@
       .catch(function () { sel.disabled = false; alert('Error de conexión.'); });
   }
 
+  function deleteOrder(reference, btn) {
+    if (!window.confirm('Eliminar el pedido ' + reference + '? Esta acción no se puede deshacer.')) return;
+    btn.disabled = true;
+    fetch('/api/admin-delete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reference: reference }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (d) {
+        if (d && d.ok) {
+          allOrders = allOrders.filter(function (x) { return x.reference !== reference; });
+          render(); // drops the row + recomputes KPIs / variante
+        } else { btn.disabled = false; alert('No se pudo eliminar el pedido.'); }
+      })
+      .catch(function () { btn.disabled = false; alert('Error de conexión.'); });
+  }
+
   /* ---- events ---- */
   $('loginBtn').addEventListener('click', login);
   $('pw').addEventListener('keydown', function (e) { if (e.key === 'Enter') login(); });
@@ -226,6 +248,10 @@
   $('orders').addEventListener('change', function (e) {
     var sel = e.target.closest ? e.target.closest('.o-status') : null;
     if (sel) setStatus(sel.getAttribute('data-ref'), sel.value, sel);
+  });
+  $('orders').addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('.o-del') : null;
+    if (btn) deleteOrder(btn.getAttribute('data-ref'), btn);
   });
 
   load(); // probe auth on open; shows gate if not authed
