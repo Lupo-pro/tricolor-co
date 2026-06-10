@@ -79,6 +79,20 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 
+<!--
+  AggregateRating placeholder — intentionally NOT present below.
+  Google requires structured-data ratings to be backed by genuine, on-page
+  reviews; fabricated ratings risk a manual action. Once we have real reviews,
+  add an "aggregateRating" object to the LocalBusiness and/or each Product, e.g.:
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "<real average>",
+      "reviewCount": "<real count>",
+      "bestRating": "5",
+      "worstRating": "1"
+    }
+  (JSON-LD does not allow inline comments, so this note lives in HTML.)
+-->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -133,13 +147,6 @@
         "@type": "PostalAddress",
         "addressCountry": "CO",
         "addressRegion": "Quindío"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "500",
-        "bestRating": "5",
-        "worstRating": "1"
       }
     },
     {
@@ -164,12 +171,6 @@
           "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "COP" },
           "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "CO" }
         }
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "127",
-        "bestRating": "5"
       }
     },
     {
